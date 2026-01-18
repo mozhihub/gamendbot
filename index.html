@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Game Hub</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: sans-serif; background: #1c1c1c; color: white; text-align: center; }
+        .game-card { 
+            background: #333; margin: 15px; padding: 20px; border-radius: 12px;
+            cursor: pointer; transition: 0.3s; border: 1px solid #444;
+        }
+        .game-card:hover { background: #444; }
+        button { background: #0088cc; color: white; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>🎮 Game Center</h1>
+    
+    <div class="game-card" onclick="window.location.href='https://infolite-in.github.io/Hexa/'">
+        <h3>Hexa</h3>
+        <button>Play Now</button>
+    </div>
+
+    <div class="game-card" onclick="window.location.href='https://infolite-in.github.io/Mad-drive/'">
+        <h3>Mad Drive</h3>
+        <button>Play Now</button>
+    </div>
+
+    <div class="game-card" onclick="window.location.href='https://mozhihub.github.io/Knife/'">
+        <h3>Knife Hit</h3>
+        <button>Play Now</button>
+    </div>
+
+    <script>
+        // Initialize Telegram WebApp
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Make the app full screen
+    </script>
+</body>
+</html>
