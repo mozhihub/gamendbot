@@ -2,52 +2,80 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Game Hub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GAMEND BOT - Game Hub</title>
+    
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
     <style>
-        :root { --tg-theme-bg-color: #0f172a; --tg-theme-text-color: #ffffff; --accent: #38bdf8; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--tg-theme-bg-color); color: var(--tg-theme-text-color); margin: 0; padding: 20px; text-align: center; }
-        .header { margin-bottom: 30px; }
-        .live-badge { background: #ef4444; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; animation: pulse 2s infinite; }
-        .game-grid { display: grid; gap: 20px; }
-        .card { background: #1e293b; border-radius: 16px; padding: 20px; border: 1px solid #334155; position: relative; overflow: hidden; }
-        .stats { font-size: 14px; color: #94a3b8; margin: 10px 0; }
-        button { background: var(--accent); color: #000; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0e1621; color: white; margin: 0; padding: 0;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        header { margin: 20px 0; text-align: center; }
+        .logo { width: 80px; height: 80px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        h1 { font-size: 24px; margin: 10px 0 5px 0; color: #24a1de; }
+        .stats { font-size: 14px; color: #888; margin-bottom: 20px; }
+
+        /* Game Card Styling */
+        .game-list { width: 90%; max-width: 400px; display: flex; flex-direction: column; gap: 15px; }
+        .game-card {
+            background: #17212b; border-radius: 12px; display: flex; align-items: center;
+            padding: 10px; cursor: pointer; border: 1px solid #232e3c;
+            transition: transform 0.2s;
+        }
+        .game-card:active { transform: scale(0.98); }
+        .game-img { width: 60px; height: 60px; border-radius: 10px; margin-right: 15px; }
+        .game-info { flex-grow: 1; }
+        .game-title { font-weight: bold; font-size: 18px; margin-bottom: 2px; }
+        .game-desc { font-size: 12px; color: #888; }
+        .play-btn { background: #24a1de; color: white; padding: 8px 15px; border-radius: 20px; font-size: 14px; font-weight: bold; }
+
+        footer { margin-top: 30px; font-size: 12px; color: #555; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>🎮 Game Center</h1>
-        <p><span class="live-badge">LIVE</span> <span id="total-visitors">0</span> Users Online</p>
+    <header>
+        <img src="https://via.placeholder.com/80" alt="Logo" class="logo"> <h1>GAMEND BOT</h1>
+        <div id="online-count" class="stats">Loading Live Stats...</div>
+    </header>
+
+    <div class="game-list">
+        <div class="game-card" onclick="launchGame('Mad-drive')">
+            <img src="https://mozhihub.github.io/Mad-drive/img/drivemad.png" class="game-img">
+            <div class="game-info">
+                <div class="game-title">Mad Drive</div>
+                <div class="game-desc">High speed racing challenge</div>
+            </div>
+            <div class="play-btn">PLAY</div>
+        </div>
+
+        <div class="game-card" onclick="launchGame('Knife')">
+            <img src="https://via.placeholder.com/60" class="game-img"> <div class="game-info">
+                <div class="game-title">Knife Hit</div>
+                <div class="game-desc">Master the art of throwing</div>
+            </div>
+            <div class="play-btn">PLAY</div>
+        </div>
+
+        <div class="game-card" onclick="launchGame('Hexa')">
+            <img src="https://via.placeholder.com/60" class="game-img"> <div class="game-info">
+                <div class="game-title">Hexa Master</div>
+                <div class="game-desc">The ultimate puzzle hub</div>
+            </div>
+            <div class="play-btn">PLAY</div>
+        </div>
     </div>
 
-    <div class="game-grid">
-        <div class="card">
-            <h3>Hexa Master</h3>
-            <p class="stats">Played <span id="count-Hexa">0</span> times</p>
-            <button onclick="launchGame('https://mozhihub.github.io/Hexa/', 'Hexa')">PLAY NOW</button>
-        </div>
+    <footer>Powered by Mozhihub & Firebase</footer>
 
-        <div class="card">
-            <h3>Mad Drive</h3>
-            <p class="stats">Played <span id="count-Mad-drive">0</span> times</p>
-            <button onclick="launchGame('https://mozhihub.github.io/Mad-drive/', 'Mad-drive')">PLAY NOW</button>
-        </div>
-
-        <div class="card">
-            <h3>Knife Hit</h3>
-            <p class="stats">Played <span id="count-Knife">0</span> times</p>
-            <button onclick="launchGame('https://mozhihub.github.io/Knife/', 'Knife')">PLAY NOW</button>
-        </div>
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, set, onValue, increment, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
+    <script>
+        // --- 1. FIREBASE SETUP ---
         const firebaseConfig = {
             apiKey: "AIzaSyBb0upYoLF4_isVBfJUAMOEflMCgl5_5aE",
             authDomain: "game-3a2e9.firebaseapp.com",
@@ -59,40 +87,41 @@
             measurementId: "G-4CWEE32ZF7"
         };
 
-        // Initialize
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // --- 2. TELEGRAM WEB APP SETUP ---
         const tg = window.Telegram.WebApp;
+        tg.ready();
         tg.expand();
 
-        // 1. Live Visitor Tracking
-        const visitorRef = ref(db, 'live_users');
-        update(visitorRef, { total: increment(1) });
-        onValue(visitorRef, (snapshot) => {
-            document.getElementById('total-visitors').innerText = snapshot.val().total || 0;
+        // --- 3. LIVE TRACKING ---
+        const liveRef = db.ref('hub_live_users');
+        liveRef.transaction(c => (c || 0) + 1);
+        
+        // Update Stats on UI
+        liveRef.on('value', (snap) => {
+            document.getElementById('online-count').innerText = "Live Players: " + (snap.val() || 1);
         });
 
-        // 2. Fetch Live Play Counts
-        const games = ['Hexa', 'Mad-drive', 'Knife'];
-        games.forEach(game => {
-            onValue(ref(db, `stats/${game}`), (snapshot) => {
-                const data = snapshot.val();
-                document.getElementById(`count-${game}`).innerText = data ? data.plays : 0;
-            });
-        });
+        // --- 4. NAVIGATION LOGIC ---
+        function launchGame(gameName) {
+            let gameUrl = "";
+            if(gameName === 'Mad-drive') gameUrl = "https://mozhihub.github.io/Mad-drive/";
+            if(gameName === 'Knife') gameUrl = "https://mozhihub.github.io/Knife/";
+            if(gameName === 'Hexa') gameUrl = "https://infolite-in.github.io/Hexa/";
 
-        // 3. Launch & Track
-        window.launchGame = function(url, name) {
-            // Track play in Firebase
-            update(ref(db, `stats/${name}`), { plays: increment(1) });
-            
-            // Send Data to Telegram (Optional: Send message to bot)
-            tg.sendData(JSON.stringify({ game: name, action: "started" }));
-            
-            // Open Game
-            window.location.href = url;
+            // Track which game is clicked in Firebase
+            db.ref('stats/' + gameName + '/clicks').transaction(c => (c || 0) + 1);
+
+            // Redirect to the game
+            window.location.href = gameUrl;
+        }
+
+        // Clean up when user leaves
+        window.onbeforeunload = function() {
+            liveRef.transaction(c => (c > 0 ? c - 1 : 0));
         };
-
     </script>
 </body>
 </html>
