@@ -3,104 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GAMEND BOT - Multi-Game Hub</title>
+    <title>GAMEND - Premium Hub</title>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
     <style>
+        :root {
+            --tg-theme-bg: #0f0f1a;
+            --accent: #00f2ff;
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #0e1621; color: white; margin: 0; padding: 0;
-            display: flex; flex-direction: column; align-items: center;
-        }
-        header { margin: 25px 0; text-align: center; width: 100%; }
-        h1 { font-size: 26px; margin: 0; color: #24a1de; letter-spacing: 1px; }
-        .stats-bar {
-            background: rgba(36, 161, 222, 0.1);
-            padding: 5px 20px; border-radius: 20px;
-            font-size: 13px; color: #24a1de; margin-top: 10px;
-            border: 1px solid rgba(36, 161, 222, 0.3);
+            background: radial-gradient(circle at top, #1a1a2e 0%, #0f0f1a 100%);
+            color: white; margin: 0; font-family: 'Inter', -apple-system, sans-serif;
+            display: flex; flex-direction: column; align-items: center; min-height: 100vh;
         }
 
-        /* Grid Layout for Games */
-        .game-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px; width: 92%; max-width: 500px;
-            padding-bottom: 50px;
+        header {
+            width: 100%; padding: 40px 0 20px; text-align: center;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3), transparent);
         }
 
-        .game-item {
-            background: #17212b; border-radius: 15px;
-            padding: 15px; display: flex; flex-direction: column;
-            align-items: center; text-align: center;
-            border: 1px solid #232e3c; transition: 0.2s;
-            cursor: pointer;
+        .logo-text {
+            font-size: 32px; font-weight: 900; letter-spacing: -1px;
+            background: linear-gradient(to right, #00f2ff, #0072ff);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-        .game-item:active { transform: scale(0.95); background: #232e3c; }
 
-        .game-icon {
-            width: 70px; height: 70px; border-radius: 18px;
-            margin-bottom: 10px; object-fit: cover;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        .status-pill {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--glass); padding: 6px 16px; border-radius: 100px;
+            font-size: 12px; border: 1px solid var(--border); margin-top: 15px;
         }
-        .game-title { font-weight: bold; font-size: 15px; margin-bottom: 4px; }
-        .game-category { font-size: 11px; color: #888; text-transform: uppercase; }
 
-        footer { margin-bottom: 20px; font-size: 11px; color: #444; }
+        .status-dot {
+            width: 8px; height: 8px; background: #00ff88; border-radius: 50%;
+            box-shadow: 0 0 10px #00ff88; animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        .game-container {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 15px; width: 90%; max-width: 450px; padding: 20px 0;
+        }
+
+        .card {
+            background: var(--glass); backdrop-filter: blur(10px);
+            border: 1px solid var(--border); border-radius: 24px;
+            padding: 20px; display: flex; flex-direction: column; align-items: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative; overflow: hidden;
+        }
+
+        .card::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.05), transparent);
+            transform: translateX(-100%);
+        }
+
+        .card:active { transform: scale(0.92); border-color: var(--accent); }
+        .card:active::after { transform: translateX(100%); transition: 0.5s; }
+
+        .icon-wrapper {
+            width: 64px; height: 64px; border-radius: 18px;
+            background: #000; margin-bottom: 12px;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+        }
+
+        .icon-img { width: 100%; height: 100%; border-radius: 18px; object-fit: cover; }
+
+        .title { font-weight: 700; font-size: 15px; margin: 0; }
+        .tag { font-size: 10px; color: var(--accent); text-transform: uppercase; margin-top: 4px; letter-spacing: 1px; }
+
+        footer { margin: auto 0 20px; font-size: 11px; opacity: 0.4; }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>GAMEND BOT</h1>
-        <center><div id="live-counter" class="stats-bar">Connecting to Firebase...</div></center>
+        <div class="logo-text">GAMEND</div>
+        <div class="status-pill">
+            <div class="status-dot"></div>
+            <span id="live-count">SYNCING HUB...</span>
+        </div>
     </header>
 
-    <div class="game-grid">
-        <div class="game-item" onclick="play('Mad-drive', 'https://mozhihub.github.io/Mad-drive/')">
-            <img src="https://mozhihub.github.io/Mad-drive/img/drivemad.png" class="game-icon">
-            <div class="game-title">Mad Drive</div>
-            <div class="game-category">Racing</div>
+    <div class="game-container">
+        <div class="card" onclick="openGame('Mad-drive', 'https://mozhihub.github.io/Mad-drive/')">
+            <div class="icon-wrapper"><img src="https://mozhihub.github.io/Mad-drive/img/drivemad.png" class="icon-img"></div>
+            <p class="title">Mad Drive</p>
+            <span class="tag">Racing</span>
         </div>
 
-        <div class="game-item" onclick="play('Knife', 'https://mozhihub.github.io/Knife/')">
-            <img src="https://via.placeholder.com/70/24a1de/ffffff?text=Knife" class="game-icon">
-            <div class="game-title">Knife Hit</div>
-            <div class="game-category">Arcade</div>
+        <div class="card" onclick="openGame('Knife', 'https://mozhihub.github.io/Knife/')">
+            <div class="icon-wrapper"><img src="https://via.placeholder.com/64/0072ff/fff?text=🔪" class="icon-img"></div>
+            <p class="title">Knife Hit</p>
+            <span class="tag">Arcade</span>
         </div>
 
-        <div class="game-item" onclick="play('Hexa', 'https://mozhihub.github.io/Hexa/')">
-            <img src="https://via.placeholder.com/70/f39c12/ffffff?text=Hexa" class="game-icon">
-            <div class="game-title">Hexa Master</div>
-            <div class="game-category">Puzzle</div>
+        <div class="card" onclick="openGame('Insto', 'https://mozhihub.github.io/insto/')">
+            <div class="icon-wrapper"><img src="https://via.placeholder.com/64/e1306c/fff?text=📸" class="icon-img"></div>
+            <p class="title">Insto</p>
+            <span class="tag">Social</span>
         </div>
 
-        <div class="game-item" onclick="play('Insto', 'https://mozhihub.github.io/insto/')">
-            <img src="https://via.placeholder.com/70/e1306c/ffffff?text=Insto" class="game-icon">
-            <div class="game-title">Insto App</div>
-            <div class="game-category">Social Tools</div>
+        <div class="card" onclick="openGame('Paint', 'https://mozhihub.github.io/Paint/')">
+            <div class="icon-wrapper"><img src="https://via.placeholder.com/64/2ecc71/fff?text=🎨" class="icon-img"></div>
+            <p class="title">Paint</p>
+            <span class="tag">Creative</span>
         </div>
 
-        <div class="game-item" onclick="play('Paint', 'https://mozhihub.github.io/Paint/')">
-            <img src="https://via.placeholder.com/70/2ecc71/ffffff?text=Paint" class="game-icon">
-            <div class="game-title">Magic Paint</div>
-            <div class="game-category">Creative</div>
+        <div class="card" onclick="openGame('LoveCalc', 'https://mozhihub.github.io/Love-Calculator/')">
+            <div class="icon-wrapper"><img src="https://via.placeholder.com/64/ff4b2b/fff?text=❤️" class="icon-img"></div>
+            <p class="title">Love Calc</p>
+            <span class="tag">Fun</span>
         </div>
 
-        <div class="game-item" onclick="play('Love-Calculator', 'https://mozhihub.github.io/Love-Calculator/')">
-            <img src="https://via.placeholder.com/70/e74c3c/ffffff?text=Love" class="game-icon">
-            <div class="game-title">Love Calc</div>
-            <div class="game-category">Fun</div>
+        <div class="card" onclick="openGame('Hexa', 'https://mozhihub.github.io/Hexa/')">
+            <div class="icon-wrapper"><img src="https://via.placeholder.com/64/f39c12/fff?text=🧩" class="icon-img"></div>
+            <p class="title">Hexa</p>
+            <span class="tag">Puzzle</span>
         </div>
     </div>
 
-    <footer>© 2026 Mozhihub Gaming</footer>
+    <footer>MOZHIHUB ECOSYSTEM v2.0</footer>
 
     <script>
-        // --- FIREBASE CONFIG ---
         const firebaseConfig = {
             apiKey: "AIzaSyBb0upYoLF4_isVBfJUAMOEflMCgl5_5aE",
             authDomain: "game-3a2e9.firebaseapp.com",
@@ -117,30 +152,20 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // --- LIVE STATS ---
-        const liveRef = db.ref('global_live_users');
+        // Firebase Logic
+        const liveRef = db.ref('global_players');
         liveRef.transaction(c => (c || 0) + 1);
-        
-        liveRef.on('value', (snap) => {
-            document.getElementById('live-counter').innerText = "● " + (snap.val() || 1) + " PLAYERS ONLINE";
+        liveRef.on('value', snap => {
+            document.getElementById('live-count').innerText = (snap.val() || 1) + " PLAYERS ONLINE";
         });
 
-        // --- PLAY FUNCTION ---
-        function play(name, url) {
-            // Track click in Firebase
-            db.ref('analytics/clicks/' + name).transaction(c => (c || 0) + 1);
-            
-            // Haptic Feedback for Telegram
-            if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-            
-            // Redirect
+        function openGame(name, url) {
+            db.ref('analytics/open/' + name).transaction(c => (c || 0) + 1);
+            if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
             window.location.href = url;
         }
 
-        // Offline cleanup
-        window.onbeforeunload = function() {
-            liveRef.transaction(c => (c > 0 ? c - 1 : 0));
-        };
+        window.onbeforeunload = () => { liveRef.transaction(c => c > 0 ? c - 1 : 0); };
     </script>
 </body>
 </html>
