@@ -1,42 +1,98 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Game Hub</title>
+    <title>Ultimate Game Hub</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { font-family: sans-serif; background: #1c1c1c; color: white; text-align: center; }
-        .game-card { 
-            background: #333; margin: 15px; padding: 20px; border-radius: 12px;
-            cursor: pointer; transition: 0.3s; border: 1px solid #444;
-        }
-        .game-card:hover { background: #444; }
-        button { background: #0088cc; color: white; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; }
+        :root { --tg-theme-bg-color: #0f172a; --tg-theme-text-color: #ffffff; --accent: #38bdf8; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--tg-theme-bg-color); color: var(--tg-theme-text-color); margin: 0; padding: 20px; text-align: center; }
+        .header { margin-bottom: 30px; }
+        .live-badge { background: #ef4444; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; animation: pulse 2s infinite; }
+        .game-grid { display: grid; gap: 20px; }
+        .card { background: #1e293b; border-radius: 16px; padding: 20px; border: 1px solid #334155; position: relative; overflow: hidden; }
+        .stats { font-size: 14px; color: #94a3b8; margin: 10px 0; }
+        button { background: var(--accent); color: #000; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
-    <h1>🎮 Game Center</h1>
-    
-    <div class="game-card" onclick="window.location.href='https://mozhihin BB bb.github.io/Hexa/'">
-        <h3>Hexa</h3>
-        <button>Play Now</button>
+
+    <div class="header">
+        <h1>🎮 Game Center</h1>
+        <p><span class="live-badge">LIVE</span> <span id="total-visitors">0</span> Users Online</p>
     </div>
 
-    <div class="game-card" onclick="window.location.href='https://mozhihub.github.io/Mad-drive/'">
-        <h3>Mad Drive</h3>
-        <button>Play Now</button>
+    <div class="game-grid">
+        <div class="card">
+            <h3>Hexa Master</h3>
+            <p class="stats">Played <span id="count-Hexa">0</span> times</p>
+            <button onclick="launchGame('https://infolite-in.github.io/Hexa/', 'Hexa')">PLAY NOW</button>
+        </div>
+
+        <div class="card">
+            <h3>Mad Drive</h3>
+            <p class="stats">Played <span id="count-Mad-drive">0</span> times</p>
+            <button onclick="launchGame('https://infolite-in.github.io/Mad-drive/', 'Mad-drive')">PLAY NOW</button>
+        </div>
+
+        <div class="card">
+            <h3>Knife Hit</h3>
+            <p class="stats">Played <span id="count-Knife">0</span> times</p>
+            <button onclick="launchGame('https://mozhihub.github.io/Knife/', 'Knife')">PLAY NOW</button>
+        </div>
     </div>
 
-    <div class="game-card" onclick="window.location.href='https://mozhihub.github.io/Knife/'">
-        <h3>Knife Hit</h3>
-        <button>Play Now</button>
-    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, set, onValue, increment, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    <script>
-        // Initialize Telegram WebApp
+        const firebaseConfig = {
+            apiKey: "AIzaSyBb0upYoLF4_isVBfJUAMOEflMCgl5_5aE",
+            authDomain: "game-3a2e9.firebaseapp.com",
+            databaseURL: "https://game-3a2e9-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "game-3a2e9",
+            storageBucket: "game-3a2e9.firebasestorage.app",
+            messagingSenderId: "107429496573",
+            appId: "1:107429496573:web:d713c43d7acf8a02232094",
+            measurementId: "G-4CWEE32ZF7"
+        };
+
+        // Initialize
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
         const tg = window.Telegram.WebApp;
-        tg.expand(); // Make the app full screen
+        tg.expand();
+
+        // 1. Live Visitor Tracking
+        const visitorRef = ref(db, 'live_users');
+        update(visitorRef, { total: increment(1) });
+        onValue(visitorRef, (snapshot) => {
+            document.getElementById('total-visitors').innerText = snapshot.val().total || 0;
+        });
+
+        // 2. Fetch Live Play Counts
+        const games = ['Hexa', 'Mad-drive', 'Knife'];
+        games.forEach(game => {
+            onValue(ref(db, `stats/${game}`), (snapshot) => {
+                const data = snapshot.val();
+                document.getElementById(`count-${game}`).innerText = data ? data.plays : 0;
+            });
+        });
+
+        // 3. Launch & Track
+        window.launchGame = function(url, name) {
+            // Track play in Firebase
+            update(ref(db, `stats/${name}`), { plays: increment(1) });
+            
+            // Send Data to Telegram (Optional: Send message to bot)
+            tg.sendData(JSON.stringify({ game: name, action: "started" }));
+            
+            // Open Game
+            window.location.href = url;
+        };
+
     </script>
 </body>
 </html>
