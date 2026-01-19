@@ -3,79 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GAMEND BOT - Game Hub</title>
+    <title>GAMEND BOT - Multi-Game Hub</title>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: #0e1621; color: white; margin: 0; padding: 0;
             display: flex; flex-direction: column; align-items: center;
         }
-        header { margin: 20px 0; text-align: center; }
-        .logo { width: 80px; height: 80px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        h1 { font-size: 24px; margin: 10px 0 5px 0; color: #24a1de; }
-        .stats { font-size: 14px; color: #888; margin-bottom: 20px; }
-
-        /* Game Card Styling */
-        .game-list { width: 90%; max-width: 400px; display: flex; flex-direction: column; gap: 15px; }
-        .game-card {
-            background: #17212b; border-radius: 12px; display: flex; align-items: center;
-            padding: 10px; cursor: pointer; border: 1px solid #232e3c;
-            transition: transform 0.2s;
+        header { margin: 25px 0; text-align: center; width: 100%; }
+        h1 { font-size: 26px; margin: 0; color: #24a1de; letter-spacing: 1px; }
+        .stats-bar {
+            background: rgba(36, 161, 222, 0.1);
+            padding: 5px 20px; border-radius: 20px;
+            font-size: 13px; color: #24a1de; margin-top: 10px;
+            border: 1px solid rgba(36, 161, 222, 0.3);
         }
-        .game-card:active { transform: scale(0.98); }
-        .game-img { width: 60px; height: 60px; border-radius: 10px; margin-right: 15px; }
-        .game-info { flex-grow: 1; }
-        .game-title { font-weight: bold; font-size: 18px; margin-bottom: 2px; }
-        .game-desc { font-size: 12px; color: #888; }
-        .play-btn { background: #24a1de; color: white; padding: 8px 15px; border-radius: 20px; font-size: 14px; font-weight: bold; }
 
-        footer { margin-top: 30px; font-size: 12px; color: #555; }
+        /* Grid Layout for Games */
+        .game-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px; width: 92%; max-width: 500px;
+            padding-bottom: 50px;
+        }
+
+        .game-item {
+            background: #17212b; border-radius: 15px;
+            padding: 15px; display: flex; flex-direction: column;
+            align-items: center; text-align: center;
+            border: 1px solid #232e3c; transition: 0.2s;
+            cursor: pointer;
+        }
+        .game-item:active { transform: scale(0.95); background: #232e3c; }
+
+        .game-icon {
+            width: 70px; height: 70px; border-radius: 18px;
+            margin-bottom: 10px; object-fit: cover;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .game-title { font-weight: bold; font-size: 15px; margin-bottom: 4px; }
+        .game-category { font-size: 11px; color: #888; text-transform: uppercase; }
+
+        footer { margin-bottom: 20px; font-size: 11px; color: #444; }
     </style>
 </head>
 <body>
 
     <header>
-        <img src="https://via.placeholder.com/80" alt="Logo" class="logo"> <h1>GAMEND BOT</h1>
-        <div id="online-count" class="stats">Loading Live Stats...</div>
+        <h1>GAMEND BOT</h1>
+        <center><div id="live-counter" class="stats-bar">Connecting to Firebase...</div></center>
     </header>
 
-    <div class="game-list">
-        <div class="game-card" onclick="launchGame('Mad-drive')">
-            <img src="https://mozhihub.github.io/Mad-drive/img/drivemad.png" class="game-img">
-            <div class="game-info">
-                <div class="game-title">Mad Drive</div>
-                <div class="game-desc">High speed racing challenge</div>
-            </div>
-            <div class="play-btn">PLAY</div>
+    <div class="game-grid">
+        <div class="game-item" onclick="play('Mad-drive', 'https://mozhihub.github.io/Mad-drive/')">
+            <img src="https://mozhihub.github.io/Mad-drive/img/drivemad.png" class="game-icon">
+            <div class="game-title">Mad Drive</div>
+            <div class="game-category">Racing</div>
         </div>
 
-        <div class="game-card" onclick="launchGame('Knife')">
-            <img src="https://via.placeholder.com/60" class="game-img"> <div class="game-info">
-                <div class="game-title">Knife Hit</div>
-                <div class="game-desc">Master the art of throwing</div>
-            </div>
-            <div class="play-btn">PLAY</div>
+        <div class="game-item" onclick="play('Knife', 'https://mozhihub.github.io/Knife/')">
+            <img src="https://via.placeholder.com/70/24a1de/ffffff?text=Knife" class="game-icon">
+            <div class="game-title">Knife Hit</div>
+            <div class="game-category">Arcade</div>
         </div>
 
-        <div class="game-card" onclick="launchGame('Hexa')">
-            <img src="https://via.placeholder.com/60" class="game-img"> <div class="game-info">
-                <div class="game-title">Hexa Master</div>
-                <div class="game-desc">The ultimate puzzle hub</div>
-            </div>
-            <div class="play-btn">PLAY</div>
+        <div class="game-item" onclick="play('Hexa', 'https://mozhihub.github.io/Hexa/')">
+            <img src="https://via.placeholder.com/70/f39c12/ffffff?text=Hexa" class="game-icon">
+            <div class="game-title">Hexa Master</div>
+            <div class="game-category">Puzzle</div>
+        </div>
+
+        <div class="game-item" onclick="play('Insto', 'https://mozhihub.github.io/insto/')">
+            <img src="https://via.placeholder.com/70/e1306c/ffffff?text=Insto" class="game-icon">
+            <div class="game-title">Insto App</div>
+            <div class="game-category">Social Tools</div>
+        </div>
+
+        <div class="game-item" onclick="play('Paint', 'https://mozhihub.github.io/Paint/')">
+            <img src="https://via.placeholder.com/70/2ecc71/ffffff?text=Paint" class="game-icon">
+            <div class="game-title">Magic Paint</div>
+            <div class="game-category">Creative</div>
+        </div>
+
+        <div class="game-item" onclick="play('Love-Calculator', 'https://mozhihub.github.io/Love-Calculator/')">
+            <img src="https://via.placeholder.com/70/e74c3c/ffffff?text=Love" class="game-icon">
+            <div class="game-title">Love Calc</div>
+            <div class="game-category">Fun</div>
         </div>
     </div>
 
-    <footer>Powered by Mozhihub & Firebase</footer>
+    <footer>© 2026 Mozhihub Gaming</footer>
 
     <script>
-        // --- 1. FIREBASE SETUP ---
+        // --- FIREBASE CONFIG ---
         const firebaseConfig = {
             apiKey: "AIzaSyBb0upYoLF4_isVBfJUAMOEflMCgl5_5aE",
             authDomain: "game-3a2e9.firebaseapp.com",
@@ -89,36 +114,30 @@
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-
-        // --- 2. TELEGRAM WEB APP SETUP ---
         const tg = window.Telegram.WebApp;
-        tg.ready();
         tg.expand();
 
-        // --- 3. LIVE TRACKING ---
-        const liveRef = db.ref('hub_live_users');
+        // --- LIVE STATS ---
+        const liveRef = db.ref('global_live_users');
         liveRef.transaction(c => (c || 0) + 1);
         
-        // Update Stats on UI
         liveRef.on('value', (snap) => {
-            document.getElementById('online-count').innerText = "Live Players: " + (snap.val() || 1);
+            document.getElementById('live-counter').innerText = "● " + (snap.val() || 1) + " PLAYERS ONLINE";
         });
 
-        // --- 4. NAVIGATION LOGIC ---
-        function launchGame(gameName) {
-            let gameUrl = "";
-            if(gameName === 'Mad-drive') gameUrl = "https://mozhihub.github.io/Mad-drive/";
-            if(gameName === 'Knife') gameUrl = "https://mozhihub.github.io/Knife/";
-            if(gameName === 'Hexa') gameUrl = "https://infolite-in.github.io/Hexa/";
-
-            // Track which game is clicked in Firebase
-            db.ref('stats/' + gameName + '/clicks').transaction(c => (c || 0) + 1);
-
-            // Redirect to the game
-            window.location.href = gameUrl;
+        // --- PLAY FUNCTION ---
+        function play(name, url) {
+            // Track click in Firebase
+            db.ref('analytics/clicks/' + name).transaction(c => (c || 0) + 1);
+            
+            // Haptic Feedback for Telegram
+            if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+            
+            // Redirect
+            window.location.href = url;
         }
 
-        // Clean up when user leaves
+        // Offline cleanup
         window.onbeforeunload = function() {
             liveRef.transaction(c => (c > 0 ? c - 1 : 0));
         };
