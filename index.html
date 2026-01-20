@@ -3,169 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GAMEND - Premium Hub</title>
+    <title>GAMEND HUB</title>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
     <style>
-        :root {
-            --tg-theme-bg: #0f0f1a;
-            --accent: #00f2ff;
-            --glass: rgba(255, 255, 255, 0.05);
-            --border: rgba(255, 255, 255, 0.1);
+        :root { --accent: #00f2ff; --bg: #0f0f1a; --card: rgba(255, 255, 255, 0.05); }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: white; font-family: sans-serif; }
+
+        /* Splash Screen */
+        #splash-screen {
+            position: fixed; inset: 0; z-index: 9999; background: #000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
+        .loader-logo { width: 100px; height: 100px; border-radius: 25px; margin-bottom: 20px; box-shadow: 0 0 20px var(--accent); }
+        .progress-bar { width: 60%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; }
+        .progress-fill { width: 0%; height: 100%; background: var(--accent); transition: width 5s linear; }
 
-        body {
-            background: radial-gradient(circle at top, #1a1a2e 0%, #0f0f1a 100%);
-            color: white; margin: 0; font-family: 'Inter', -apple-system, sans-serif;
-            display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+        /* Hub Page */
+        #hub-page { display: none; height: 100%; overflow-y: auto; padding: 20px; text-align: center; }
+        .logo-text { font-size: 28px; font-weight: 900; color: var(--accent); margin: 20px 0; letter-spacing: 2px; }
+        
+        .game-grid { 
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; 
+            max-width: 450px; margin: 0 auto; padding-bottom: 60px; 
         }
-
-        header {
-            width: 100%; padding: 40px 0 20px; text-align: center;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.3), transparent);
+        
+        .card { 
+            background: var(--card); border: 1px solid rgba(255,255,255,0.1); 
+            border-radius: 20px; padding: 15px; cursor: pointer; 
+            transition: transform 0.2s;
         }
-
-        .logo-text {
-            font-size: 32px; font-weight: 900; letter-spacing: -1px;
-            background: linear-gradient(to right, #00f2ff, #0072ff);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-
-        .status-pill {
-            display: inline-flex; align-items: center; gap: 8px;
-            background: var(--glass); padding: 6px 16px; border-radius: 100px;
-            font-size: 12px; border: 1px solid var(--border); margin-top: 15px;
-        }
-
-        .status-dot {
-            width: 8px; height: 8px; background: #00ff88; border-radius: 50%;
-            box-shadow: 0 0 10px #00ff88; animation: blink 1.5s infinite;
-        }
-
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-
-        .game-container {
-            display: grid; grid-template-columns: 1fr 1fr;
-            gap: 15px; width: 90%; max-width: 450px; padding: 20px 0;
-        }
-
-        .card {
-            background: var(--glass); backdrop-filter: blur(10px);
-            border: 1px solid var(--border); border-radius: 24px;
-            padding: 20px; display: flex; flex-direction: column; align-items: center;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative; overflow: hidden;
-        }
-
-        .card::after {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.05), transparent);
-            transform: translateX(-100%);
-        }
-
-        .card:active { transform: scale(0.92); border-color: var(--accent); }
-        .card:active::after { transform: translateX(100%); transition: 0.5s; }
-
-        .icon-wrapper {
-            width: 64px; height: 64px; border-radius: 18px;
-            background: #000; margin-bottom: 12px;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            border: 1px solid var(--border);
-        }
-
-        .icon-img { width: 100%; height: 100%; border-radius: 18px; object-fit: cover; }
-
-        .title { font-weight: 700; font-size: 15px; margin: 0; }
-        .tag { font-size: 10px; color: var(--accent); text-transform: uppercase; margin-top: 4px; letter-spacing: 1px; }
-
-        footer { margin: auto 0 20px; font-size: 11px; opacity: 0.4; }
+        .card:active { transform: scale(0.95); background: rgba(255,255,255,0.1); }
+        .card img { width: 65px; height: 65px; border-radius: 15px; margin-bottom: 10px; object-fit: cover; }
+        .card-title { font-size: 14px; font-weight: bold; }
+        .card-tag { font-size: 10px; color: var(--accent); opacity: 0.8; margin-top: 4px; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo-text">GAMEND</div>
-        <div class="status-pill">
-            <div class="status-dot"></div>
-            <span id="live-count">SYNCING HUB...</span>
-        </div>
-    </header>
+    <div id="splash-screen">
+        <img src="https://mozhihub.github.io/Mad-drive/img/drivemad.png" class="loader-logo">
+        <h2 style="letter-spacing: 3px;">GAMEND</h2>
+        <div class="progress-bar"><div class="progress-fill" id="fill"></div></div>
+        <p style="font-size: 11px; margin-top: 10px; opacity: 0.5; letter-spacing: 1px;">LOADING HUB...</p>
+    </div>
 
-    <div class="game-container">
-        <div class="card" onclick="openGame('Mad-drive', 'https://mozhihub.github.io/Mad-drive/')">
-            <div class="icon-wrapper"><img src="https://mozhihub.github.io/Mad-drive/img/drivemad.png" class="icon-img"></div>
-            <p class="title">Mad Drive</p>
-            <span class="tag">Racing</span>
-        </div>
+    <div id="hub-page">
+        <div class="logo-text">GAMEND HUB</div>
+        
+        <div class="game-grid">
+            <div class="card" onclick="play('Mad-drive', 'https://mozhihub.github.io/Mad-drive/')">
+                <img src="https://mozhihub.github.io/Mad-drive/img/drivemad.png">
+                <div class="card-title">Mad Drive</div>
+                <div class="card-tag">Racing</div>
+            </div>
 
-        <div class="card" onclick="openGame('Knife', 'https://mozhihub.github.io/Knife/')">
-            <div class="icon-wrapper"><img src="https://via.placeholder.com/64/0072ff/fff?text=🔪" class="icon-img"></div>
-            <p class="title">Knife Hit</p>
-            <span class="tag">Arcade</span>
-        </div>
+            <div class="card" onclick="play('Knife', 'https://mozhihub.github.io/Knife/')">
+                <img src="https://via.placeholder.com/65/24a1de/fff?text=Knife" style="background:#24a1de">
+                <div class="card-title">Knife Hit</div>
+                <div class="card-tag">Arcade</div>
+            </div>
 
-        <div class="card" onclick="openGame('Insto', 'https://mozhihub.github.io/insto/')">
-            <div class="icon-wrapper"><img src="https://via.placeholder.com/64/e1306c/fff?text=📸" class="icon-img"></div>
-            <p class="title">Insto</p>
-            <span class="tag">Social</span>
-        </div>
+            <div class="card" onclick="play('Hexa', 'https://mozhihub.github.io/Hexa/')">
+                <img src="https://via.placeholder.com/65/f39c12/fff?text=Hexa" style="background:#f39c12">
+                <div class="card-title">Hexa Master</div>
+                <div class="card-tag">Puzzle</div>
+            </div>
 
-        <div class="card" onclick="openGame('Paint', 'https://mozhihub.github.io/Paint/')">
-            <div class="icon-wrapper"><img src="https://via.placeholder.com/64/2ecc71/fff?text=🎨" class="icon-img"></div>
-            <p class="title">Paint</p>
-            <span class="tag">Creative</span>
-        </div>
+            <div class="card" onclick="play('Insto', 'https://mozhihub.github.io/insto/')">
+                <img src="https://via.placeholder.com/65/e1306c/fff?text=Insto" style="background:#e1306c">
+                <div class="card-title">Insto App</div>
+                <div class="card-tag">Social</div>
+            </div>
 
-        <div class="card" onclick="openGame('LoveCalc', 'https://mozhihub.github.io/Love-Calculator/')">
-            <div class="icon-wrapper"><img src="https://via.placeholder.com/64/ff4b2b/fff?text=❤️" class="icon-img"></div>
-            <p class="title">Love Calc</p>
-            <span class="tag">Fun</span>
-        </div>
+            <div class="card" onclick="play('Paint', 'https://mozhihub.github.io/Paint/')">
+                <img src="https://via.placeholder.com/65/2ecc71/fff?text=Paint" style="background:#2ecc71">
+                <div class="card-title">Magic Paint</div>
+                <div class="card-tag">Creative</div>
+            </div>
 
-        <div class="card" onclick="openGame('Hexa', 'https://mozhihub.github.io/Hexa/')">
-            <div class="icon-wrapper"><img src="https://via.placeholder.com/64/f39c12/fff?text=🧩" class="icon-img"></div>
-            <p class="title">Hexa</p>
-            <span class="tag">Puzzle</span>
+            <div class="card" onclick="play('LoveCalc', 'https://mozhihub.github.io/Love-Calculator/')">
+                <img src="https://via.placeholder.com/65/e74c3c/fff?text=Love" style="background:#e74c3c">
+                <div class="card-title">Love Calc</div>
+                <div class="card-tag">Fun</div>
+            </div>
         </div>
     </div>
 
-    <footer>MOZHIHUB ECOSYSTEM v2.0</footer>
-
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyBb0upYoLF4_isVBfJUAMOEflMCgl5_5aE",
-            authDomain: "game-3a2e9.firebaseapp.com",
-            databaseURL: "https://game-3a2e9-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "game-3a2e9",
-            storageBucket: "game-3a2e9.firebasestorage.app",
-            messagingSenderId: "107429496573",
-            appId: "1:107429496573:web:d713c43d7acf8a02232094",
-            measurementId: "G-4CWEE32ZF7"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
         const tg = window.Telegram.WebApp;
         tg.expand();
+        tg.enableClosingConfirmation();
 
-        // Firebase Logic
-        const liveRef = db.ref('global_players');
-        liveRef.transaction(c => (c || 0) + 1);
-        liveRef.on('value', snap => {
-            document.getElementById('live-count').innerText = (snap.val() || 1) + " PLAYERS ONLINE";
-        });
+        // 5 Second Loading Logic
+        window.onload = () => {
+            document.getElementById('fill').style.width = '100%';
+            setTimeout(() => {
+                document.getElementById('splash-screen').style.display = 'none';
+                document.getElementById('hub-page').style.display = 'block';
+                tg.BackButton.hide();
+            }, 5000);
+        };
 
-        function openGame(name, url) {
-            db.ref('analytics/open/' + name).transaction(c => (c || 0) + 1);
-            if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+        function play(name, url) {
+            // Track in Firebase if you want
             window.location.href = url;
         }
 
-        window.onbeforeunload = () => { liveRef.transaction(c => c > 0 ? c - 1 : 0); };
+        // Back Button Logic: Confirm Close
+        tg.onEvent('backButtonClicked', function() {
+            tg.showConfirm("Are you sure you want to exit the Game Bot?", (confirmed) => {
+                if (confirmed) tg.close();
+            });
+        });
+
+        // Android/Browser Back Button protection
+        window.history.pushState({page: 1}, "");
+        window.onpopstate = function() {
+            tg.showConfirm("Are you sure you want to exit the Game Bot?", (confirmed) => {
+                if (confirmed) tg.close();
+                else window.history.pushState({page: 1}, "");
+            });
+        };
+
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyBb0upYoLF4_isVBfJUAMOEflMCgl5_5aE",
+            databaseURL: "https://game-3a2e9-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "game-3a2e9",
+        };
+        firebase.initializeApp(firebaseConfig);
     </script>
 </body>
 </html>
