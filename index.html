@@ -10,7 +10,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
     <style>
-        /* --- START: 100% OLD PREMIUM STYLE (DO NOT CHANGE) --- */
         :root {
             --tg-theme-bg: #0f0f1a;
             --accent: #00f2ff;
@@ -34,6 +33,7 @@
             overflow-x: hidden; transition: 0.3s;
         }
 
+        /* Splash Screen */
         #splash-screen {
             position: fixed; inset: 0; z-index: 10000; background: #000;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -42,20 +42,27 @@
         .progress-bar { width: 60%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 10px; margin-top: 20px; overflow: hidden; }
         .progress-fill { width: 0%; height: 100%; background: var(--accent); transition: width 5s linear; }
 
+        /* Hub Content */
         #hub-content { display: none; width: 100%; text-align: center; }
         header { width: 100%; padding: 40px 0 20px; position: relative; }
         .logo-text { font-size: 32px; font-weight: 900; background: linear-gradient(to right, #00f2ff, #0072ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
         .game-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 90%; max-width: 450px; padding: 20px 0; margin: 0 auto; }
-        .card { background: var(--glass); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 24px; padding: 20px; display: flex; flex-direction: column; align-items: center; transition: 0.3s; }
+        .card { background: var(--glass); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 24px; padding: 20px; display: flex; flex-direction: column; align-items: center; transition: 0.3s; cursor: pointer; }
         .card:active { transform: scale(0.92); border-color: var(--accent); }
         .icon-img { width: 64px; height: 64px; border-radius: 18px; object-fit: cover; margin-bottom: 12px; }
         .title { font-weight: 700; font-size: 15px; margin: 0; color: inherit; }
         .tag { font-size: 10px; color: var(--accent); text-transform: uppercase; margin-top: 4px; font-weight: bold; }
         .share-btn { background: var(--accent); color: #000; padding: 14px 35px; border-radius: 100px; font-weight: bold; border: none; margin: 25px 0; cursor: pointer; }
-        /* --- END: OLD STYLE --- */
 
-        /* 3-DOT MENU STYLING */
+        /* Game Frame Styling */
+        #game-view {
+            display: none; position: fixed; inset: 0; z-index: 999; background: #000;
+            width: 100%; height: 100%; border: none;
+        }
+        iframe { width: 100%; height: 100%; border: none; }
+
+        /* Menu */
         .menu-btn { position: absolute; right: 25px; top: 42px; cursor: pointer; font-size: 26px; color: var(--accent); z-index: 1001; }
         .menu-dropdown {
             position: absolute; right: 25px; top: 85px; background: rgba(20, 20, 35, 0.98);
@@ -72,6 +79,10 @@
         <img src="https://mozhihub.github.io/Mad-drive/img/drivemad.png" class="loader-logo">
         <h2 style="letter-spacing: 4px; color: #fff;">GAMEND</h2>
         <div class="progress-bar"><div class="progress-fill" id="fill"></div></div>
+    </div>
+
+    <div id="game-view">
+        <iframe id="game-iframe" src=""></iframe>
     </div>
 
     <div id="hub-content">
@@ -113,16 +124,52 @@
 
     <script>
         const tg = window.Telegram.WebApp;
+        const hub = document.getElementById('hub-content');
+        const gameView = document.getElementById('game-view');
+        const gameIframe = document.getElementById('game-iframe');
+
         tg.expand();
+        tg.enableClosingConfirmation(); // App-ai close pannum pothu confirmation kekkum
 
         window.onload = () => {
             document.getElementById('fill').style.width = '100%';
             setTimeout(() => {
                 document.getElementById('splash-screen').style.display = 'none';
-                document.getElementById('hub-content').style.display = 'block';
+                hub.style.display = 'block';
+                // Back button-ai Hub load aanavudan show pannuvom
                 tg.BackButton.show();
             }, 5000);
         };
+
+        // --- BACK BUTTON LOGIC ---
+        tg.onEvent('backButtonClicked', () => {
+            // Check if game is currently open
+            if (gameView.style.display === 'block') {
+                tg.showConfirm("Exit game and return to Hub?", (ok) => {
+                    if (ok) {
+                        closeGame();
+                    }
+                });
+            } else {
+                // If on Hub page, confirm to exit full App
+                tg.showConfirm("Do you want to exit GAMEND?", (ok) => {
+                    if (ok) tg.close();
+                });
+            }
+        });
+
+        function openGame(url) {
+            if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+            gameIframe.src = url;
+            gameView.style.display = 'block';
+            hub.style.display = 'none';
+        }
+
+        function closeGame() {
+            gameView.style.display = 'none';
+            gameIframe.src = ""; // Clear iframe to stop game sound/logic
+            hub.style.display = 'block';
+        }
 
         // --- MENU LOGIC ---
         function toggleMenu(e) { e.stopPropagation(); const dd = document.getElementById('dropdown'); dd.style.display = (dd.style.display === 'flex') ? 'none' : 'flex'; }
@@ -165,14 +212,16 @@
             });
         }
 
-        function openGame(url) { if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium'); window.location.href = url; }
         function shareBot() { tg.openTelegramLink("https://t.me/share/url?url=https://t.me/gamendbot&text=Play Games!"); }
         
-        tg.onEvent('backButtonClicked', () => { tg.showConfirm("Exit GAMEND?", (ok) => { if(ok) tg.close(); }); });
-
+        // Firebase Online Players Logic
         const firebaseConfig = { apiKey: "AIzaSyBb0upYoLF4_isVBfJUAMOEflMCgl5_5aE", databaseURL: "https://game-3a2e9-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "game-3a2e9" };
-        firebase.initializeApp(firebaseConfig);
-        firebase.database().ref('global_players').on('value', snap => { document.getElementById('online-val').innerText = snap.val() || 1; });
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        firebase.database().ref('global_players').on('value', snap => { 
+            document.getElementById('online-val').innerText = snap.val() || 1; 
+        });
     </script>
 </body>
 </html>
