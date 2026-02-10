@@ -18,7 +18,7 @@
             --border: rgba(255, 255, 255, 0.1);
         }
 
-        /* 7 Premium Themes */
+        /* 7 Premium Themes from Style Code */
         body.light-theme { --bg: #f0f2f5; --card-bg: rgba(0,0,0,0.05); --text: #1a1a2e; --border: rgba(0,0,0,0.1); --accent: #0072ff; }
         body.neon-blue { --bg: #000b1a; --accent: #00f2ff; }
         body.emerald { --bg: #020d04; --accent: #00ff88; }
@@ -38,7 +38,7 @@
             position: fixed; inset: 0; z-index: 10000; background: #000;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
-        .loader-logo { width: 90px; filter: drop-shadow(0 0 15px var(--accent)); animation: pulse 2s infinite; }
+        .loader-logo { width: 90px; border-radius: 20px; filter: drop-shadow(0 0 15px var(--accent)); animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
 
         /* Navigation */
@@ -61,12 +61,12 @@
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .card {
             background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px;
-            padding: 15px; text-align: center; transition: 0.2s;
+            padding: 15px; text-align: center; transition: 0.2s; cursor: pointer;
         }
         .card:active { transform: scale(0.95); border-color: var(--accent); }
         .icon-img { width: 100%; aspect-ratio: 1; border-radius: 20px; margin-bottom: 10px; object-fit: cover; }
 
-        /* 3-Dot Menu */
+        /* Menu Styles */
         .menu-btn { position: fixed; right: 20px; top: 15px; z-index: 5001; color: var(--accent); font-size: 30px; cursor: pointer; }
         .menu-dropdown {
             position: fixed; right: 20px; top: 65px; background: var(--bg); border: 1px solid var(--border);
@@ -75,7 +75,7 @@
         .menu-item { padding: 15px 20px; font-size: 14px; border-bottom: 1px solid var(--border); color: var(--text); cursor: pointer; }
         .menu-item:hover { background: var(--accent); color: #000; }
 
-        /* Fancy Pop-up */
+        /* Pop-up Styles */
         #custom-popup {
             display: none; position: fixed; inset: 0; z-index: 99999; background: rgba(0,0,0,0.9);
             align-items: center; justify-content: center; padding: 20px;
@@ -84,7 +84,7 @@
             background: var(--bg); border: 2px solid var(--accent); border-radius: 30px;
             width: 100%; max-width: 400px; max-height: 80vh; overflow-y: auto; padding: 30px; position: relative;
         }
-        .popup-close { position: absolute; top: 15px; right: 20px; font-size: 24px; color: var(--accent); font-weight: 900; }
+        .popup-close { position: absolute; top: 15px; right: 20px; font-size: 24px; color: var(--accent); font-weight: 900; cursor: pointer; }
         .popup-img { width: 100%; border-radius: 20px; margin-bottom: 15px; box-shadow: 0 0 15px var(--accent); }
 
         .share-btn {
@@ -105,7 +105,7 @@
         <img src="https://mozhihub.github.io/Mad-drive/img/drivemad.png" class="loader-logo">
         <h2 style="letter-spacing: 6px; color: #fff;">GAMEND PRO</h2>
         <div style="width: 60%; height: 3px; background: rgba(255,255,255,0.1); margin-top: 25px;">
-            <div id="fill" style="width: 0; height: 100%; background: var(--accent); transition: 4s;"></div>
+            <div id="fill" style="width: 0; height: 100%; background: var(--accent); transition: 4s linear;"></div>
         </div>
     </div>
 
@@ -142,11 +142,18 @@
             <div class="grid">
                 <div class="card" onclick="openGame('https://mozhihub.github.io/Paint/')"><img src="etc/paint.jpg" class="icon-img"><p>Paint Pro</p></div>
                 <div class="card" onclick="openGame('https://mozhihub.github.io/Earth-/')"><img src="etc/earth.jpg" class="icon-img"><p>Earth 3D</p></div>
-                <div class="card" onclick="openGame('https://mozhihub.github.io/Build-House/')"><img src="https://mozhihub.github.io/Build-House/logo.png" class="icon-img"><p>Build House</p></div>
             </div>
         </div>
-        <div id="arcade" class="game-section"><div class="grid"><div class="card" onclick="openGame('https://mozhihub.github.io/Knife/')"><img src="etc/knife.jpg" class="icon-img"><p>Knife Hit</p></div></div></div>
-        <div id="racing" class="game-section"><div class="grid"><div class="card" onclick="openGame('https://mozhihub.github.io/Mad-drive/')"><img src="etc/drive.jpg" class="icon-img"><p>Mad Drive</p></div></div></div>
+        <div id="arcade" class="game-section">
+            <div class="grid">
+                <div class="card" onclick="openGame('https://mozhihub.github.io/Knife/')"><img src="etc/knife.jpg" class="icon-img"><p>Knife Hit</p></div>
+            </div>
+        </div>
+        <div id="racing" class="game-section">
+            <div class="grid">
+                <div class="card" onclick="openGame('https://mozhihub.github.io/Mad-drive/')"><img src="etc/drive.jpg" class="icon-img"><p>Mad Drive</p></div>
+            </div>
+        </div>
         <div id="puzzle" class="game-section">
             <div class="grid">
                 <div class="card" onclick="openGame('https://mozhihub.github.io/Hexa/')"><img src="etc/hexa.jpg" class="icon-img"><p>Hexa Master</p></div>
@@ -167,10 +174,48 @@
 
     <script>
         const tg = window.Telegram.WebApp;
+        const hub = document.getElementById('hub-content');
+        const gameView = document.getElementById('game-view');
+        const gameIframe = document.getElementById('game-iframe');
+
         tg.expand();
         tg.enableClosingConfirmation();
 
-        // 1. Settings Feature (Themes & Orientation)
+        // --- BACK BUTTON LOGIC (Preserved from Original) ---
+        tg.onEvent('backButtonClicked', () => {
+            if (gameView.style.display === 'block') {
+                tg.showConfirm("Exit game and return to Hub?", (ok) => {
+                    if (ok) closeGame();
+                });
+            } else {
+                tg.showConfirm("Do you want to exit GAMEND?", (ok) => {
+                    if (ok) tg.close();
+                });
+            }
+        });
+
+        // --- CORE GAME LOGIC ---
+        function openGame(url) {
+            if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+            gameIframe.src = url;
+            gameView.style.display = 'block';
+            hub.style.display = 'none';
+            tg.BackButton.show();
+        }
+
+        function closeGame() {
+            gameView.style.display = 'none';
+            gameIframe.src = "";
+            hub.style.display = 'block';
+        }
+
+        // --- POPUP & MENU HELPERS ---
+        function showPopup(html) { document.getElementById('popup-content').innerHTML = html; document.getElementById('custom-popup').style.display = 'flex'; }
+        function hidePopup() { document.getElementById('custom-popup').style.display = 'none'; }
+        function toggleMenu(e) { e.stopPropagation(); const dd = document.getElementById('dropdown'); dd.style.display = (dd.style.display === 'flex') ? 'none' : 'flex'; }
+        function closeMenu() { document.getElementById('dropdown').style.display = 'none'; }
+
+        // --- SETTINGS (Original Logic + New Themes) ---
         function logicSettings(e) {
             e.stopPropagation(); closeMenu();
             tg.showPopup({
@@ -201,73 +246,55 @@
                     });
                 }
                 if(id === 'orient') {
-                    tg.showPopup({
-                        title: 'Orientation',
-                        message: 'Select preferred mode:',
-                        buttons: [{id:'v', text:'Vertical (Default)'}, {id:'h', text:'Landscape (Gaming)'}]
-                    }, (o) => {
-                        if(o==='h') tg.showAlert("Please rotate your phone to Landscape mode for better gaming experience.");
-                    });
+                    tg.showAlert("Please rotate your phone manually to Landscape mode for better gaming experience.");
                 }
             });
         }
 
-        // 2. About Feature (Pop-up with Scroll & Image)
+        // --- ABOUT, CONTACT, REPORT (New UI Structure) ---
         function logicAbout(e) {
             e.stopPropagation(); closeMenu();
-            const content = `
+            showPopup(`
                 <img src="https://mozhihub.github.io/Mad-drive/img/drivemad.png" class="popup-img">
-                <h2 style="font-weight: 900; color: var(--accent);">GAMEND PRO HUB</h2>
-                <p style="font-size: 14px; line-height: 1.6;">Welcome to the ultimate arcade destination on Telegram. <b>Version 3.1</b> brings ultra-high performance gaming with Zero Lag technology.</p>
-                <ul style="text-align: left; font-size: 13px;">
-                    <li>7 Premium Themes Support</li>
-                    <li>Global Multiplayer Sync</li>
-                    <li>Exclusive Creative Apps</li>
-                </ul>
+                <h2 style="color: var(--accent);">GAMEND PRO HUB</h2>
+                <p>Premium arcade games for Telegram. Version 3.1 with Zero Lag tech.</p>
                 <p style="color: var(--accent); font-weight: bold;">Built for Gamers by MozhiHub.</p>
-            `;
-            showPopup(content);
+            `);
         }
 
-        // 3. Contact Feature (Colorful Pop-up)
         function logicContact(e) {
             e.stopPropagation(); closeMenu();
-            const content = `
-                <h2 style="font-weight: 900; color: #00ff88;">📞 CONTACT US</h2>
-                <div style="background: rgba(0,255,136,0.1); padding: 15px; border-radius: 15px; margin-bottom: 10px;">
-                    <p><b>Email:</b> info@mozhihub.com</p>
-                </div>
-                <div style="background: rgba(0,242,255,0.1); padding: 15px; border-radius: 15px; margin-bottom: 10px;">
-                    <p><b>Website:</b> www.mozhihub.com</p>
-                </div>
-                <button onclick="window.open('https://mozhihub.com')" style="width:100%; padding:12px; border-radius:10px; border:none; background:var(--accent); font-weight:bold;">Visit Portal</button>
-            `;
-            showPopup(content);
+            showPopup(`
+                <h2 style="color: #00ff88;">📞 CONTACT US</h2>
+                <p><b>Email:</b> info@mozhihub.com</p>
+                <p><b>Website:</b> mozhihub.com</p>
+                <button onclick="tg.openLink('https://mozhihub.com')" style="width:100%; padding:12px; background:var(--accent); border:none; border-radius:10px; font-weight:bold;">Visit Portal</button>
+            `);
         }
 
-        // 4. Report Bug (Email with context)
         function logicReport(e) {
             e.stopPropagation(); closeMenu();
-            tg.showConfirm("Send bug report to kaviyarasan@mozhihub.com?", (ok) => {
-                if(ok) {
-                    const info = `Device: ${tg.platform} | Ver: 3.1`;
-                    tg.openLink(`mailto:kaviyarasan@mozhihub.com?subject=GamendBot Bug Report&body=Bug Details: \n\nSystem Info: ${info}`);
-                }
+            tg.showConfirm("Send report to kaviyarasan@mozhihub.com?", (ok) => {
+                if(ok) tg.openLink(`mailto:kaviyarasan@mozhihub.com?subject=Gamend Report&body=Platform: ${tg.platform}`);
             });
         }
 
-        // UI Functions
-        function showPopup(html) { document.getElementById('popup-content').innerHTML = html; document.getElementById('custom-popup').style.display = 'flex'; }
-        function hidePopup() { document.getElementById('custom-popup').style.display = 'none'; }
-        function toggleMenu(e) { e.stopPropagation(); const dd = document.getElementById('dropdown'); dd.style.display = (dd.style.display === 'flex') ? 'none' : 'flex'; }
-        function closeMenu() { document.getElementById('dropdown').style.display = 'none'; }
+        // --- NAVIGATION ---
+        function switchTab(index, id) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.game-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab')[index].classList.add('active');
+            document.getElementById(id).classList.add('active');
+            if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+        }
 
-        // Background Particles
+        // --- BACKGROUND PARTICLES ---
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
         let dots = [];
         function initCanvas() {
             canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            dots = [];
             for(let i=0; i<30; i++) dots.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: 1.5, vx: Math.random()-0.5, vy: Math.random()-0.5});
         }
         function draw() {
@@ -281,42 +308,26 @@
             });
             requestAnimationFrame(draw);
         }
+        window.onresize = initCanvas;
         initCanvas(); draw();
 
-        // Game Navigation
-        function switchTab(index, id) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.game-section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.tab')[index].classList.add('active');
-            document.getElementById(id).classList.add('active');
-            if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-        }
-
-        function openGame(url) {
-            document.getElementById('game-iframe').src = url;
-            document.getElementById('game-view').style.display = 'block';
-            tg.BackButton.show();
-        }
-
-        tg.onEvent('backButtonClicked', () => {
-            if (document.getElementById('game-view').style.display === 'block') {
-                document.getElementById('game-view').style.display = 'none';
-                document.getElementById('game-iframe').src = "";
-                tg.BackButton.show();
-            } else { tg.close(); }
-        });
-
+        // --- LOAD & SHARE ---
         window.onload = () => {
             document.getElementById('fill').style.width = '100%';
-            setTimeout(() => { document.getElementById('splash-screen').style.display = 'none'; }, 4000);
+            setTimeout(() => {
+                document.getElementById('splash-screen').style.display = 'none';
+                tg.BackButton.show();
+            }, 4000);
         };
 
         function shareBot() { tg.openTelegramLink("https://t.me/share/url?url=https://t.me/gamendbot&text=Play Best Arcade Games!"); }
         
-        // Firebase Online Sync
-        const firebaseConfig = { databaseURL: "https://game-3a2e9-default-rtdb.asia-southeast1.firebasedatabase.app" };
-        firebase.initializeApp(firebaseConfig);
-        firebase.database().ref('global_players').on('value', snap => { document.getElementById('online-val').innerText = snap.val() || 1; });
+        // --- FIREBASE SYNC (Original Config) ---
+        const firebaseConfig = { apiKey: "AIzaSyBb0upYoLF4_isVBfJUAMOEflMCgl5_5aE", databaseURL: "https://game-3a2e9-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "game-3a2e9" };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        firebase.database().ref('global_players').on('value', snap => { 
+            document.getElementById('online-val').innerText = snap.val() || 1; 
+        });
     </script>
 </body>
 </html>
