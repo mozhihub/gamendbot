@@ -142,11 +142,17 @@
             <div class="grid">
                 <div class="card" onclick="openGame('https://mozhihub.github.io/Paint/')"><img src="etc/paint.jpg" class="icon-img"><p>Paint Pro</p></div>
                 <div class="card" onclick="openGame('https://mozhihub.github.io/Earth-/')"><img src="etc/earth.jpg" class="icon-img"><p>Earth 3D</p></div>
+                <div class="card" onclick="openGame('https://mozhihub.github.io/Build-House/')"><img src="https://mozhihub.github.io/Build-House/logo.png" class="icon-img"><p>Build House</p></div>
             </div>
         </div>
         <div id="arcade" class="game-section"><div class="grid"><div class="card" onclick="openGame('https://mozhihub.github.io/Knife/')"><img src="etc/knife.jpg" class="icon-img"><p>Knife Hit</p></div></div></div>
         <div id="racing" class="game-section"><div class="grid"><div class="card" onclick="openGame('https://mozhihub.github.io/Mad-drive/')"><img src="etc/drive.jpg" class="icon-img"><p>Mad Drive</p></div></div></div>
-        <div id="puzzle" class="game-section"><div class="grid"><div class="card" onclick="openGame('https://mozhihub.github.io/Hexa/')"><img src="etc/hexa.jpg" class="icon-img"><p>Hexa Master</p></div></div></div>
+        <div id="puzzle" class="game-section">
+            <div class="grid">
+                <div class="card" onclick="openGame('https://mozhihub.github.io/Hexa/')"><img src="etc/hexa.jpg" class="icon-img"><p>Hexa Master</p></div>
+                <div class="card" onclick="openGame('https://mozhihub.github.io/Cube/')"><img src="https://mozhihub.github.io/Cube/logo.png" class="icon-img"><p>Cube Puzzle</p></div>
+            </div>
+        </div>
         <div id="social" class="game-section">
             <div class="grid">
                 <div class="card" onclick="openGame('https://mozhihub.github.io/insto/')"><img src="etc/insto.jpg" class="icon-img"><p>Insto</p></div>
@@ -212,7 +218,7 @@
             const content = `
                 <img src="https://mozhihub.github.io/Mad-drive/img/drivemad.png" class="popup-img">
                 <h2 style="font-weight: 900; color: var(--accent);">GAMEND PRO HUB</h2>
-                <p style="font-size: 14px; line-height: 1.6;">Welcome to the ultimate arcade destination on Telegram. <b>Version 3.0</b> brings ultra-high performance gaming with Zero Lag technology.</p>
+                <p style="font-size: 14px; line-height: 1.6;">Welcome to the ultimate arcade destination on Telegram. <b>Version 3.1</b> brings ultra-high performance gaming with Zero Lag technology.</p>
                 <ul style="text-align: left; font-size: 13px;">
                     <li>7 Premium Themes Support</li>
                     <li>Global Multiplayer Sync</li>
@@ -242,9 +248,9 @@
         // 4. Report Bug (Email with context)
         function logicReport(e) {
             e.stopPropagation(); closeMenu();
-            tg.showConfirm("Send bug report? Screenshots are recommended to be attached manually in the email app.", (ok) => {
+            tg.showConfirm("Send bug report to kaviyarasan@mozhihub.com?", (ok) => {
                 if(ok) {
-                    const info = `Device: ${tg.platform} | Ver: 3.0`;
+                    const info = `Device: ${tg.platform} | Ver: 3.1`;
                     tg.openLink(`mailto:kaviyarasan@mozhihub.com?subject=GamendBot Bug Report&body=Bug Details: \n\nSystem Info: ${info}`);
                 }
             });
