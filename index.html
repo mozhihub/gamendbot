@@ -107,6 +107,23 @@
     from { opacity: 0; transform: translateY(10px); } 
     to { opacity: 1; transform: translateY(0); } 
 }
+        /* Custom Report Popup Style */
+#report-modal {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+    display: none; align-items: center; justify-content: center; z-index: 99999;
+}
+.modal-card {
+    background: var(--bg); border: 1px solid var(--accent); border-radius: 25px;
+    width: 85%; max-width: 320px; padding: 25px; text-align: center;
+    box-shadow: 0 0 30px rgba(0, 242, 255, 0.2);
+}
+.modal-btn-row { display: flex; gap: 10px; margin-top: 20px; }
+.m-btn {
+    flex: 1; padding: 12px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer;
+}
+.m-send { background: var(--accent); color: #000; }
+.m-cancel { background: rgba(255,255,255,0.1); color: #fff; }
+        
 
     </style>
 </head>
@@ -331,25 +348,21 @@
         }
 
 
-                                        function logicReport(e) {
-            e.stopPropagation(); 
+                                                function logicReport(e) {
+            if(e) e.stopPropagation(); 
             closeMenu(); 
+            // Telegram popup-ku badhula namba custom modal-ai open pannuvom
+            document.getElementById('report-modal').style.display = 'flex';
+        }
 
-            // Telegram Native Popup Logic
-            tg.showPopup({
-                title: '🐞 Report Bug',
-                message: 'Do you want to report the bug in our Community Comment section?',
-                buttons: [
-                    {id: 'report', type: 'default', text: 'Report Now'}, // Direct Report Option
-                    {id: 'cancel', type: 'cancel', text: 'Cancel'}     // Cancel Option
-                ]
-            }, (buttonId) => {
-                if (buttonId === 'report') {
-                    // Direct Link to Telegram Channel Post Comment Section
-                    // User 'Report Now' click pannā nēra indha link open āgum
-                    tg.openTelegramLink("https://t.me/MozhiHub/54?comment=BUG_REPORT:"); 
-                }
-            });
+        function closeReportModal() {
+            document.getElementById('report-modal').style.display = 'none';
+        }
+
+        function goToReportChannel() {
+            closeReportModal();
+            // Direct link trigger
+            tg.openTelegramLink("https://t.me/MozhiHub/54?comment=BUG_REPORT:");
         }
 
 
@@ -408,5 +421,16 @@
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         firebase.database().ref('global_players').on('value', snap => { document.getElementById('online-val').innerText = snap.val() || 1; });
     </script>
+    <div id="report-modal">
+    <div class="modal-card">
+        <h3 style="color:var(--accent); margin-top:0;">🐞 Report Bug</h3>
+        <p style="font-size:14px; opacity:0.8;">Found a bug? Click "Report" to share it in our Community Comment section.</p>
+        <div class="modal-btn-row">
+            <button class="m-cancel" onclick="closeReportModal()">Cancel</button>
+            <button class="m-send" onclick="goToReportChannel()">Report</button>
+        </div>
+    </div>
+    </div>
+    
 </body>
 </html>
