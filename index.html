@@ -328,27 +328,25 @@
         }
 
 
-        function logicReport(e) {
+                function logicReport(e) {
             e.stopPropagation(); 
-            closeMenu(); // Menu-vai close pannidum
-            
-            // Telegram Native Confirm Popup
-            tg.showConfirm("Do you want to send a bug report to the developer?", (ok) => {
-                if (ok) {
-                    // Ippo Telegram native openLink use pannāma direct window location use pannuvōm
-                    // Idhu thān 200% Localhost matrum Mobile-la direct-ā mail app-ku pōgum
-                    const mailUrl = "mailto:kaviyarasan@mozhihub.com?subject=GamendBot%20Bug%20Report&body=Hi%20Kaviyarasan,%20I%20found%20a%20bug%20in%20Gamend%20Hub.";
-                    
-                    // Try direct trigger first
-                    window.location.href = mailUrl;
-                    
-                    // Safe backup for some browsers
-                    setTimeout(() => {
-                        tg.openLink(mailUrl);
-                    }, 100);
+            closeMenu(); 
+
+            tg.showPopup({
+                title: '🐞 Report Bug',
+                message: 'Do you want to send a bug report to the developer?',
+                buttons: [
+                    {id: 'send', type: 'default', text: 'Send Email'},
+                    {id: 'cancel', type: 'cancel', text: 'Cancel'}
+                ]
+            }, (buttonId) => {
+                if (buttonId === 'send') {
+                    // Telegram-oda native link opener - idhu thaan 100% safe way
+                    tg.openLink("mailto:kaviyarasan@mozhihub.com?subject=Gamend%20Bug%20Report");
                 }
             });
         }
+
 
 
 
