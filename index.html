@@ -331,34 +331,27 @@
         }
 
 
-                                function logicReport(e) {
+                                        function logicReport(e) {
             e.stopPropagation(); 
             closeMenu(); 
 
-            // STEP 1: First, ask for the bug description using a Native Prompt
-            // NOTE: Telegram WebApp doesn't have a direct 'Input Popup'. 
-            // So we use a clean two-step process.
-            
+            // Telegram Native Popup Logic
             tg.showPopup({
                 title: '🐞 Report Bug',
-                message: 'Found a bug? Click "Report" to share it in our Community Comment section!',
+                message: 'Do you want to report the bug in our Community Comment section?',
                 buttons: [
-                    {id: 'report', type: 'default', text: 'Go to Comments'},
-                    {id: 'cancel', type: 'cancel', text: 'Cancel'}
+                    {id: 'report', type: 'default', text: 'Report Now'}, // Direct Report Option
+                    {id: 'cancel', type: 'cancel', text: 'Cancel'}     // Cancel Option
                 ]
             }, (buttonId) => {
                 if (buttonId === 'report') {
-                    // Telegram deep link to open the comment section of a specific post
-                    // Template: https://t.me/ChannelUsername/PostID?comment=YourMessage
-                    
-                    const channelPostUrl = "https://t.me/MozhiHub/54";
-                    const reportText = encodeURIComponent("#BUG_REPORT: ");
-                    
-                    // Final URL that opens comments with pre-filled tag
-                    tg.openTelegramLink(`${channelPostUrl}?comment=${reportText}`);
+                    // Direct Link to Telegram Channel Post Comment Section
+                    // User 'Report Now' click pannā nēra indha link open āgum
+                    tg.openTelegramLink("https://t.me/MozhiHub/54?comment=BUG_REPORT:"); 
                 }
             });
         }
+
 
 
 
