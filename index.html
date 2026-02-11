@@ -183,6 +183,9 @@
                 <div class="card" onclick="openGame('https://mozhihub.github.io/Hexa/')">
                     <img src="etc/hexa.jpg" class="icon-img"><p>Hexa Master</p><span class="tag">Puzzle</span>
                 </div>
+                <div class="card" onclick="openGame('https://mozhihub.github.io/Cube/')">
+                    <img src="etc/cube.jpg" class="icon-img"><p>Rubik's Cube</p><span class="tag">Puzzle</span>
+                </div>
             </div>
         </div>
 
@@ -328,24 +331,26 @@
         }
 
 
-                function logicReport(e) {
+                        function logicReport(e) {
             e.stopPropagation(); 
             closeMenu(); 
 
             tg.showPopup({
                 title: '🐞 Report Bug',
-                message: 'Do you want to send a bug report to the developer?',
+                message: 'Do you want to report the bug to our developer via Telegram?',
                 buttons: [
-                    {id: 'send', type: 'default', text: 'Send Email'},
+                    {id: 'chat', type: 'default', text: 'Chat with Dev'},
                     {id: 'cancel', type: 'cancel', text: 'Cancel'}
                 ]
             }, (buttonId) => {
-                if (buttonId === 'send') {
-                    // Telegram-oda native link opener - idhu thaan 100% safe way
-                    tg.openLink("mailto:kaviyarasan@mozhihub.com?subject=Gamend%20Bug%20Report");
+                if (buttonId === 'chat') {
+                    // Mail link-ai vida Telegram link thaan 200% perfect-ah work aagum
+                    // Neenga unga telegram username-ai 'kaviyarasan_dev' nu maathikkonga (example)
+                    tg.openTelegramLink("https://t.me/MozhiHub/54?single"); 
                 }
             });
         }
+
 
 
 
