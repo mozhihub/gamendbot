@@ -331,22 +331,31 @@
         }
 
 
-                        function logicReport(e) {
+                                function logicReport(e) {
             e.stopPropagation(); 
             closeMenu(); 
 
+            // STEP 1: First, ask for the bug description using a Native Prompt
+            // NOTE: Telegram WebApp doesn't have a direct 'Input Popup'. 
+            // So we use a clean two-step process.
+            
             tg.showPopup({
                 title: '🐞 Report Bug',
-                message: 'Do you want to report the bug to our developer via Telegram?',
+                message: 'Found a bug? Click "Report" to share it in our Community Comment section!',
                 buttons: [
-                    {id: 'chat', type: 'default', text: 'Chat with Dev'},
+                    {id: 'report', type: 'default', text: 'Go to Comments'},
                     {id: 'cancel', type: 'cancel', text: 'Cancel'}
                 ]
             }, (buttonId) => {
-                if (buttonId === 'chat') {
-                    // Mail link-ai vida Telegram link thaan 200% perfect-ah work aagum
-                    // Neenga unga telegram username-ai 'kaviyarasan_dev' nu maathikkonga (example)
-                    tg.openTelegramLink("https://t.me/MozhiHub/54?single"); 
+                if (buttonId === 'report') {
+                    // Telegram deep link to open the comment section of a specific post
+                    // Template: https://t.me/ChannelUsername/PostID?comment=YourMessage
+                    
+                    const channelPostUrl = "https://t.me/MozhiHub/54";
+                    const reportText = encodeURIComponent("#BUG_REPORT: ");
+                    
+                    // Final URL that opens comments with pre-filled tag
+                    tg.openTelegramLink(`${channelPostUrl}?comment=${reportText}`);
                 }
             });
         }
