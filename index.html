@@ -299,11 +299,13 @@
                     Welcome to Gamend Pro, the ultimate cloud gaming destination on Telegram. Our platform is built using Zero-Lag technology to ensure the smoothest arcade experience.
                     <br><br>
                     Every game is optimized for mobile performance. We are constantly adding new titles to our racing, arcade, and puzzle sections.
+
+                    developer by: kaviyarasan@mozhihub.com
                 </div>
             `);
         }
 
-        // --- CONTACT ---
+                // --- CONTACT WITH SOCIAL LINKS ---
         function openContact() {
             showPopup(`
                 <h3 style="color:#00ff88; margin-top:0;">📞 FULL CONTACT</h3>
@@ -313,11 +315,13 @@
                         <p style="margin:5px 0;"><i class="fa fa-envelope" style="width:25px; color:var(--accent);"></i> info@mozhihub.com</p>
                     </div>
                     <p style="text-align:center; font-size:12px; margin:20px 0 10px;">Follow Socially</p>
-                    <div style="display:flex; justify-content:space-around; font-size:28px;">
-                        <i class="fab fa-telegram" style="color:#0088cc" onclick="tg.openTelegramLink('https://t.me/mozhihub')"></i>
-                        <i class="fab fa-instagram" style="color:#e1306c"></i>
-                        <i class="fab fa-youtube" style="color:#ff0000"></i>
-                        <i class="fab fa-twitter" style="color:#1da1f2"></i>
+                    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 20px; text-align:center; font-size:28px;">
+                        <i class="fab fa-instagram" style="color:#e1306c" onclick="tg.openLink('https://www.instagram.com/mozhi.hub')"></i>
+                        <i class="fab fa-facebook" style="color:#1877f2" onclick="tg.openLink('https://www.facebook.com/Mozhihub.in/')"></i>
+                        <i class="fab fa-linkedin" style="color:#0a66c2" onclick="tg.openLink('https://www.linkedin.com/company/mozhihub/')"></i>
+                        <i class="fab fa-at" style="color:#ffffff" onclick="tg.openLink('https://www.threads.com/@mozhi.hub')"></i>
+                        <i class="fab fa-twitter" style="color:#1da1f2" onclick="tg.openLink('https://x.com/mozhihub')"></i>
+                        <i class="fab fa-whatsapp" style="color:#25d366" onclick="tg.openLink('https://whatsapp.com/channel/0029VaSERj37DAX6TuAT2A0D')"></i>
                     </div>
                 </div>
             `);
