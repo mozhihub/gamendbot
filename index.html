@@ -447,6 +447,30 @@
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         firebase.database().ref('global_players').on('value', snap => { document.getElementById('online-val').innerText = snap.val() || 1; });
     </script>
+   <!-----------------adverdisment-------------->
+<script src="https://sad.adsgram.ai/js/adsgram-ad-sdk.js"></script>
+
+<script>
+    // உங்கள் Block ID-ஐ இங்கே கொடுத்து இனிஷியலைஸ் செய்யவும்
+    const AdController = window.Adsgram.init({ blockId: "23214" });
+
+    // ஆப் ஓபன் ஆனதும் விளம்பரம் காட்ட இந்த ஃபங்க்ஷன் உதவும்
+    function showAd() {
+        AdController.show().then((result) => {
+            // விளம்பரம் வெற்றிகரமாக காட்டப்பட்டது
+            console.log("Ad show success:", result);
+        }).catch((result) => {
+            // விளம்பரம் காட்டுவதில் ஏதேனும் பிழை (Error) இருந்தால்
+            console.error("Ad show error:", result);
+        });
+    }
+
+    // கேம் லோட் ஆனவுடன் விளம்பரம் தானாகத் தோன்றும்
+    window.onload = function() {
+        showAd();
+    };
+</script>
+  <!----------------add-end--------------->
     <div id="report-modal">
     <div class="modal-card">
         <h3 style="color:var(--accent); margin-top:0;">🐞 Report Bug</h3>
