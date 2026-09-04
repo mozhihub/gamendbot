@@ -27,143 +27,141 @@ const WEB3FORMS_KEY =
 /* ================= GAMES ================= */
 
 const GAMES = [
-
     {
-        id:"mad-drive",
-        title:"Mad Drive",
-        category:"Racing",
-        url:"https://html5games.com/Game/Mad-Drivin/",
-        image:"https://img.cdn.famobi.com/00000000-0000-0000-0000-000000000000/"
+        id: "mad-drive",
+        title: "Mad Drive",
+        category: "Racing",
+        url: "https://mozhihub.github.io/mad_drive/",
+        image: "etc/drive.jpg"
     },
 
     {
-        id:"knife-hit",
-        title:"Knife Hit",
-        category:"Arcade",
-        url:"https://html5games.com/Game/Knife-Hit/",
-        image:"https://img.cdn.famobi.com/00000000-0000-0000-0000-000000000000/"
+        id: "knife-hit",
+        title: "Knife Hit",
+        category: "Arcade",
+        url: "https://mozhihub.github.io/Knife/",
+        image: "etc/knife.jpg"
     },
 
     {
-        id:"shooting-bot",
-        title:"Shooting Bot",
-        category:"Shooting",
-        url:"https://play.famobi.com/",
-        image:"https://img.cdn.famobi.com/00000000-0000-0000-0000-000000000000/"
+        id: "shooting-bot",
+        title: "Shooting Bot",
+        category: "Arcade",
+        url: "https://mozhihub.github.io/Shooting-bot/",
+        image: "etc/shooter.jpg"
     },
 
     {
-        id:"hexa-master",
-        title:"Hexa Master",
-        category:"Puzzle",
-        url:"https://html5games.com/",
-        image:"https://dummyimage.com/800x500/15171c/ffffff&text=Hexa+Master"
+        id: "hexa-master",
+        title: "Hexa Master",
+        category: "Puzzle",
+        url: "https://mozhihub.github.io/Hexa/",
+        image: "etc/hexa.jpg"
     },
 
     {
-        id:"paint",
-        title:"Paint",
-        category:"Creative",
-        url:"https://html5games.com/",
-        image:"https://dummyimage.com/800x500/15171c/ffffff&text=Paint"
+        id: "paint",
+        title: "Paint",
+        category: "Creative",
+        url: "https://mozhihub.github.io/Paint/",
+        image: "etc/paint.jpg"
     },
 
     {
-        id:"earth",
-        title:"Earth",
-        category:"Adventure",
-        url:"https://html5games.com/",
-        image:"https://dummyimage.com/800x500/15171c/ffffff&text=Earth"
+        id: "earth",
+        title: "Earth",
+        category: "Creative",
+        url: "https://mozhihub.github.io/Earth-/",
+        image: "etc/earth.jpg"
     },
 
     {
-        id:"zoom",
-        title:"Zoom",
-        category:"Arcade",
-        url:"https://html5games.com/",
-        image:"https://dummyimage.com/800x500/15171c/ffffff&text=Zoom"
+        id: "zoom",
+        title: "ZOOM",
+        category: "Creative",
+        url: "https://mozhihub.github.io/Zoom/",
+        image: "etc/zoom.jpg"
     },
 
     {
-        id:"neon-shooter",
-        title:"Neon Shooter",
-        category:"Shooting",
-        url:"https://html5games.com/",
-        image:"https://dummyimage.com/800x500/15171c/ffffff&text=Neon+Shooter"
+        id: "neon-shooter",
+        title: "Neon Shooter",
+        category: "Arcade",
+        url: "https://mozhihub.github.io/Neon-shooter/",
+        image: "etc/neon.jpg"
     },
 
     {
-        id:"xox-online",
-        title:"XOX Online",
-        category:"Puzzle",
-        url:"https://html5games.com/",
-        image:"https://dummyimage.com/800x500/15171c/ffffff&text=XOX+Online"
+        id: "xox-online",
+        title: "XOX Online",
+        category: "Arcade",
+        url: "https://mozhihub.github.io/Xoxo-online/",
+        image: "etc/xox.jpg"
     },
 
     {
-        id:"insto",
-        title:"Insto",
-        category:"Arcade",
-        url:"https://html5games.com/",
-        image:"https://dummyimage.com/800x500/15171c/ffffff&text=Insto"
+        id: "insto",
+        title: "Insto",
+        category: "Social",
+        url: "https://mozhihub.github.io/insto/",
+        image: "etc/insto.jpg"
     },
 
     {
-        id:"cube",
-        title:"Cube",
-        category:"Puzzle",
-        url:"https://html5games.com/",
-        image:"https://dummyimage.com/800x500/15171c/ffffff&text=Cube"
+        id: "cube",
+        title: "Rubik's Cube",
+        category: "Puzzle",
+        url: "https://mozhihub.github.io/Cube/",
+        image: "etc/cube.jpg"
     },
 
     {
-        id:"word-scramble",
-        title:"Word Scramble",
-        category:"Word",
-        url:"https://html5games.com/",
-        image:"https://dummyimage.com/800x500/15171c/ffffff&text=Word+Scramble"
+        id: "word-scramble",
+        title: "Word Scramble",
+        category: "Puzzle",
+        url: "https://mozhihub.github.io/wordScramble/",
+        image: "etc/word.jpg"
     },
 
     {
-        id:"tetris",
-        title:"Tetris",
-        category:"Puzzle",
-        url:"https://html5games.com/",
-        image:"https://dummyimage.com/800x500/15171c/ffffff&text=Tetris"
+        id: "tetris",
+        title: "Tetris",
+        category: "Puzzle",
+        url: "https://mozhihub.github.io/Tetris/",
+        image: "etc/tetris.jpg"
     },
 
     {
-        id:"build-house",
-        title:"Build House",
-        category:"Creative",
-        url:"https://html5games.com/",
-        image:"https://dummyimage.com/800x500/15171c/ffffff&text=Build+House"
+        id: "build-house",
+        title: "Build House",
+        category: "Creative",
+        url: "https://mozhihub.github.io/Build-House/",
+        image: "etc/build.jpg"
     },
 
     {
-        id:"centipede",
-        title:"Centipede",
-        category:"Arcade",
-        url:"https://html5games.com/",
-        image:"https://dummyimage.com/800x500/15171c/ffffff&text=Centipede"
+        id: "centipede",
+        title: "Centipede",
+        category: "Creative",
+        url: "https://mozhihub.github.io/Centipede/",
+        image: "etc/cent.jpg"
     },
 
     {
-        id:"love-calculator",
-        title:"Love Calculator",
-        category:"Fun",
-        url:"https://html5games.com/",
-        image:"https://dummyimage.com/800x500/15171c/ffffff&text=Love+Calculator"
+        id: "love-calculator",
+        title: "Love Calculator",
+        category: "Fun",
+        url: "https://mozhihub.github.io/Love-Calculator/",
+        image: "etc/love.jpg"
     },
 
     {
-        id:"neon-vanguard",
-        title:"Neon Vanguard",
-        category:"Action",
-        url:"https://html5games.com/",
-        image:"https://dummyimage.com/800x500/15171c/ffffff&text=Neon+Vanguard"
+        id: "neon-vanguard",
+        title: "Neon Vanguard",
+        category: "Arcade",
+        url: "https://mozhihub.github.io/Neon-shooter/neon.html",
+        image: "etc/vanguard.jpg"
     }
-
 ];
 
 
