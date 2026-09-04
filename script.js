@@ -1,4 +1,13 @@
-const FIREBASE_CONFIG={apiKey:"AIzaSyBb0upYoLF4_isVBfJUAMOEflMCgl5_5aE",authDomain:"game-3a2e9.firebaseapp.com",databaseURL:"https://game-3a2e9-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"game-3a2e9",storageBucket:"game-3a2e9.firebasestorage.app",appId:""};
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyCaALqxdtEPCNxg5XPPG81T9853gOPO4qY",
+  authDomain: "server-41203.firebaseapp.com",
+  databaseURL: "https://server-41203-default-rtdb.firebaseio.com",
+  projectId: "server-41203",
+  storageBucket: "server-41203.firebasestorage.app",
+  messagingSenderId: "26278139327",
+  appId: "1:26278139327:web:db44a7e2d8d42d690abd0a",
+  measurementId: "G-T27MZ6PRPZ"
+};
 const GAMES=[["mad-drive","Mad Drive","Racing","https://mozhihub.github.io/mad_drive/","etc/drive.jpg"],["knife-hit","Knife Hit","Arcade","https://mozhihub.github.io/Knife/","etc/knife.jpg"],["shooting-bot","Shooting Bot","Action","https://mozhihub.github.io/Shooting-bot/","etc/shooter.jpg"],["hexa-master","Hexa Master","Puzzle","https://mozhihub.github.io/Hexa/","etc/hexa.jpg"],["paint","Paint","Creative","https://mozhihub.github.io/Paint/","etc/paint.jpg"],["earth","Earth","Simulation","https://mozhihub.github.io/Earth-/","etc/earth.jpg"],["zoom","Zoom","Puzzle","https://mozhihub.github.io/Zoom/","etc/zoom.jpg"],["neon-shooter","Neon Shooter","Action","https://mozhihub.github.io/Neon-shooter/","etc/neon.jpg"],["xox-online","XOX Online","Multiplayer","https://mozhihub.github.io/Xoxo-online/","etc/xox.jpg"],["insto","Insto","Social","https://mozhihub.github.io/insto/","etc/insto.jpg"],["cube","Cube","Arcade","https://mozhihub.github.io/Cube/","etc/cube.jpg"],["word-scramble","Word Scramble","Puzzle","https://mozhihub.github.io/wordScramble/","etc/word.jpg"],["tetris","Tetris","Arcade","https://mozhihub.github.io/Tetris/","etc/tetris.jpg"],["build-house","Build House","Creative","https://mozhihub.github.io/Build-House/","etc/build.jpg"],["centipede","Centipede","Arcade","https://mozhihub.github.io/Centipede/","etc/cent.jpg"],["love-calculator","Love Calculator","Fun","https://mozhihub.github.io/Love-Calculator/","etc/love.jpg"],["neon-vanguard","Neon Vanguard","Action","https://mozhihub.github.io/Neon-shooter/neon.html","etc/vanguard.jpg"]];
 let category="All",search="",sort="default",favs=load("gx_favs",[]),history=load("gx_history",[]),fb=null,msgUnsub=null,presUnsub=null;
 const $=s=>document.querySelector(s), esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
@@ -13,10 +22,10 @@ function renderHistory(){let a=history;$("#historyList").innerHTML=a.length?a.ma
 function stats(){$("#gameCount").textContent=GAMES.length;$("#favCount").textContent=favs.length;$("#historyCount").textContent=history.length;$("#infoGameCount").textContent=GAMES.length;$("#favSetting").textContent=`${favs.length} saved games` ;$("#historySetting").textContent=`${history.length} games`}
 function setCategory(c){category=c;sort="default";renderChips();renderGames();tap()}
 function toggleFav(id){favs=favs.includes(id)?favs.filter(x=>x!==id):[...favs,id];save("gx_favs",favs);stats();renderGames();toast(favs.includes(id)?"Added to favorites":"Removed from favorites","ok");tap()}
-function playGame(id){let g=GAMES.find(x=>x[0]===id);if(!g)return;history=[{id,at:Date.now()},...history.filter(x=>x.id!==id)].slice(0,40);save("gx_history",history);stats();renderHistory();$("#gameTitle").textContent=g[1];$("#gameMeta").textContent=`${g[2]} • GAMEND X`;$("#gameFrame").src=g[3];$("#gameModal").classList.add("show");document.body.style.overflow="hidden";tap();if(window.Telegram?.WebApp){try{Telegram.WebApp.expand()}catch(e){}}}
-function closeGame(){if(window.Telegram?.WebApp&&typeof Telegram.WebApp.exitFullscreen==="function"){try{Telegram.WebApp.exitFullscreen()}catch(e){}}$("#gameFrame").src="about:blank";$("#gameModal").classList.remove("show");$("#gameModal").classList.remove("telegram-fit");document.body.style.overflow=""}
+function playGame(id){let g=GAMES.find(x=>x[0]===id);if(!g)return;history=[{id,at:Date.now()},...history.filter(x=>x.id!==id)].slice(0,40);save("gx_history",history);stats();renderHistory();$("#gameTitle").textContent=g[1];$("#gameMeta").textContent=`${g[2]} • GAMEND X`;$("#gameFrame").src=g[3];$("#gameModal").classList.add("show");document.body.style.overflow="hidden";tap()}
+function closeGame(){$("#gameFrame").src="about:blank";$("#gameModal").classList.remove("show");document.body.style.overflow=""}
 function reloadGame(){$("#gameFrame").src=$("#gameFrame").src;tap()}
-async function fullscreenGame(){const frame=$("#gameFrame"),modal=$("#gameModal");if(window.Telegram?.WebApp){try{Telegram.WebApp.expand()}catch(e){}if(typeof Telegram.WebApp.requestFullscreen==="function"){try{await Telegram.WebApp.requestFullscreen();modal.classList.remove("telegram-fit");return}catch(e){}}modal.classList.add("telegram-fit");toast("Fit Screen mode enabled","ok");return}try{if(frame.requestFullscreen){await frame.requestFullscreen();return}if(frame.webkitRequestFullscreen){frame.webkitRequestFullscreen();return}}catch(e){}modal.classList.add("telegram-fit");toast("Fit Screen mode enabled","ok")}
+async function fullscreenGame(){try{await $("#gameFrame").requestFullscreen()}catch{toast("Fullscreen is unavailable","err")}}
 function scrollGames(){$("#gamesSection").scrollIntoView({behavior:"smooth"})}
 function goHome(e){if(e)e.preventDefault();window.scrollTo({top:0,behavior:"smooth"})}
 function showHistory(){$("#historySection").scrollIntoView({behavior:"smooth"})}
@@ -48,7 +57,31 @@ function submitFeedback(e){e.preventDefault();let msg=`GAMEND X FEEDBACK\nType: 
 function submitReport(e){e.preventDefault();let msg=`BUG_REPORT:${$("#bugGame").value}\n${$("#bugText").value}`;window.open("https://t.me/MozhiHub/54?comment="+encodeURIComponent(msg),"_blank");closeReport();toast("Bug report opened","ok");e.target.reset()}
 function navHome(b){document.querySelectorAll(".bottom-nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");goHome()}function navGames(b){document.querySelectorAll(".bottom-nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");scrollGames()}function navChat(b){document.querySelectorAll(".bottom-nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");openCommunity()}function navFav(b){document.querySelectorAll(".bottom-nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");showFavorites()}function navSettings(b){document.querySelectorAll(".bottom-nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");openSettings()}
 
-async function firebaseLoad(){if(fb)return true;try{const app=await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"),db=await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"),auth=await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js");const a=app.getApps().length?app.getApps()[0]:app.initializeApp(FIREBASE_CONFIG);fb={...db,...auth,app:a};return true}catch(e){console.warn("Firebase unavailable; normal site continues.",e);return false}}
+async function firebaseLoad(){
+  if(fb)return true;
+  try{
+    const app=await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js");
+    const db=await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js");
+    const auth=await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js");
+    const analytics=await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js");
+
+    const a=app.getApps().length?app.getApps()[0]:app.initializeApp(FIREBASE_CONFIG);
+
+    // Analytics is optional: it can fail in restricted WebViews without breaking the app.
+    let analyticsInstance=null;
+    try{
+      if(analytics.isSupported && await analytics.isSupported()){
+        analyticsInstance=analytics.getAnalytics(a);
+      }
+    }catch(e){console.warn("Firebase Analytics unavailable in this WebView.",e)}
+
+    fb={...db,...auth,analytics,analyticsInstance,app:a};
+    return true;
+  }catch(e){
+    console.warn("Firebase unavailable; normal site continues.",e);
+    return false;
+  }
+}
 function guest(){return load("gx_guest",null)}
 async function openCommunity(){closeSidebar();$("#communityModal").classList.add("show");let g=guest();if(!g){$("#guestGate").classList.remove("hidden");$("#chatArea").classList.add("hidden");return}$("#guestGate").classList.add("hidden");$("#chatArea").classList.remove("hidden");startChat(g)}
 function closeCommunity(){stopCommunity();$("#communityModal").classList.remove("show")}
@@ -58,6 +91,5 @@ function stopCommunity(){if(msgUnsub){try{msgUnsub()}catch{}msgUnsub=null}if(pre
 function renderMessages(a,g){$("#messages").innerHTML=a.map(m=>`<div class="msg ${m.uid===g.uid?"me":""}"><b>${esc(m.name)} ${esc(m.username||"")}</b><div class="bubble">${esc(m.text||"")}</div><small>${new Date(m.createdAt||Date.now()).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})}</small></div>`).join("");$("#messages").scrollTop=$("#messages").scrollHeight}
 async function sendMessage(){let i=$("#chatInput"),t=i.value.trim(),g=guest();if(!t||!g||!(await firebaseLoad()))return;try{let db=fb.getDatabase(fb.app);await fb.push(fb.ref(db,"community/messages"),{uid:g.uid,name:g.name,username:g.username,text:t.slice(0,500),createdAt:fb.serverTimestamp()});i.value="";tap()}catch{toast("Message failed","err")}}
 function leaveCommunity(){stopCommunity();localStorage.removeItem("gx_guest");$("#guestGate").classList.remove("hidden");$("#chatArea").classList.add("hidden");toast("Guest profile removed")}
-if(window.Telegram?.WebApp){try{Telegram.WebApp.onEvent("fullscreenFailed",()=>{$("#gameModal").classList.add("telegram-fit");toast("Fit Screen mode enabled","ok")});Telegram.WebApp.onEvent("fullscreenChanged",()=>{})}catch(e){}}
 function init(){applyPrefs();renderChips();renderGames();renderHistory();$("#searchInput").addEventListener("input",e=>{search=e.target.value.trim();renderGames()});$("#chatInput").addEventListener("keydown",e=>{if(e.key==="Enter")sendMessage()});if(window.Telegram?.WebApp){Telegram.WebApp.ready();Telegram.WebApp.expand()}$("#loaderText").textContent="Ready";setTimeout(()=>$("#loader").classList.add("loader-hide"),550)}
 document.addEventListener("DOMContentLoaded",init);window.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModals();closeSidebar()}});Object.assign(window,{toggleSidebar,closeSidebar,goHome,scrollGames,showFavorites,showHistory,openCommunity,openSettings,closeSettings,openFeedback,closeFeedback,openReport,closeReport,openInfo,closeInfo,shareBot,playGame,closeGame,reloadGame,fullscreenGame,setCategory,toggleFav,clearHistory,clearSearch,resetFilters,cycleSort,cycleTheme,setTheme,setMode,setMotion,setHaptic,resetLocal,submitFeedback,submitReport,sendMessage,joinCommunity,closeCommunity,leaveCommunity,navHome,navGames,navChat,navFav,navSettings});
