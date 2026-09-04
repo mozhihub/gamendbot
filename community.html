@@ -1,398 +1,1371 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#d50000">
+<meta charset="utf-8">
 
-  <title>GAMEND X — Community Chat Test</title>
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1,viewport-fit=cover"
+>
 
-  <link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet"
-  >
+<meta
+  name="theme-color"
+  content="#d50000"
+>
 
-  <style>
-    *{
-      box-sizing:border-box;
-      margin:0;
-      padding:0;
-      -webkit-tap-highlight-color:transparent;
-    }
+<title>GAMEND X — Community</title>
 
-    :root{
-      --primary:#d50000;
-      --primary2:#ff1744;
-      --bg:#0b0e14;
-      --card:#151a22;
-      --text:#f7f9fc;
-      --muted:#a8b2c0;
-      --border:#242b36;
-    }
+<link
+  href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+  rel="stylesheet"
+>
 
-    body{
-      min-height:100vh;
-      background:
-        radial-gradient(circle at 20% 10%,#d5000018,transparent 30%),
-        radial-gradient(circle at 80% 20%,#00d9ff0d,transparent 30%),
-        var(--bg);
-      color:var(--text);
-      font-family:Poppins,sans-serif;
-      display:flex;
-      justify-content:center;
-      padding:20px;
-    }
+<style>
 
-    .app{
-      width:min(600px,100%);
-      height:calc(100vh - 40px);
-      min-height:500px;
-      display:flex;
-      flex-direction:column;
-      background:rgba(21,26,34,.94);
-      border:1px solid var(--border);
-      border-radius:22px;
-      overflow:hidden;
-      box-shadow:0 30px 80px #0008;
-    }
+/* =========================================================
+   RESET
+========================================================= */
 
-    .header{
-      min-height:72px;
-      padding:12px 16px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      border-bottom:1px solid var(--border);
-      background:rgba(18,22,30,.9);
-      backdrop-filter:blur(18px);
-    }
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
 
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
+  -webkit-tap-highlight-color:transparent;
+}
 
-    .logo{
-      width:44px;
-      height:44px;
-      border-radius:13px;
-      display:grid;
-      place-items:center;
-      background:linear-gradient(135deg,var(--primary2),var(--primary));
-      color:#fff;
-      font-weight:900;
-    }
+html,
+body{
+  width:100%;
+  height:100%;
+}
 
-    .brand b{
-      display:block;
-      font-size:15px;
-    }
+body{
+  min-height:100vh;
 
-    .brand small{
-      display:block;
-      color:var(--muted);
-      font-size:9px;
-    }
+  background:
+    radial-gradient(
+      circle at 15% 5%,
+      #d5000018,
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 85% 15%,
+      #00d9ff0d,
+      transparent 32%
+    ),
+    #0b0e14;
 
-    .online{
-      display:flex;
-      align-items:center;
-      gap:6px;
-      color:#55e6a5;
-      font-size:9px;
-    }
+  color:#f7f9fc;
 
-    .online-dot{
-      width:7px;
-      height:7px;
-      border-radius:50%;
-      background:#35dc91;
-      box-shadow:0 0 10px #35dc91;
-    }
+  font-family:Poppins,sans-serif;
 
-    .join{
-      padding:30px 20px;
-      text-align:center;
-    }
+  overflow:hidden;
 
-    .join-icon{
-      font-size:48px;
-      margin-bottom:10px;
-    }
+  display:flex;
+  justify-content:center;
 
-    .join h2{
-      font-size:22px;
-    }
+  padding:20px;
+}
 
-    .join p{
-      color:var(--muted);
-      font-size:11px;
-      line-height:1.7;
-      margin:8px auto 18px;
-      max-width:400px;
-    }
+button,
+input{
+  font-family:Poppins,sans-serif;
+}
 
-    input{
-      width:100%;
-      height:46px;
-      padding:0 13px;
-      margin-bottom:9px;
-      border-radius:12px;
-      border:1px solid var(--border);
-      outline:none;
-      background:#10141b;
-      color:var(--text);
-      font-family:inherit;
-    }
+button{
+  border:0;
+  outline:0;
+}
 
-    input:focus{
-      border-color:var(--primary2);
-    }
+/* =========================================================
+   VARIABLES
+========================================================= */
 
-    button{
-      border:0;
-      cursor:pointer;
-      font-family:inherit;
-    }
+:root{
 
-    .primary{
-      width:100%;
-      min-height:46px;
-      border-radius:12px;
-      color:#fff;
-      font-weight:700;
-      background:linear-gradient(135deg,var(--primary2),var(--primary));
-      box-shadow:0 10px 30px #d5000030;
-    }
+  --primary:#d50000;
 
-    .error{
-      color:#ff6678;
-      font-size:9px;
-      margin-top:10px;
-      min-height:15px;
-    }
+  --primary2:#ff1744;
 
-    .chat{
-      flex:1;
-      min-height:0;
-      display:flex;
-      flex-direction:column;
-    }
+  --bg:#0b0e14;
 
-    .messages{
-      flex:1;
-      min-height:0;
-      overflow-y:auto;
-      padding:14px;
-    }
+  --card:#151a22;
 
-    .empty{
-      height:100%;
-      display:grid;
-      place-items:center;
-      text-align:center;
-      color:var(--muted);
-      font-size:11px;
-    }
+  --card2:#10141b;
 
-    .message{
-      max-width:88%;
-      margin:8px 0;
-    }
+  --text:#f7f9fc;
 
-    .message.me{
-      margin-left:auto;
-      text-align:right;
-    }
+  --muted:#a8b2c0;
 
-    .user{
-      font-size:9px;
-      font-weight:700;
-      margin-bottom:3px;
-      color:var(--primary2);
-    }
+  --border:#242b36;
 
-    .bubble{
-      display:inline-block;
-      max-width:100%;
-      padding:9px 12px;
-      border-radius:13px;
-      border:1px solid var(--border);
-      background:#ffffff08;
-      text-align:left;
-      font-size:11px;
-      line-height:1.5;
-      word-break:break-word;
-    }
+}
 
-    .me .bubble{
-      background:#d5000018;
-      border-color:#d5000040;
-    }
 
-    .time{
-      color:var(--muted);
-      font-size:7px;
-      margin-top:3px;
-    }
+/* =========================================================
+   APP
+========================================================= */
 
-    .composer{
-      display:flex;
-      gap:7px;
-      padding:10px;
-      border-top:1px solid var(--border);
-      background:#10141b;
-    }
+.app{
 
-    .composer input{
-      flex:1;
-      margin:0;
-    }
+  width:min(600px,100%);
 
-    .send{
-      width:48px;
-      min-width:48px;
-      border-radius:12px;
-      background:linear-gradient(135deg,var(--primary2),var(--primary));
-      color:#fff;
-      font-size:17px;
-    }
+  height:
+    calc(100vh - 40px);
 
-    .send:disabled{
-      opacity:.5;
-    }
+  height:
+    calc(100dvh - 40px);
 
-    .status{
-      min-height:24px;
-      padding:5px 12px;
-      color:var(--muted);
-      font-size:8px;
-      text-align:center;
-    }
+  min-height:500px;
 
-    .leave{
-      width:100%;
-      padding:9px;
-      color:var(--muted);
-      background:none;
-      font-size:9px;
-    }
+  display:flex;
 
-    .hidden{
-      display:none!important;
-    }
+  flex-direction:column;
 
-    @media(max-width:600px){
-      body{
-        padding:0;
-      }
+  overflow:hidden;
 
-      .app{
-        width:100%;
-        height:100dvh;
-        min-height:0;
-        border:0;
-        border-radius:0;
-      }
+  position:relative;
 
-      .header{
-        min-height:64px;
-      }
-    }
-  </style>
+  background:
+    rgba(21,26,34,.97);
+
+  border:
+    1px solid var(--border);
+
+  border-radius:22px;
+
+  box-shadow:
+    0 30px 80px #0009;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.header{
+
+  min-height:70px;
+
+  padding:10px 14px;
+
+  display:flex;
+
+  align-items:center;
+
+  gap:0;
+
+  flex:none;
+
+  background:
+    rgba(18,22,30,.96);
+
+  border-bottom:
+    1px solid var(--border);
+
+  backdrop-filter:
+    blur(18px);
+
+  -webkit-backdrop-filter:
+    blur(18px);
+
+  z-index:50;
+}
+
+
+/* =========================================================
+   BACK BUTTON
+========================================================= */
+
+.back-btn{
+
+  width:42px;
+
+  height:42px;
+
+  min-width:42px;
+
+  margin-right:10px;
+
+  display:grid;
+
+  place-items:center;
+
+  border-radius:12px;
+
+  background:
+    #ffffff08;
+
+  border:
+    1px solid var(--border);
+
+  color:#fff;
+
+  cursor:pointer;
+
+  transition:
+    transform .14s ease,
+    background .14s ease;
+}
+
+.back-btn:active{
+
+  transform:
+    scale(.90);
+
+  background:
+    #ffffff15;
+}
+
+.back-icon{
+
+  width:21px;
+
+  height:21px;
+
+  display:block;
+
+  fill:none;
+
+  stroke:currentColor;
+
+  stroke-width:2.5;
+
+  stroke-linecap:round;
+
+  stroke-linejoin:round;
+}
+
+
+/* =========================================================
+   BRAND
+========================================================= */
+
+.brand{
+
+  flex:1;
+
+  min-width:0;
+
+  display:flex;
+
+  align-items:center;
+
+  gap:10px;
+}
+
+.logo{
+
+  width:43px;
+
+  height:43px;
+
+  min-width:43px;
+
+  display:grid;
+
+  place-items:center;
+
+  border-radius:13px;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--primary2),
+      var(--primary)
+    );
+
+  color:#fff;
+
+  font-size:13px;
+
+  font-weight:900;
+}
+
+.brand-text{
+
+  min-width:0;
+}
+
+.brand-text b{
+
+  display:block;
+
+  font-size:14px;
+
+  line-height:1.3;
+
+  white-space:nowrap;
+
+  overflow:hidden;
+
+  text-overflow:ellipsis;
+}
+
+.brand-text small{
+
+  display:block;
+
+  margin-top:1px;
+
+  color:var(--muted);
+
+  font-size:8px;
+}
+
+
+/* =========================================================
+   ONLINE
+========================================================= */
+
+.online{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:6px;
+
+  white-space:nowrap;
+
+  color:#55e6a5;
+
+  font-size:8px;
+
+  font-weight:500;
+}
+
+.online-dot{
+
+  width:7px;
+
+  height:7px;
+
+  border-radius:50%;
+
+  background:#35dc91;
+
+  box-shadow:
+    0 0 10px #35dc91;
+}
+
+
+/* =========================================================
+   JOIN
+========================================================= */
+
+.join{
+
+  width:100%;
+
+  padding:32px 20px;
+
+  text-align:center;
+
+  overflow-y:auto;
+}
+
+.join-icon{
+
+  font-size:48px;
+
+  line-height:1;
+
+  margin-bottom:12px;
+}
+
+.join h2{
+
+  font-size:22px;
+
+  font-weight:700;
+}
+
+.join p{
+
+  max-width:400px;
+
+  margin:8px auto 18px;
+
+  color:var(--muted);
+
+  font-size:11px;
+
+  line-height:1.7;
+}
+
+input{
+
+  width:100%;
+
+  height:46px;
+
+  padding:
+    0 13px;
+
+  margin-bottom:9px;
+
+  border:
+    1px solid var(--border);
+
+  border-radius:12px;
+
+  outline:0;
+
+  background:#10141b;
+
+  color:var(--text);
+
+  font-size:12px;
+}
+
+input::placeholder{
+
+  color:#6c7685;
+}
+
+input:focus{
+
+  border-color:
+    var(--primary2);
+
+  box-shadow:
+    0 0 0 3px #ff174414;
+}
+
+.primary{
+
+  width:100%;
+
+  min-height:46px;
+
+  border-radius:12px;
+
+  color:#fff;
+
+  font-size:12px;
+
+  font-weight:700;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--primary2),
+      var(--primary)
+    );
+
+  box-shadow:
+    0 10px 30px #d5000030;
+
+  cursor:pointer;
+}
+
+.primary:disabled{
+
+  opacity:.55;
+}
+
+.error{
+
+  min-height:16px;
+
+  margin-top:10px;
+
+  color:#ff6678;
+
+  font-size:9px;
+}
+
+
+/* =========================================================
+   CHAT
+========================================================= */
+
+.chat{
+
+  flex:1;
+
+  min-height:0;
+
+  display:flex;
+
+  flex-direction:column;
+
+  position:relative;
+}
+
+.messages{
+
+  flex:1;
+
+  min-height:0;
+
+  overflow-x:hidden;
+
+  overflow-y:auto;
+
+  padding:12px;
+
+  overscroll-behavior:contain;
+
+  -webkit-overflow-scrolling:touch;
+}
+
+.messages::-webkit-scrollbar{
+
+  width:4px;
+}
+
+.messages::-webkit-scrollbar-thumb{
+
+  background:#ffffff18;
+
+  border-radius:20px;
+}
+
+
+/* =========================================================
+   EMPTY
+========================================================= */
+
+.empty{
+
+  height:100%;
+
+  display:grid;
+
+  place-items:center;
+
+  text-align:center;
+
+  color:var(--muted);
+
+  font-size:11px;
+
+  line-height:1.7;
+}
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+.message{
+
+  width:max-content;
+
+  max-width:90%;
+
+  margin:8px 0;
+
+  position:relative;
+
+  transform:
+    translateX(0);
+
+  transition:
+    transform .12s ease;
+
+  touch-action:pan-y;
+}
+
+.message.me{
+
+  margin-left:auto;
+
+  text-align:right;
+}
+
+
+/* =========================================================
+   USER
+========================================================= */
+
+.user{
+
+  padding:
+    0 4px;
+
+  margin-bottom:3px;
+
+  color:
+    var(--primary2);
+
+  font-size:9px;
+
+  font-weight:700;
+}
+
+
+/* =========================================================
+   BUBBLE
+========================================================= */
+
+.bubble{
+
+  display:inline-block;
+
+  max-width:100%;
+
+  padding:
+    9px 12px;
+
+  border:
+    1px solid var(--border);
+
+  border-radius:13px;
+
+  background:
+    #ffffff08;
+
+  color:var(--text);
+
+  text-align:left;
+
+  font-size:11px;
+
+  line-height:1.55;
+
+  word-break:break-word;
+
+  user-select:none;
+
+  -webkit-user-select:none;
+
+  cursor:pointer;
+
+  position:relative;
+}
+
+.message.me .bubble{
+
+  background:
+    #d5000018;
+
+  border-color:
+    #d5000040;
+}
+
+
+/* =========================================================
+   SWIPE REPLY ICON
+========================================================= */
+
+.swipe-reply-icon{
+
+  position:absolute;
+
+  right:auto;
+
+  left:-38px;
+
+  top:50%;
+
+  width:28px;
+
+  height:28px;
+
+  margin-top:-14px;
+
+  display:grid;
+
+  place-items:center;
+
+  border-radius:50%;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--primary2),
+      var(--primary)
+    );
+
+  color:#fff;
+
+  font-size:14px;
+
+  opacity:0;
+
+  transform:
+    scale(.7);
+
+  pointer-events:none;
+
+  transition:
+    opacity .1s ease,
+    transform .1s ease;
+}
+
+.message.swiping .swipe-reply-icon{
+
+  opacity:1;
+
+  transform:
+    scale(1);
+}
+
+
+/* =========================================================
+   REPLY INSIDE MESSAGE
+========================================================= */
+
+.reply-preview{
+
+  display:block;
+
+  width:100%;
+
+  max-width:100%;
+
+  margin-bottom:6px;
+
+  padding:
+    6px 8px;
+
+  border-left:
+    3px solid var(--primary2);
+
+  border-radius:7px;
+
+  background:#ffffff08;
+
+  overflow:hidden;
+
+  text-align:left;
+}
+
+.reply-preview strong{
+
+  display:block;
+
+  margin-bottom:2px;
+
+  color:var(--primary2);
+
+  font-size:8px;
+}
+
+.reply-preview span{
+
+  display:block;
+
+  color:var(--muted);
+
+  font-size:8px;
+
+  white-space:nowrap;
+
+  overflow:hidden;
+
+  text-overflow:ellipsis;
+}
+
+
+/* =========================================================
+   TIME
+========================================================= */
+
+.time{
+
+  padding:
+    0 4px;
+
+  margin-top:3px;
+
+  color:var(--muted);
+
+  font-size:7px;
+}
+
+
+/* =========================================================
+   COMPOSER AREA
+========================================================= */
+
+.composer-area{
+
+  flex:none;
+
+  background:
+    #10141b;
+
+  border-top:
+    1px solid var(--border);
+}
+
+
+/* =========================================================
+   REPLYING
+========================================================= */
+
+.replying{
+
+  display:none;
+
+  align-items:center;
+
+  gap:8px;
+
+  padding:
+    8px 10px;
+
+  background:
+    #151a22;
+
+  border-bottom:
+    1px solid var(--border);
+}
+
+.replying.show{
+
+  display:flex;
+}
+
+.reply-line{
+
+  width:3px;
+
+  height:32px;
+
+  min-width:3px;
+
+  border-radius:4px;
+
+  background:
+    var(--primary2);
+}
+
+.reply-info{
+
+  flex:1;
+
+  min-width:0;
+}
+
+.reply-info strong{
+
+  display:block;
+
+  color:
+    var(--primary2);
+
+  font-size:9px;
+}
+
+.reply-info span{
+
+  display:block;
+
+  color:
+    var(--muted);
+
+  font-size:8px;
+
+  white-space:nowrap;
+
+  overflow:hidden;
+
+  text-overflow:ellipsis;
+}
+
+.cancel-reply{
+
+  width:30px;
+
+  height:30px;
+
+  min-width:30px;
+
+  display:grid;
+
+  place-items:center;
+
+  border-radius:9px;
+
+  background:
+    #ffffff08;
+
+  color:#fff;
+
+  font-size:17px;
+
+  cursor:pointer;
+}
+
+
+/* =========================================================
+   COMPOSER
+========================================================= */
+
+.composer{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:7px;
+
+  padding:
+    10px;
+}
+
+.composer input{
+
+  flex:1;
+
+  min-width:0;
+
+  height:46px;
+
+  margin:0;
+}
+
+.send{
+
+  width:48px;
+
+  height:46px;
+
+  min-width:48px;
+
+  display:grid;
+
+  place-items:center;
+
+  border-radius:12px;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--primary2),
+      var(--primary)
+    );
+
+  color:#fff;
+
+  font-size:17px;
+
+  cursor:pointer;
+}
+
+.send:disabled{
+
+  opacity:.5;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.status{
+
+  min-height:23px;
+
+  padding:
+    4px 10px;
+
+  background:
+    #10141b;
+
+  color:
+    var(--muted);
+
+  text-align:center;
+
+  font-size:8px;
+}
+
+
+/* =========================================================
+   LEAVE
+========================================================= */
+
+.leave{
+
+  width:100%;
+
+  padding:
+    8px;
+
+  background:
+    transparent;
+
+  color:
+    var(--muted);
+
+  font-size:9px;
+
+  cursor:pointer;
+}
+
+.leave:active{
+
+  color:#fff;
+}
+
+
+/* =========================================================
+   TAG HIGHLIGHT
+========================================================= */
+
+.tagged-text{
+
+  color:
+    #ff526f;
+
+  font-weight:600;
+}
+
+
+/* =========================================================
+   HIDDEN
+========================================================= */
+
+.hidden{
+
+  display:none!important;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:600px){
+
+  body{
+
+    padding:0;
+
+  }
+
+  .app{
+
+    width:100%;
+
+    height:100vh;
+
+    height:100dvh;
+
+    min-height:0;
+
+    border:0;
+
+    border-radius:0;
+
+  }
+
+  .header{
+
+    min-height:64px;
+
+    padding:
+      9px 12px
+      9px
+      max(
+        12px,
+        env(safe-area-inset-left)
+      );
+
+  }
+
+  .messages{
+
+    padding:10px;
+
+  }
+
+  .message{
+
+    max-width:93%;
+
+  }
+
+  .composer-area{
+
+    padding-bottom:
+      env(safe-area-inset-bottom);
+
+  }
+
+  .leave{
+
+    padding-bottom:
+      max(
+        8px,
+        env(safe-area-inset-bottom)
+      );
+
+  }
+
+}
+
+
+/* =========================================================
+   SMALL PHONE
+========================================================= */
+
+@media(max-width:360px){
+
+  .online{
+
+    font-size:7px;
+
+  }
+
+  .logo{
+
+    width:40px;
+
+    height:40px;
+
+    min-width:40px;
+
+  }
+
+  .back-btn{
+
+    width:39px;
+
+    height:39px;
+
+    min-width:39px;
+
+  }
+
+}
+
+</style>
 </head>
+
 
 <body>
 
-  <div class="app">
 
-    <!-- HEADER -->
-    <header class="header">
-
-      <div class="brand">
-        <div class="logo">GX</div>
-
-        <div>
-          <b>Community Chat</b>
-          <small>GAMEND X</small>
-        </div>
-      </div>
-
-      <div class="online">
-        <span class="online-dot"></span>
-        <span id="onlineCount">0 online</span>
-      </div>
-
-    </header>
+<div class="app">
 
 
-    <!-- JOIN -->
-    <section id="joinBox" class="join">
+  <!-- =====================================================
+       HEADER
+  ====================================================== -->
 
-      <div class="join-icon">👨‍🚀</div>
-
-      <h2>Join Community</h2>
-
-      <p>
-        Enter a guest name and username.
-        No normal GAMEND X account is required.
-      </p>
-
-      <input
-        id="name"
-        maxlength="30"
-        placeholder="Your name"
-        autocomplete="name"
-      >
-
-      <input
-        id="username"
-        maxlength="20"
-        placeholder="@username"
-        autocomplete="username"
-      >
-
-      <button
-        id="joinBtn"
-        class="primary"
-      >
-        Join Community
-      </button>
-
-      <div
-        id="error"
-        class="error"
-      ></div>
-
-    </section>
+  <header class="header">
 
 
-    <!-- CHAT -->
-    <section
-      id="chatBox"
-      class="chat hidden"
+    <button
+      id="backBtn"
+      class="back-btn"
+      aria-label="Back"
+      type="button"
     >
 
-      <div
-        id="messages"
-        class="messages"
+      <svg
+        class="back-icon"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
       >
-        <div class="empty">
-          Loading messages…
+
+        <path
+          d="M19 12H5"
+        ></path>
+
+        <path
+          d="M12 19L5 12L12 5"
+        ></path>
+
+      </svg>
+
+    </button>
+
+
+    <div class="brand">
+
+
+      <div class="logo">
+        GX
+      </div>
+
+
+      <div class="brand-text">
+
+        <b>
+          Community Chat
+        </b>
+
+        <small>
+          GAMEND X
+        </small>
+
+      </div>
+
+
+    </div>
+
+
+    <div class="online">
+
+      <span
+        class="online-dot"
+      ></span>
+
+      <span
+        id="onlineCount"
+      >
+        0 online
+      </span>
+
+    </div>
+
+
+  </header>
+
+
+  <!-- =====================================================
+       JOIN
+  ====================================================== -->
+
+  <section
+    id="joinBox"
+    class="join"
+  >
+
+    <div class="join-icon">
+      👨‍🚀
+    </div>
+
+
+    <h2>
+      Join Community
+    </h2>
+
+
+    <p>
+      Enter a guest name and username.
+      No normal GAMEND X account is required.
+    </p>
+
+
+    <input
+      id="name"
+      maxlength="30"
+      placeholder="Your name"
+      autocomplete="name"
+    >
+
+
+    <input
+      id="username"
+      maxlength="20"
+      placeholder="@username"
+      autocomplete="username"
+    >
+
+
+    <button
+      id="joinBtn"
+      class="primary"
+      type="button"
+    >
+      Join Community
+    </button>
+
+
+    <div
+      id="error"
+      class="error"
+    ></div>
+
+
+  </section>
+
+
+  <!-- =====================================================
+       CHAT
+  ====================================================== -->
+
+  <section
+    id="chatBox"
+    class="chat hidden"
+  >
+
+
+    <div
+      id="messages"
+      class="messages"
+    >
+
+      <div class="empty">
+        Loading messages…
+      </div>
+
+    </div>
+
+
+    <div
+      id="status"
+      class="status"
+    >
+      Connecting…
+    </div>
+
+
+    <!-- ===================================================
+         COMPOSER AREA
+    ==================================================== -->
+
+    <div class="composer-area">
+
+
+      <!-- REPLY PREVIEW -->
+
+      <div
+        id="replying"
+        class="replying"
+      >
+
+        <div
+          class="reply-line"
+        ></div>
+
+
+        <div
+          class="reply-info"
+        >
+
+          <strong
+            id="replyName"
+          >
+            Replying
+          </strong>
+
+
+          <span
+            id="replyText"
+          >
+            Message
+          </span>
+
         </div>
+
+
+        <button
+          id="cancelReply"
+          class="cancel-reply"
+          type="button"
+          aria-label="Cancel reply"
+        >
+          ×
+        </button>
+
       </div>
 
 
-      <div
-        id="status"
-        class="status"
-      >
-        Connecting…
-      </div>
-
+      <!-- INPUT -->
 
       <div class="composer">
+
 
         <input
           id="messageInput"
@@ -401,790 +1374,2199 @@
           autocomplete="off"
         >
 
+
         <button
           id="sendBtn"
           class="send"
-          aria-label="Send message"
+          type="button"
+          aria-label="Send"
         >
           ➤
         </button>
 
+
       </div>
 
 
-      <button
-        id="leaveBtn"
-        class="leave"
-      >
-        Leave guest profile
-      </button>
-
-    </section>
-
-  </div>
+    </div>
 
 
-  <!-- Firebase -->
-  <script type="module">
-
-    import {
-      initializeApp,
-      getApps,
-      getApp
-    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-
-    import {
-      getAuth,
-      signInAnonymously,
-      onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-    import {
-      getDatabase,
-      ref,
-      push,
-      set,
-      onValue,
-      onDisconnect,
-      serverTimestamp,
-      query,
-      orderByChild,
-      limitToLast
-    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    <button
+      id="leaveBtn"
+      class="leave"
+      type="button"
+    >
+      Leave guest profile
+    </button>
 
 
-    /* =========================================================
-       FIREBASE CONFIG
-    ========================================================== */
+  </section>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCaALqxdtEPCNxg5XPPG81T9853gOPO4qY",
-      authDomain: "server-41203.firebaseapp.com",
-      databaseURL: "https://server-41203-default-rtdb.firebaseio.com",
-      projectId: "server-41203",
-      storageBucket: "server-41203.firebasestorage.app",
-      messagingSenderId: "26278139327",
-      appId: "1:26278139327:web:db44a7e2d8d42d690abd0a"
+
+</div>
+
+
+<!-- =========================================================
+     TELEGRAM
+========================================================= -->
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+
+<script type="module">
+
+/* =========================================================
+   FIREBASE IMPORTS
+========================================================= */
+
+import {
+
+  initializeApp,
+
+  getApps,
+
+  getApp
+
+}
+from
+"https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
+
+import {
+
+  getAuth,
+
+  signInAnonymously,
+
+  onAuthStateChanged
+
+}
+from
+"https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+
+import {
+
+  getDatabase,
+
+  ref,
+
+  push,
+
+  set,
+
+  onValue,
+
+  onDisconnect,
+
+  serverTimestamp,
+
+  query,
+
+  orderByChild,
+
+  limitToLast
+
+}
+from
+"https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+
+/* =========================================================
+   TELEGRAM INITIALIZE
+========================================================= */
+
+const tg =
+  window.Telegram?.WebApp || null;
+
+
+if(tg){
+
+  try{
+
+    tg.ready();
+
+    tg.expand();
+
+  }catch(error){
+
+    console.warn(
+      "Telegram:",
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   FIREBASE CONFIG
+========================================================= */
+
+const firebaseConfig = {
+
+  apiKey:
+    "AIzaSyCaALqxdtEPCNxg5XPPG81T9853gOPO4qY",
+
+  authDomain:
+    "server-41203.firebaseapp.com",
+
+  databaseURL:
+    "https://server-41203-default-rtdb.firebaseio.com",
+
+  projectId:
+    "server-41203",
+
+  storageBucket:
+    "server-41203.firebasestorage.app",
+
+  messagingSenderId:
+    "26278139327",
+
+  appId:
+    "1:26278139327:web:db44a7e2d8d42d690abd0a"
+
+};
+
+
+/* =========================================================
+   FIREBASE INIT
+========================================================= */
+
+const app =
+  getApps().length
+    ? getApp()
+    : initializeApp(
+        firebaseConfig
+      );
+
+
+const auth =
+  getAuth(app);
+
+
+const db =
+  getDatabase(app);
+
+
+/* =========================================================
+   DOM
+========================================================= */
+
+const backBtn =
+  document.getElementById(
+    "backBtn"
+  );
+
+const joinBox =
+  document.getElementById(
+    "joinBox"
+  );
+
+const chatBox =
+  document.getElementById(
+    "chatBox"
+  );
+
+const nameInput =
+  document.getElementById(
+    "name"
+  );
+
+const usernameInput =
+  document.getElementById(
+    "username"
+  );
+
+const joinBtn =
+  document.getElementById(
+    "joinBtn"
+  );
+
+const messagesBox =
+  document.getElementById(
+    "messages"
+  );
+
+const messageInput =
+  document.getElementById(
+    "messageInput"
+  );
+
+const sendBtn =
+  document.getElementById(
+    "sendBtn"
+  );
+
+const errorBox =
+  document.getElementById(
+    "error"
+  );
+
+const statusBox =
+  document.getElementById(
+    "status"
+  );
+
+const onlineCount =
+  document.getElementById(
+    "onlineCount"
+  );
+
+const leaveBtn =
+  document.getElementById(
+    "leaveBtn"
+  );
+
+const replying =
+  document.getElementById(
+    "replying"
+  );
+
+const replyName =
+  document.getElementById(
+    "replyName"
+  );
+
+const replyText =
+  document.getElementById(
+    "replyText"
+  );
+
+const cancelReply =
+  document.getElementById(
+    "cancelReply"
+  );
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let currentUser = null;
+
+let profile = null;
+
+let messagesUnsubscribe = null;
+
+let presenceUnsubscribe = null;
+
+let connectedUnsubscribe = null;
+
+let sending = false;
+
+let activeReply = null;
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHTML(value){
+
+  return String(
+    value ?? ""
+  )
+
+  .replaceAll(
+    "&",
+    "&amp;"
+  )
+
+  .replaceAll(
+    "<",
+    "&lt;"
+  )
+
+  .replaceAll(
+    ">",
+    "&gt;"
+  )
+
+  .replaceAll(
+    '"',
+    "&quot;"
+  )
+
+  .replaceAll(
+    "'",
+    "&#039;"
+  );
+
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+function setStatus(text){
+
+  statusBox.textContent =
+    text;
+
+}
+
+
+/* =========================================================
+   PROFILE
+========================================================= */
+
+function getStoredProfile(){
+
+  try{
+
+    return JSON.parse(
+      localStorage.getItem(
+        "gamend_guest"
+      )
+    );
+
+  }catch{
+
+    return null;
+
+  }
+
+}
+
+
+function saveProfile(data){
+
+  localStorage.setItem(
+    "gamend_guest",
+    JSON.stringify(data)
+  );
+
+}
+
+
+function clearProfile(){
+
+  localStorage.removeItem(
+    "gamend_guest"
+  );
+
+}
+
+
+/* =========================================================
+   BACK BUTTON
+========================================================= */
+
+function goBack(){
+
+  /*
+    IMPORTANT:
+    Never call Telegram.WebApp.close().
+  */
+
+  try{
+
+    /*
+      If community.html was opened
+      from index.html, history.back()
+      is the cleanest navigation.
+    */
+
+    if(
+      document.referrer &&
+      document.referrer.includes(
+        "index.html"
+      )
+    ){
+
+      window.history.back();
+
+      return;
+
+    }
+
+  }catch(error){
+
+    console.warn(error);
+
+  }
+
+
+  /*
+    Direct fallback.
+    replace() prevents community page
+    from remaining in history.
+  */
+
+  window.location.replace(
+    "index.html"
+  );
+
+}
+
+
+backBtn.addEventListener(
+  "click",
+  goBack
+);
+
+
+/* =========================================================
+   AUTHENTICATE
+========================================================= */
+
+async function authenticate(){
+
+  if(auth.currentUser){
+
+    currentUser =
+      auth.currentUser;
+
+    return currentUser;
+
+  }
+
+
+  setStatus(
+    "Connecting to Firebase…"
+  );
+
+
+  const result =
+    await signInAnonymously(
+      auth
+    );
+
+
+  currentUser =
+    result.user;
+
+
+  return currentUser;
+
+}
+
+
+/* =========================================================
+   JOIN COMMUNITY
+========================================================= */
+
+async function joinCommunity(){
+
+  errorBox.textContent =
+    "";
+
+
+  const name =
+    nameInput.value.trim();
+
+
+  let username =
+    usernameInput.value.trim();
+
+
+  if(
+    name.length < 2
+  ){
+
+    errorBox.textContent =
+      "Enter a valid name.";
+
+    return;
+
+  }
+
+
+  if(
+    username.startsWith("@")
+  ){
+
+    username =
+      username.substring(1);
+
+  }
+
+
+  if(
+    !/^[A-Za-z0-9_]{3,20}$/
+      .test(username)
+  ){
+
+    errorBox.textContent =
+      "Username must contain 3–20 letters, numbers or _.";
+
+    return;
+
+  }
+
+
+  joinBtn.disabled =
+    true;
+
+
+  joinBtn.textContent =
+    "Connecting…";
+
+
+  try{
+
+    const user =
+      await authenticate();
+
+
+    profile = {
+
+      name:name,
+
+      username:
+        "@" + username,
+
+      uid:
+        user.uid
+
     };
 
 
-    /* =========================================================
-       FIREBASE INIT
-    ========================================================== */
+    saveProfile(
+      profile
+    );
 
-    const app = getApps().length
-      ? getApp()
-      : initializeApp(firebaseConfig);
 
-    const auth = getAuth(app);
-    const db = getDatabase(app);
+    joinBox.classList.add(
+      "hidden"
+    );
 
 
-    /* =========================================================
-       DOM
-    ========================================================== */
+    chatBox.classList.remove(
+      "hidden"
+    );
 
-    const joinBox = document.getElementById("joinBox");
-    const chatBox = document.getElementById("chatBox");
 
-    const nameInput = document.getElementById("name");
-    const usernameInput = document.getElementById("username");
+    await startPresence();
 
-    const joinBtn = document.getElementById("joinBtn");
+    startMessages();
 
-    const messagesBox = document.getElementById("messages");
-    const messageInput = document.getElementById("messageInput");
-    const sendBtn = document.getElementById("sendBtn");
 
-    const errorBox = document.getElementById("error");
-    const statusBox = document.getElementById("status");
-    const onlineCount = document.getElementById("onlineCount");
+    messageInput.focus();
 
-    const leaveBtn = document.getElementById("leaveBtn");
+  }catch(error){
 
+    console.error(
+      error
+    );
 
-    /* =========================================================
-       STATE
-    ========================================================== */
 
-    let currentUser = null;
-    let profile = null;
+    errorBox.textContent =
+      error?.message ||
+      "Firebase connection failed.";
 
-    let messagesUnsubscribe = null;
-    let presenceUnsubscribe = null;
+  }finally{
 
-    let sending = false;
+    joinBtn.disabled =
+      false;
 
 
-    /* =========================================================
-       HELPERS
-    ========================================================== */
+    joinBtn.textContent =
+      "Join Community";
 
-    function escapeHTML(value){
+  }
 
-      return String(value ?? "")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
+}
 
-    }
 
+/* =========================================================
+   PRESENCE
+========================================================= */
 
-    function setStatus(text){
-      statusBox.textContent = text;
-    }
+async function startPresence(){
 
+  if(
+    !currentUser ||
+    !profile
+  ){
 
-    function getStoredProfile(){
+    return;
 
-      try{
-        return JSON.parse(
-          localStorage.getItem("gamend_guest")
-        );
-      }catch{
-        return null;
-      }
+  }
 
-    }
 
+  const uid =
+    currentUser.uid;
 
-    function saveProfile(data){
 
-      localStorage.setItem(
-        "gamend_guest",
-        JSON.stringify(data)
-      );
+  const presenceRef =
+    ref(
+      db,
+      "community/presence/" +
+      uid
+    );
 
-    }
 
+  /*
+    Firebase connection reference.
+  */
 
-    function clearProfile(){
+  const connectedRef =
+    ref(
+      db,
+      ".info/connected"
+    );
 
-      localStorage.removeItem("gamend_guest");
 
-    }
+  if(
+    connectedUnsubscribe
+  ){
 
+    connectedUnsubscribe();
 
-    /* =========================================================
-       AUTH
-    ========================================================== */
+  }
 
-    async function authenticate(){
 
-      if(auth.currentUser){
-        currentUser = auth.currentUser;
-        return currentUser;
-      }
+  connectedUnsubscribe =
+    onValue(
+      connectedRef,
+      async snapshot => {
 
-      setStatus("Connecting to Firebase…");
+        const connected =
+          snapshot.val() === true;
 
-      const result = await signInAnonymously(auth);
 
-      currentUser = result.user;
-
-      return currentUser;
-
-    }
-
-
-    /* =========================================================
-       JOIN COMMUNITY
-    ========================================================== */
-
-    async function joinCommunity(){
-
-      errorBox.textContent = "";
-
-      const name = nameInput.value.trim();
-
-      let username = usernameInput.value.trim();
-
-      if(name.length < 2){
-
-        errorBox.textContent =
-          "Enter a valid name.";
-
-        return;
-
-      }
-
-
-      if(username.startsWith("@")){
-        username = username.substring(1);
-      }
-
-
-      if(!/^[A-Za-z0-9_]{3,20}$/.test(username)){
-
-        errorBox.textContent =
-          "Username must contain 3–20 letters, numbers or _.";
-
-        return;
-
-      }
-
-
-      joinBtn.disabled = true;
-      joinBtn.textContent = "Connecting…";
-
-
-      try{
-
-        const user = await authenticate();
-
-        profile = {
-          name,
-          username: "@" + username,
-          uid: user.uid
-        };
-
-        saveProfile(profile);
-
-        joinBox.classList.add("hidden");
-        chatBox.classList.remove("hidden");
-
-        await startPresence();
-
-        startMessages();
-
-        messageInput.focus();
-
-      }catch(error){
-
-        console.error(error);
-
-        errorBox.textContent =
-          error?.message ||
-          "Firebase connection failed.";
-
-      }finally{
-
-        joinBtn.disabled = false;
-        joinBtn.textContent = "Join Community";
-
-      }
-
-    }
-
-
-    /* =========================================================
-       PRESENCE
-    ========================================================== */
-
-    async function startPresence(){
-
-      if(!currentUser) return;
-
-      const presenceRef = ref(
-        db,
-        "community/presence/" + currentUser.uid
-      );
-
-
-      await set(
-        presenceRef,
-        {
-          uid: currentUser.uid,
-          name: profile.name,
-          username: profile.username,
-          online: true,
-          lastSeen: serverTimestamp()
-        }
-      );
-
-
-      await onDisconnect(presenceRef).update({
-
-        online: false,
-        lastSeen: serverTimestamp()
-
-      });
-
-
-      if(presenceUnsubscribe){
-        presenceUnsubscribe();
-      }
-
-
-      const presenceRoot = ref(
-        db,
-        "community/presence"
-      );
-
-
-      presenceUnsubscribe = onValue(
-        presenceRoot,
-        snapshot => {
-
-          let count = 0;
-
-          snapshot.forEach(child => {
-
-            const value = child.val();
-
-            if(value && value.online === true){
-              count++;
-            }
-
-          });
-
-          onlineCount.textContent =
-            count + (count === 1 ? " online" : " online");
-
-        },
-        error => {
-
-          console.error(error);
-
-          onlineCount.textContent =
-            "— online";
-
-        }
-      );
-
-    }
-
-
-    /* =========================================================
-       REALTIME MESSAGES
-    ========================================================== */
-
-    function startMessages(){
-
-      if(messagesUnsubscribe){
-        messagesUnsubscribe();
-      }
-
-
-      const messagesRef = ref(
-        db,
-        "community/messages"
-      );
-
-
-      const messagesQuery = query(
-        messagesRef,
-        orderByChild("createdAt"),
-        limitToLast(100)
-      );
-
-
-      setStatus("Connected • Live chat");
-
-
-      messagesUnsubscribe = onValue(
-        messagesQuery,
-
-        snapshot => {
-
-          const list = [];
-
-          snapshot.forEach(child => {
-
-            const data = child.val();
-
-            if(data){
-              list.push({
-                id: child.key,
-                ...data
-              });
-            }
-
-          });
-
-
-          renderMessages(list);
-
-        },
-
-        error => {
-
-          console.error(
-            "Message listener error:",
-            error
-          );
+        if(!connected){
 
           setStatus(
-            "Unable to read messages: " +
-            error.message
+            "Reconnecting…"
           );
 
+          return;
+
         }
-      );
-
-    }
 
 
-    /* =========================================================
-       RENDER MESSAGES
-    ========================================================== */
+        /*
+          Every time Firebase reconnects,
+          re-register this user's presence.
+        */
 
-    function renderMessages(list){
+        try{
 
-      if(!list.length){
+          await onDisconnect(
+            presenceRef
+          ).set({
 
-        messagesBox.innerHTML = `
-          <div class="empty">
-            No messages yet.<br>
-            Be the first to say hello 👋
-          </div>
-        `;
+            uid:uid,
 
-        return;
+            name:
+              profile.name,
 
-      }
+            username:
+              profile.username,
 
+            online:false,
 
-      messagesBox.innerHTML = list.map(message => {
+            lastSeen:
+              serverTimestamp()
 
-        const mine =
-          message.uid === currentUser?.uid;
-
-
-        const time =
-          message.createdAt
-            ? new Date(message.createdAt)
-                .toLocaleTimeString(
-                  [],
-                  {
-                    hour:"2-digit",
-                    minute:"2-digit"
-                  }
-                )
-            : "now";
-
-
-        return `
-          <div class="message ${mine ? "me" : ""}">
-
-            <div class="user">
-              ${escapeHTML(message.name || "Guest")}
-              ${escapeHTML(message.username || "")}
-            </div>
-
-            <div class="bubble">
-              ${escapeHTML(message.text || "")}
-            </div>
-
-            <div class="time">
-              ${escapeHTML(time)}
-            </div>
-
-          </div>
-        `;
-
-      }).join("");
-
-
-      messagesBox.scrollTop =
-        messagesBox.scrollHeight;
-
-    }
-
-
-    /* =========================================================
-       SEND MESSAGE
-    ========================================================== */
-
-    async function sendMessage(){
-
-      if(sending) return;
-
-      const text =
-        messageInput.value.trim();
-
-
-      if(!text){
-        return;
-      }
-
-
-      if(!currentUser || !profile){
-
-        setStatus(
-          "Join the community first."
-        );
-
-        return;
-
-      }
-
-
-      sending = true;
-
-      sendBtn.disabled = true;
-
-      sendBtn.textContent = "…";
-
-
-      try{
-
-        const messagesRef =
-          ref(db,"community/messages");
-
-
-        await push(
-          messagesRef,
-          {
-            uid: currentUser.uid,
-            name: profile.name,
-            username: profile.username,
-            text: text.slice(0,500),
-            createdAt: serverTimestamp()
-          }
-        );
-
-
-        messageInput.value = "";
-
-        setStatus(
-          "Message sent • Live chat"
-        );
-
-        messageInput.focus();
-
-      }catch(error){
-
-        console.error(
-          "Send message error:",
-          error
-        );
-
-        setStatus(
-          "Message failed: " +
-          error.message
-        );
-
-      }finally{
-
-        sending = false;
-
-        sendBtn.disabled = false;
-
-        sendBtn.textContent = "➤";
-
-      }
-
-    }
-
-
-    /* =========================================================
-       LEAVE
-    ========================================================== */
-
-    async function leaveCommunity(){
-
-      try{
-
-        if(currentUser){
-
-          const presenceRef =
-            ref(
-              db,
-              "community/presence/" +
-              currentUser.uid
-            );
+          });
 
 
           await set(
             presenceRef,
             {
-              uid: currentUser.uid,
-              name: profile?.name || "Guest",
-              username: profile?.username || "",
-              online:false,
-              lastSeen:serverTimestamp()
+
+              uid:uid,
+
+              name:
+                profile.name,
+
+              username:
+                profile.username,
+
+              online:true,
+
+              lastSeen:
+                serverTimestamp()
+
             }
+          );
+
+
+          setStatus(
+            "Connected • Live chat"
+          );
+
+        }catch(error){
+
+          console.error(
+            "Presence update:",
+            error
           );
 
         }
 
-      }catch(error){
-
-        console.warn(error);
-
-      }
-
-
-      if(messagesUnsubscribe){
-        messagesUnsubscribe();
-        messagesUnsubscribe = null;
-      }
-
-
-      if(presenceUnsubscribe){
-        presenceUnsubscribe();
-        presenceUnsubscribe = null;
-      }
-
-
-      clearProfile();
-
-      profile = null;
-
-      joinBox.classList.remove("hidden");
-      chatBox.classList.add("hidden");
-
-      messageInput.value = "";
-
-      setStatus("Disconnected");
-
-    }
-
-
-    /* =========================================================
-       BUTTON EVENTS
-    ========================================================== */
-
-    joinBtn.addEventListener(
-      "click",
-      joinCommunity
-    );
-
-
-    sendBtn.addEventListener(
-      "click",
-      sendMessage
-    );
-
-
-    messageInput.addEventListener(
-      "keydown",
-      event => {
-
-        if(event.key === "Enter"){
-
-          event.preventDefault();
-
-          sendMessage();
-
-        }
-
       }
     );
 
 
-    leaveBtn.addEventListener(
-      "click",
-      leaveCommunity
+  /*
+    ONLINE COUNT.
+  */
+
+  if(
+    presenceUnsubscribe
+  ){
+
+    presenceUnsubscribe();
+
+  }
+
+
+  const presenceRoot =
+    ref(
+      db,
+      "community/presence"
     );
 
 
-    /* =========================================================
-       AUTO LOGIN FROM LOCAL PROFILE
-    ========================================================== */
+  presenceUnsubscribe =
+    onValue(
 
-    async function autoJoin(){
+      presenceRoot,
 
-      const stored =
-        getStoredProfile();
+      snapshot => {
 
-
-      if(!stored?.name || !stored?.username){
-        return;
-      }
+        let count = 0;
 
 
-      nameInput.value =
-        stored.name;
+        snapshot.forEach(
+          child => {
 
-      usernameInput.value =
-        stored.username;
-
-
-      try{
-
-        const user =
-          await authenticate();
+            const value =
+              child.val();
 
 
-        profile = {
-          name: stored.name,
-          username: stored.username,
-          uid: user.uid
-        };
+            if(
+              value?.online === true
+            ){
+
+              count++;
+
+            }
+
+          }
+        );
 
 
-        saveProfile(profile);
+        onlineCount.textContent =
+          count + " online";
 
-        joinBox.classList.add("hidden");
-        chatBox.classList.remove("hidden");
+      },
 
-        await startPresence();
+      error => {
 
-        startMessages();
-
-      }catch(error){
-
-        console.warn(
-          "Auto join failed:",
+        console.error(
+          "Online count:",
           error
         );
 
-        clearProfile();
+
+        onlineCount.textContent =
+          "— online";
 
       }
 
-    }
+    );
+
+}
 
 
-    /* =========================================================
-       AUTH STATE
-    ========================================================== */
+/* =========================================================
+   START MESSAGES
+========================================================= */
 
-    onAuthStateChanged(
-      auth,
-      user => {
+function startMessages(){
 
-        currentUser = user;
+  if(
+    messagesUnsubscribe
+  ){
 
-      }
+    messagesUnsubscribe();
+
+  }
+
+
+  const messagesRef =
+    ref(
+      db,
+      "community/messages"
     );
 
 
-    /* =========================================================
-       START
-    ========================================================== */
+  const messagesQuery =
+    query(
 
-    autoJoin();
+      messagesRef,
+
+      orderByChild(
+        "createdAt"
+      ),
+
+      limitToLast(100)
+
+    );
 
 
-    /* =========================================================
-       PAGE EXIT
-    ========================================================== */
+  messagesUnsubscribe =
+    onValue(
 
-    window.addEventListener(
-      "pagehide",
-      () => {
+      messagesQuery,
 
-        if(currentUser){
+      snapshot => {
 
-          const presenceRef =
-            ref(
-              db,
-              "community/presence/" +
-              currentUser.uid
-            );
+        const list = [];
 
-          set(
-            presenceRef,
-            {
-              uid: currentUser.uid,
-              name: profile?.name || "Guest",
-              username: profile?.username || "",
-              online:false,
-              lastSeen:serverTimestamp()
+
+        snapshot.forEach(
+          child => {
+
+            const data =
+              child.val();
+
+
+            if(data){
+
+              list.push({
+
+                id:
+                  child.key,
+
+                ...data
+
+              });
+
             }
-          ).catch(()=>{});
+
+          }
+        );
+
+
+        renderMessages(
+          list
+        );
+
+      },
+
+      error => {
+
+        console.error(
+          "Messages:",
+          error
+        );
+
+
+        setStatus(
+          "Unable to read messages"
+        );
+
+      }
+
+    );
+
+}
+
+
+/* =========================================================
+   TIME
+========================================================= */
+
+function formatTime(
+  timestamp
+){
+
+  if(!timestamp){
+
+    return "now";
+
+  }
+
+
+  try{
+
+    return new Date(
+      timestamp
+    ).toLocaleTimeString(
+      [],
+      {
+        hour:"2-digit",
+        minute:"2-digit"
+      }
+    );
+
+  }catch{
+
+    return "now";
+
+  }
+
+}
+
+
+/* =========================================================
+   RENDER MESSAGES
+========================================================= */
+
+function renderMessages(
+  list
+){
+
+  if(
+    !list.length
+  ){
+
+    messagesBox.innerHTML = `
+
+      <div class="empty">
+
+        No messages yet.<br>
+
+        Be the first to say hello 👋
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  messagesBox.innerHTML =
+    list.map(
+      message => {
+
+        const mine =
+          message.uid ===
+          currentUser?.uid;
+
+
+        let replyHTML =
+          "";
+
+
+        if(
+          message.replyTo
+        ){
+
+          replyHTML = `
+
+            <div class="reply-preview">
+
+              <strong>
+                ${escapeHTML(
+                  message.replyTo.username ||
+                  message.replyTo.name ||
+                  "Guest"
+                )}
+              </strong>
+
+              <span>
+                ${escapeHTML(
+                  message.replyTo.text ||
+                  ""
+                )}
+              </span>
+
+            </div>
+
+          `;
+
+        }
+
+
+        return `
+
+          <div
+            class="message ${mine ? "me" : ""}"
+            data-message-id="${escapeHTML(
+              message.id
+            )}"
+          >
+
+            <div
+              class="swipe-reply-icon"
+            >
+              ↩
+            </div>
+
+
+            <div class="user">
+
+              ${escapeHTML(
+                message.name ||
+                "Guest"
+              )}
+
+              ${escapeHTML(
+                message.username ||
+                ""
+              )}
+
+            </div>
+
+
+            <div
+              class="bubble"
+            >
+
+              ${replyHTML}
+
+              ${escapeHTML(
+                message.text ||
+                ""
+              )}
+
+            </div>
+
+
+            <div class="time">
+
+              ${escapeHTML(
+                formatTime(
+                  message.createdAt
+                )
+              )}
+
+            </div>
+
+          </div>
+
+        `;
+
+      }
+    ).join("");
+
+
+  /*
+    Attach touch handlers.
+  */
+
+  messagesBox
+    .querySelectorAll(
+      ".message"
+    )
+    .forEach(
+      element => {
+
+        const id =
+          element.dataset
+            .messageId;
+
+
+        const message =
+          list.find(
+            item =>
+              item.id === id
+          );
+
+
+        if(message){
+
+          setupMessageTouch(
+            element,
+            message
+          );
 
         }
 
       }
     );
 
-  </script>
+
+  /*
+    Keep latest message visible.
+  */
+
+  messagesBox.scrollTop =
+    messagesBox.scrollHeight;
+
+}
+
+
+/* =========================================================
+   TOUCH SYSTEM
+
+   NORMAL TAP
+      ↓
+   TAG USER
+
+   LEFT SWIPE
+      ↓
+   REPLY
+
+   RIGHT SWIPE
+      ↓
+   NOTHING
+========================================================= */
+
+function setupMessageTouch(
+  element,
+  message
+){
+
+  let startX = 0;
+
+  let startY = 0;
+
+  let currentX = 0;
+
+  let startTime = 0;
+
+  let swiping = false;
+
+  let moved = false;
+
+
+  element.addEventListener(
+    "touchstart",
+    event => {
+
+      if(
+        event.touches.length !== 1
+      ){
+
+        return;
+
+      }
+
+
+      const touch =
+        event.touches[0];
+
+
+      startX =
+        touch.clientX;
+
+
+      startY =
+        touch.clientY;
+
+
+      currentX =
+        startX;
+
+
+      startTime =
+        Date.now();
+
+
+      swiping =
+        false;
+
+
+      moved =
+        false;
+
+
+      element.style.transform =
+        "translateX(0)";
+
+    },
+    {
+      passive:true
+    }
+  );
+
+
+  element.addEventListener(
+    "touchmove",
+    event => {
+
+      if(
+        event.touches.length !== 1
+      ){
+
+        return;
+
+      }
+
+
+      const touch =
+        event.touches[0];
+
+
+      currentX =
+        touch.clientX;
+
+
+      const dx =
+        currentX -
+        startX;
+
+
+      const dy =
+        touch.clientY -
+        startY;
+
+
+      /*
+        Only horizontal movement
+        should activate swipe.
+      */
+
+      if(
+        Math.abs(dx) >
+        10
+        &&
+        Math.abs(dx) >
+        Math.abs(dy)
+      ){
+
+        moved =
+          true;
+
+      }
+
+
+      /*
+        LEFT SWIPE ONLY.
+
+        dx is negative.
+      */
+
+      if(
+        dx < -10 &&
+        Math.abs(dx) >
+        Math.abs(dy)
+      ){
+
+        swiping =
+          true;
+
+
+        const distance =
+          Math.min(
+            Math.abs(dx),
+            90
+          );
+
+
+        /*
+          Move left.
+        */
+
+        element.style.transform =
+          `translateX(-${distance}px)`;
+
+        element.classList.add(
+          "swiping"
+        );
+
+      }
+
+    },
+    {
+      passive:true
+    }
+  );
+
+
+  element.addEventListener(
+    "touchend",
+    event => {
+
+      const dx =
+        currentX -
+        startX;
+
+
+      const dy =
+        Math.abs(
+          event.changedTouches[0]
+            .clientY -
+          startY
+        );
+
+
+      const elapsed =
+        Date.now() -
+        startTime;
+
+
+      /*
+        LEFT SWIPE >= 55px
+        = REPLY
+      */
+
+      if(
+        swiping &&
+        dx <= -55 &&
+        Math.abs(dx) > dy &&
+        elapsed < 900
+      ){
+
+        element.style.transform =
+          "translateX(0)";
+
+
+        element.classList.remove(
+          "swiping"
+        );
+
+
+        startReply(
+          message
+        );
+
+
+        return;
+
+      }
+
+
+      /*
+        Reset after unsuccessful
+        swipe.
+      */
+
+      element.style.transform =
+        "translateX(0)";
+
+
+      element.classList.remove(
+        "swiping"
+      );
+
+
+      /*
+        NORMAL TAP
+
+        If movement was tiny,
+        TAG immediately.
+      */
+
+      if(
+        !moved &&
+        Math.abs(dx) < 12 &&
+        dy < 12 &&
+        elapsed < 600
+      ){
+
+        tagUser(
+          message
+        );
+
+      }
+
+    },
+    {
+      passive:true
+    }
+  );
+
+
+  /*
+    Also support mouse click for desktop.
+  */
+
+  element.addEventListener(
+    "click",
+    event => {
+
+      /*
+        Touch devices may generate
+        synthetic click after touch.
+
+        Ignore it here because
+        touchend already handled tag.
+      */
+
+      if(
+        "ontouchstart" in window
+      ){
+
+        return;
+
+      }
+
+
+      tagUser(
+        message
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   TAG USER
+========================================================= */
+
+function tagUser(
+  message
+){
+
+  let username =
+    message.username;
+
+
+  if(
+    !username
+  ){
+
+    username =
+      message.name
+        ? "@" +
+          message.name
+            .replace(
+              /\s+/g,
+              ""
+            )
+        : "@user";
+
+  }
+
+
+  /*
+    Make sure @ exists.
+  */
+
+  if(
+    !username.startsWith("@")
+  ){
+
+    username =
+      "@" + username;
+
+  }
+
+
+  const current =
+    messageInput.value;
+
+
+  /*
+    If the same tag is already
+    at the beginning, don't
+    duplicate it.
+  */
+
+  if(
+    current.trimStart()
+      .startsWith(
+        username
+      )
+  ){
+
+    messageInput.focus();
+
+    return;
+
+  }
+
+
+  if(
+    current.trim()
+  ){
+
+    messageInput.value =
+      username +
+      " " +
+      current;
+
+  }else{
+
+    messageInput.value =
+      username +
+      " ";
+
+  }
+
+
+  messageInput.focus();
+
+
+  messageInput.selectionStart =
+    messageInput.value.length;
+
+
+  messageInput.selectionEnd =
+    messageInput.value.length;
+
+
+  setStatus(
+    "Tagged " +
+    username
+  );
+
+}
+
+
+/* =========================================================
+   START REPLY
+========================================================= */
+
+function startReply(
+  message
+){
+
+  activeReply = {
+
+    id:
+      message.id,
+
+    uid:
+      message.uid ||
+      "",
+
+    name:
+      message.name ||
+      "Guest",
+
+    username:
+      message.username ||
+      "",
+
+    text:
+      message.text ||
+      ""
+
+  };
+
+
+  replyName.textContent =
+    "Replying to " +
+    (
+      message.username ||
+      message.name ||
+      "Guest"
+    );
+
+
+  replyText.textContent =
+    message.text ||
+    "";
+
+
+  replying.classList.add(
+    "show"
+  );
+
+
+  setStatus(
+    "Replying • Live chat"
+  );
+
+
+  messageInput.focus();
+
+}
+
+
+/* =========================================================
+   CANCEL REPLY
+========================================================= */
+
+function cancelActiveReply(){
+
+  activeReply =
+    null;
+
+
+  replying.classList.remove(
+    "show"
+  );
+
+
+  setStatus(
+    "Connected • Live chat"
+  );
+
+
+  messageInput.focus();
+
+}
+
+
+cancelReply.addEventListener(
+  "click",
+  cancelActiveReply
+);
+
+
+/* =========================================================
+   SEND MESSAGE
+========================================================= */
+
+async function sendMessage(){
+
+  if(
+    sending
+  ){
+
+    return;
+
+  }
+
+
+  const text =
+    messageInput.value.trim();
+
+
+  if(
+    !text
+  ){
+
+    return;
+
+  }
+
+
+  if(
+    !currentUser ||
+    !profile
+  ){
+
+    setStatus(
+      "Join the community first."
+    );
+
+    return;
+
+  }
+
+
+  sending =
+    true;
+
+
+  sendBtn.disabled =
+    true;
+
+
+  sendBtn.textContent =
+    "…";
+
+
+  try{
+
+    const messagesRef =
+      ref(
+        db,
+        "community/messages"
+      );
+
+
+    const messageData = {
+
+      uid:
+        currentUser.uid,
+
+      name:
+        profile.name,
+
+      username:
+        profile.username,
+
+      text:
+        text.slice(
+          0,
+          500
+        ),
+
+      createdAt:
+        serverTimestamp()
+
+    };
+
+
+    /*
+      Add reply information
+      only when reply mode exists.
+    */
+
+    if(
+      activeReply
+    ){
+
+      messageData.replyTo = {
+
+        id:
+          activeReply.id,
+
+        uid:
+          activeReply.uid,
+
+        name:
+          activeReply.name,
+
+        username:
+          activeReply.username,
+
+        text:
+          activeReply.text
+            .slice(
+              0,
+              200
+            )
+
+      };
+
+    }
+
+
+    await push(
+      messagesRef,
+      messageData
+    );
+
+
+    /*
+      Clear composer.
+    */
+
+    messageInput.value =
+      "";
+
+
+    activeReply =
+      null;
+
+
+    replying.classList.remove(
+      "show"
+    );
+
+
+    setStatus(
+      "Message sent • Live chat"
+    );
+
+
+    messageInput.focus();
+
+  }catch(error){
+
+    console.error(
+      "Send message:",
+      error
+    );
+
+
+    setStatus(
+      "Message failed: " +
+      error.message
+    );
+
+  }finally{
+
+    sending =
+      false;
+
+
+    sendBtn.disabled =
+      false;
+
+
+    sendBtn.textContent =
+      "➤";
+
+  }
+
+}
+
+
+/* =========================================================
+   SEND EVENTS
+========================================================= */
+
+sendBtn.addEventListener(
+  "click",
+  sendMessage
+);
+
+
+messageInput.addEventListener(
+  "keydown",
+  event => {
+
+    if(
+      event.key === "Enter"
+    ){
+
+      event.preventDefault();
+
+      sendMessage();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   JOIN EVENT
+========================================================= */
+
+joinBtn.addEventListener(
+  "click",
+  joinCommunity
+);
+
+
+/* =========================================================
+   LEAVE
+========================================================= */
+
+async function leaveCommunity(){
+
+  try{
+
+    if(
+      currentUser
+    ){
+
+      const presenceRef =
+        ref(
+          db,
+          "community/presence/" +
+          currentUser.uid
+        );
+
+
+      await set(
+        presenceRef,
+        {
+
+          uid:
+            currentUser.uid,
+
+          name:
+            profile?.name ||
+            "Guest",
+
+          username:
+            profile?.username ||
+            "",
+
+          online:false,
+
+          lastSeen:
+            serverTimestamp()
+
+        }
+      );
+
+    }
+
+  }catch(error){
+
+    console.warn(
+      error
+    );
+
+  }
+
+
+  if(
+    messagesUnsubscribe
+  ){
+
+    messagesUnsubscribe();
+
+    messagesUnsubscribe =
+      null;
+
+  }
+
+
+  if(
+    presenceUnsubscribe
+  ){
+
+    presenceUnsubscribe();
+
+    presenceUnsubscribe =
+      null;
+
+  }
+
+
+  if(
+    connectedUnsubscribe
+  ){
+
+    connectedUnsubscribe();
+
+    connectedUnsubscribe =
+      null;
+
+  }
+
+
+  clearProfile();
+
+
+  profile =
+    null;
+
+
+  activeReply =
+    null;
+
+
+  replying.classList.remove(
+    "show"
+  );
+
+
+  joinBox.classList.remove(
+    "hidden"
+  );
+
+
+  chatBox.classList.add(
+    "hidden"
+  );
+
+
+  messageInput.value =
+    "";
+
+
+  onlineCount.textContent =
+    "0 online";
+
+
+  setStatus(
+    "Disconnected"
+  );
+
+}
+
+
+leaveBtn.addEventListener(
+  "click",
+  leaveCommunity
+);
+
+
+/* =========================================================
+   AUTO JOIN
+========================================================= */
+
+async function autoJoin(){
+
+  const stored =
+    getStoredProfile();
+
+
+  if(
+    !stored?.name ||
+    !stored?.username
+  ){
+
+    return;
+
+  }
+
+
+  nameInput.value =
+    stored.name;
+
+
+  usernameInput.value =
+    stored.username;
+
+
+  try{
+
+    const user =
+      await authenticate();
+
+
+    profile = {
+
+      name:
+        stored.name,
+
+      username:
+        stored.username,
+
+      uid:
+        user.uid
+
+    };
+
+
+    saveProfile(
+      profile
+    );
+
+
+    joinBox.classList.add(
+      "hidden"
+    );
+
+
+    chatBox.classList.remove(
+      "hidden"
+    );
+
+
+    await startPresence();
+
+    startMessages();
+
+  }catch(error){
+
+    console.warn(
+      "Auto join failed:",
+      error
+    );
+
+
+    clearProfile();
+
+  }
+
+}
+
+
+/* =========================================================
+   AUTH STATE
+========================================================= */
+
+onAuthStateChanged(
+  auth,
+  user => {
+
+    currentUser =
+      user;
+
+  }
+);
+
+
+/* =========================================================
+   START
+========================================================= */
+
+autoJoin();
+
+
+/* =========================================================
+   PAGE EXIT
+========================================================= */
+
+window.addEventListener(
+  "pagehide",
+  () => {
+
+    /*
+      Do NOT call Telegram.close().
+      Firebase onDisconnect handles
+      unexpected page closing.
+    */
+
+    if(
+      currentUser
+    ){
+
+      const presenceRef =
+        ref(
+          db,
+          "community/presence/" +
+          currentUser.uid
+        );
+
+
+      set(
+        presenceRef,
+        {
+
+          uid:
+            currentUser.uid,
+
+          name:
+            profile?.name ||
+            "Guest",
+
+          username:
+            profile?.username ||
+            "",
+
+          online:false,
+
+          lastSeen:
+            serverTimestamp()
+
+        }
+      ).catch(
+        () => {}
+      );
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   KEYBOARD / RESIZE
+========================================================= */
+
+window.addEventListener(
+  "resize",
+  () => {
+
+    requestAnimationFrame(
+      () => {
+
+        messagesBox.scrollTop =
+          messagesBox.scrollHeight;
+
+      }
+    );
+
+  }
+);
+
+
+/* =========================================================
+   CLEANUP
+========================================================= */
+
+window.addEventListener(
+  "beforeunload",
+  () => {
+
+    if(
+      messagesUnsubscribe
+    ){
+
+      messagesUnsubscribe();
+
+    }
+
+    if(
+      presenceUnsubscribe
+    ){
+
+      presenceUnsubscribe();
+
+    }
+
+    if(
+      connectedUnsubscribe
+    ){
+
+      connectedUnsubscribe();
+
+    }
+
+  }
+);
+
+</script>
 
 </body>
 </html>
