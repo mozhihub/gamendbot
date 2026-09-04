@@ -7,15 +7,13 @@
 
 <meta name="theme-color" content="#d50000">
 
-<title>GAMEND X — Community Chat</title>
+<title>GAMEND X — Community</title>
 
 <link
-  href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
-  rel="stylesheet"
->
+href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+rel="stylesheet">
 
 <style>
-
 *{
   box-sizing:border-box;
   margin:0;
@@ -26,124 +24,131 @@
 :root{
   --primary:#d50000;
   --primary2:#ff1744;
-
-  --bg:#0b0e14;
+  --bg:#080b10;
+  --header:#11151d;
   --card:#151a22;
-
+  --card2:#10141b;
   --text:#f7f9fc;
-  --muted:#a8b2c0;
-
-  --border:#242b36;
-
-  --danger:#ff465d;
-  --success:#35dc91;
+  --muted:#9ca7b5;
+  --border:#252c37;
+  --green:#35dc91;
 }
 
 html,
 body{
   width:100%;
-  min-height:100%;
+  height:100%;
+  overflow:hidden;
 }
 
 body{
-  min-height:100vh;
-
   background:
     radial-gradient(
-      circle at 20% 10%,
-      #d5000018,
+      circle at 15% 5%,
+      rgba(213,0,0,.13),
       transparent 30%
     ),
     radial-gradient(
-      circle at 80% 20%,
-      #00d9ff0d,
+      circle at 90% 20%,
+      rgba(0,210,255,.05),
       transparent 30%
     ),
     var(--bg);
 
   color:var(--text);
-
   font-family:Poppins,sans-serif;
-
-  display:flex;
-  justify-content:center;
-
-  padding:20px;
-
-  overflow:hidden;
 }
 
 button,
-input{
+input,
+textarea{
   font-family:inherit;
 }
 
 button{
   border:0;
+  outline:none;
   cursor:pointer;
 }
 
-/* =========================================================
-   APP
-========================================================= */
-
-.app{
-  width:min(600px,100%);
-
-  height:calc(100vh - 40px);
-
-  min-height:500px;
-
-  display:flex;
-  flex-direction:column;
-
-  background:rgba(21,26,34,.94);
-
-  border:1px solid var(--border);
-
-  border-radius:22px;
-
-  overflow:hidden;
-
-  box-shadow:0 30px 80px #0008;
+.hidden{
+  display:none!important;
 }
 
-/* =========================================================
+/* =========================
+   APP
+========================= */
+
+.app{
+  width:100%;
+  height:100dvh;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+
+/* =========================
    HEADER
-========================================================= */
+========================= */
 
 .header{
-  min-height:72px;
-
-  padding:10px 14px;
+  height:68px;
+  min-height:68px;
 
   display:flex;
   align-items:center;
-  justify-content:space-between;
+  gap:10px;
 
+  padding:
+    calc(8px + env(safe-area-inset-top))
+    12px
+    8px
+    12px;
+
+  background:rgba(15,18,25,.96);
   border-bottom:1px solid var(--border);
 
-  background:rgba(18,22,30,.94);
-
-  backdrop-filter:blur(18px);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
 
   z-index:20;
 }
 
-.header-left{
-  display:flex;
-  align-items:center;
-  gap:9px;
-
-  min-width:0;
-}
-
-/* BACK BUTTON */
-
 .back-btn{
   width:42px;
   height:42px;
+  min-width:42px;
 
+  border-radius:13px;
+
+  display:grid;
+  place-items:center;
+
+  background:#ffffff08;
+  border:1px solid var(--border);
+
+  color:#fff;
+  font-size:23px;
+
+  transition:.15s;
+}
+
+.back-btn:active{
+  transform:scale(.92);
+  background:#ffffff12;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:0;
+  flex:1;
+}
+
+.logo{
+  width:42px;
+  height:42px;
   min-width:42px;
 
   border-radius:13px;
@@ -152,43 +157,8 @@ button{
   place-items:center;
 
   color:#fff;
-
-  background:#ffffff0a;
-
-  border:1px solid #ffffff10;
-
-  font-size:23px;
-
-  transition:
-    transform .15s ease,
-    background .15s ease;
-}
-
-.back-btn:active{
-  transform:scale(.90);
-  background:#ffffff18;
-}
-
-/* BRAND */
-
-.brand{
-  display:flex;
-  align-items:center;
-  gap:10px;
-
-  min-width:0;
-}
-
-.logo{
-  width:44px;
-  height:44px;
-
-  min-width:44px;
-
-  border-radius:13px;
-
-  display:grid;
-  place-items:center;
+  font-size:13px;
+  font-weight:900;
 
   background:
     linear-gradient(
@@ -197,43 +167,42 @@ button{
       var(--primary)
     );
 
-  color:#fff;
-
-  font-weight:900;
+  box-shadow:
+    0 8px 25px rgba(213,0,0,.28);
 }
 
-.brand-info{
+.brand-text{
   min-width:0;
 }
 
-.brand b{
+.brand-title{
   display:block;
 
-  font-size:15px;
+  font-size:14px;
+  font-weight:800;
 
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
 }
 
-.brand small{
+.brand-sub{
   display:block;
 
   color:var(--muted);
+  font-size:8px;
 
-  font-size:9px;
+  margin-top:1px;
 }
-
-/* ONLINE */
 
 .online{
   display:flex;
   align-items:center;
-  gap:6px;
+  gap:5px;
 
-  color:#55e6a5;
-
-  font-size:9px;
+  color:var(--green);
+  font-size:8px;
+  font-weight:600;
 
   white-space:nowrap;
 }
@@ -244,85 +213,94 @@ button{
 
   border-radius:50%;
 
-  background:#35dc91;
+  background:var(--green);
 
-  box-shadow:0 0 10px #35dc91;
+  box-shadow:
+    0 0 10px var(--green);
+
+  animation:pulse 1.8s infinite;
 }
 
-/* =========================================================
+@keyframes pulse{
+  0%,100%{
+    opacity:1;
+  }
+  50%{
+    opacity:.45;
+  }
+}
+
+/* =========================
    JOIN
-========================================================= */
+========================= */
 
 .join{
-  padding:30px 20px;
+  width:100%;
+  max-width:480px;
+
+  margin:auto;
+
+  padding:25px;
 
   text-align:center;
 }
 
 .join-icon{
-  font-size:48px;
-
-  margin-bottom:10px;
+  font-size:50px;
+  margin-bottom:8px;
 }
 
 .join h2{
-  font-size:22px;
+  font-size:23px;
+  font-weight:800;
 }
 
 .join p{
   color:var(--muted);
-
-  font-size:11px;
-
+  font-size:10px;
   line-height:1.7;
 
-  margin:8px auto 18px;
+  margin:
+    7px auto
+    18px;
 
-  max-width:400px;
+  max-width:380px;
 }
 
-input{
+.input{
   width:100%;
+  height:48px;
 
-  height:46px;
-
-  padding:0 13px;
-
+  padding:0 14px;
   margin-bottom:9px;
 
-  border-radius:12px;
-
-  border:1px solid var(--border);
-
-  outline:none;
-
+  color:var(--text);
   background:#10141b;
 
-  color:var(--text);
+  border:
+    1px solid var(--border);
 
-  font-family:inherit;
+  border-radius:13px;
+
+  outline:none;
 
   font-size:12px;
 }
 
-input:focus{
+.input:focus{
   border-color:var(--primary2);
 }
 
-/* =========================================================
-   PRIMARY BUTTON
-========================================================= */
-
-.primary{
+.primary-btn{
   width:100%;
+  height:48px;
 
-  min-height:46px;
-
-  border-radius:12px;
+  border-radius:13px;
 
   color:#fff;
 
-  font-weight:700;
+  font-size:12px;
+  font-weight:800;
 
   background:
     linear-gradient(
@@ -331,64 +309,65 @@ input:focus{
       var(--primary)
     );
 
-  box-shadow:0 10px 30px #d5000030;
+  box-shadow:
+    0 10px 30px rgba(213,0,0,.22);
 }
 
-.primary:disabled{
+.primary-btn:disabled{
   opacity:.55;
 }
 
 .error{
-  color:#ff6678;
+  min-height:17px;
+
+  color:#ff6475;
 
   font-size:9px;
 
-  margin-top:10px;
-
-  min-height:15px;
+  margin-top:8px;
 }
 
-/* =========================================================
+/* =========================
    CHAT
-========================================================= */
+========================= */
 
 .chat{
   flex:1;
-
   min-height:0;
 
   display:flex;
   flex-direction:column;
 }
 
-/* =========================================================
+/* =========================
    MESSAGES
-========================================================= */
+========================= */
 
 .messages{
   flex:1;
-
   min-height:0;
 
   overflow-y:auto;
+  overflow-x:hidden;
 
-  padding:14px;
-
-  overscroll-behavior:contain;
+  padding:
+    12px
+    10px
+    14px;
 
   scroll-behavior:smooth;
+
+  overscroll-behavior:contain;
 }
 
 .messages::-webkit-scrollbar{
-  width:4px;
+  width:3px;
 }
 
 .messages::-webkit-scrollbar-thumb{
   background:#ffffff18;
   border-radius:20px;
 }
-
-/* EMPTY */
 
 .empty{
   height:100%;
@@ -400,298 +379,341 @@ input:focus{
 
   color:var(--muted);
 
-  font-size:11px;
+  font-size:10px;
 }
 
-/* =========================================================
-   MESSAGE WRAPPER
-========================================================= */
+/* =========================
+   MESSAGE ROW
+========================= */
 
-.message-row{
+.message-wrap{
   position:relative;
 
   width:100%;
 
-  overflow:visible;
+  margin:
+    5px 0;
 
-  margin:8px 0;
+  touch-action:pan-y;
 }
 
-/* SWIPE REPLY ICON */
+.message{
+  position:relative;
 
-.reply-indicator{
+  max-width:88%;
+
+  display:flex;
+  flex-direction:column;
+
+  transition:
+    transform .18s ease;
+}
+
+.message.me{
+  margin-left:auto;
+  align-items:flex-end;
+}
+
+.message.other{
+  align-items:flex-start;
+}
+
+.user{
+  margin-bottom:3px;
+
+  color:var(--primary2);
+
+  font-size:8px;
+  font-weight:800;
+
+  user-select:none;
+}
+
+.other .user{
+  color:#b8c1ce;
+}
+
+.bubble{
+  position:relative;
+
+  max-width:100%;
+
+  padding:
+    9px
+    12px;
+
+  color:var(--text);
+
+  background:#ffffff08;
+
+  border:
+    1px solid var(--border);
+
+  border-radius:14px;
+
+  text-align:left;
+
+  font-size:11px;
+  line-height:1.55;
+
+  word-break:break-word;
+
+  user-select:text;
+}
+
+.me .bubble{
+  background:
+    linear-gradient(
+      135deg,
+      rgba(213,0,0,.22),
+      rgba(213,0,0,.08)
+    );
+
+  border-color:#d5000040;
+}
+
+.reply-box{
+  width:100%;
+
+  margin-bottom:5px;
+
+  padding:
+    6px 8px;
+
+  border-left:
+    3px solid var(--primary2);
+
+  border-radius:7px;
+
+  background:#ffffff08;
+
+  font-size:8px;
+
+  color:var(--muted);
+
+  overflow:hidden;
+}
+
+.reply-box strong{
+  display:block;
+
+  color:#ff6475;
+
+  font-size:8px;
+
+  margin-bottom:2px;
+}
+
+.reply-box span{
+  display:block;
+
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.edited{
+  color:var(--muted);
+
+  font-size:7px;
+  margin-left:3px;
+}
+
+.time{
+  color:#687384;
+
+  font-size:7px;
+
+  margin-top:3px;
+
+  user-select:none;
+}
+
+/* =========================
+   SWIPE REPLY ICON
+========================= */
+
+.reply-action{
   position:absolute;
-
-  left:6px;
 
   top:50%;
 
-  transform:
-    translateY(-50%)
-    scale(.7);
-
   width:34px;
   height:34px;
+
+  margin-top:-17px;
 
   border-radius:50%;
 
   display:grid;
   place-items:center;
 
-  background:#ffffff0d;
+  background:
+    linear-gradient(
+      135deg,
+      var(--primary2),
+      var(--primary)
+    );
 
   color:#fff;
+
+  font-size:16px;
 
   opacity:0;
 
+  transform:scale(.6);
+
+  transition:.15s;
+
   pointer-events:none;
 
-  font-size:17px;
-
-  transition:
-    opacity .1s ease,
-    transform .1s ease;
+  box-shadow:
+    0 6px 20px rgba(213,0,0,.3);
 }
 
-.message-row.swiping .reply-indicator{
+.reply-action.left{
+  right:5px;
+}
+
+.reply-action.right{
+  left:5px;
+}
+
+.message-wrap.replying .reply-action{
   opacity:1;
-
-  transform:
-    translateY(-50%)
-    scale(1);
+  transform:scale(1);
 }
 
-/* =========================================================
-   MESSAGE
-========================================================= */
-
-.message{
-  max-width:88%;
-
-  margin:8px 0;
-
-  position:relative;
-
-  touch-action:pan-y;
-
-  transform:translateX(0);
-
-  transition:transform .12s ease;
-}
-
-.message.me{
-  margin-left:auto;
-
-  text-align:right;
-}
-
-.user{
-  font-size:9px;
-
-  font-weight:700;
-
-  margin-bottom:3px;
-
-  color:var(--primary2);
-}
-
-.bubble{
-  display:inline-block;
-
-  max-width:100%;
-
-  padding:9px 12px;
-
-  border-radius:13px;
-
-  border:1px solid var(--border);
-
-  background:#ffffff08;
-
-  text-align:left;
-
-  font-size:11px;
-
-  line-height:1.5;
-
-  word-break:break-word;
-
-  white-space:pre-wrap;
-
-  user-select:text;
-}
-
-.me .bubble{
-  background:#d5000018;
-
-  border-color:#d5000040;
-}
-
-/* =========================================================
-   REPLY PREVIEW INSIDE MESSAGE
-========================================================= */
+/* =========================
+   REPLY PREVIEW
+========================= */
 
 .reply-preview{
-  display:block;
-
-  margin-bottom:6px;
-
-  padding:6px 8px;
-
-  border-left:3px solid var(--primary2);
-
-  border-radius:7px;
-
-  background:#00000022;
-
-  color:#bfc8d6;
-
-  text-align:left;
-
-  font-size:8px;
-
-  line-height:1.4;
-
-  max-width:100%;
-
-  overflow:hidden;
-}
-
-.reply-preview strong{
-  display:block;
-
-  color:#ff6075;
-
-  font-size:8px;
-
-  margin-bottom:2px;
-}
-
-.reply-preview span{
-  display:block;
-
-  white-space:nowrap;
-
-  overflow:hidden;
-
-  text-overflow:ellipsis;
-}
-
-/* TIME */
-
-.time{
-  color:var(--muted);
-
-  font-size:7px;
-
-  margin-top:3px;
-}
-
-/* EDITED */
-
-.edited{
-  margin-left:4px;
-
-  opacity:.65;
-}
-
-/* =========================================================
-   REPLY COMPOSER
-========================================================= */
-
-.reply-bar{
-  display:none;
-
+  display:flex;
   align-items:center;
-
   gap:8px;
 
-  padding:8px 10px;
+  min-height:48px;
 
-  background:#171c25;
+  padding:
+    7px
+    10px;
 
-  border-top:1px solid var(--border);
+  background:#121720;
+
+  border-top:
+    1px solid var(--border);
+
+  border-bottom:
+    1px solid var(--border);
 }
 
-.reply-bar.show{
-  display:flex;
+.reply-preview-line{
+  width:3px;
+  height:32px;
+
+  min-width:3px;
+
+  border-radius:5px;
+
+  background:
+    linear-gradient(
+      var(--primary2),
+      var(--primary)
+    );
 }
 
-.reply-bar-content{
-  flex:1;
-
+.reply-preview-content{
   min-width:0;
-
-  border-left:3px solid var(--primary2);
-
-  padding-left:8px;
+  flex:1;
 }
 
-.reply-bar-title{
+.reply-preview-name{
+  color:#ff6475;
+
   font-size:8px;
-
-  color:var(--primary2);
-
-  font-weight:700;
-
-  margin-bottom:2px;
+  font-weight:800;
 }
 
-.reply-bar-text{
+.reply-preview-text{
   color:var(--muted);
 
-  font-size:9px;
+  font-size:8px;
 
   white-space:nowrap;
-
   overflow:hidden;
-
   text-overflow:ellipsis;
 }
 
-.reply-cancel{
-  width:32px;
-  height:32px;
+.cancel-reply{
+  width:30px;
+  height:30px;
 
-  border-radius:9px;
+  border-radius:50%;
 
-  background:#ffffff0a;
+  background:#ffffff08;
 
   color:#fff;
 
   font-size:17px;
 }
 
-/* =========================================================
+/* =========================
    COMPOSER
-========================================================= */
+========================= */
 
 .composer{
   display:flex;
-
+  align-items:center;
   gap:7px;
 
-  padding:10px;
-
-  border-top:1px solid var(--border);
+  padding:
+    8px 9px
+    calc(8px + env(safe-area-inset-bottom));
 
   background:#10141b;
+
+  border-top:
+    1px solid var(--border);
 }
 
-.composer input{
+.message-input{
   flex:1;
 
-  margin:0;
+  width:100%;
+  height:45px;
 
-  min-width:0;
+  padding:
+    0 13px;
+
+  border-radius:13px;
+
+  border:
+    1px solid var(--border);
+
+  background:#151a22;
+
+  color:#fff;
+
+  outline:none;
+
+  font-size:11px;
+}
+
+.message-input:focus{
+  border-color:var(--primary2);
 }
 
 .send{
-  width:48px;
+  width:45px;
+  height:45px;
 
-  min-width:48px;
+  min-width:45px;
 
-  border-radius:12px;
+  border-radius:13px;
+
+  display:grid;
+  place-items:center;
 
   background:
     linear-gradient(
@@ -703,187 +725,167 @@ input:focus{
   color:#fff;
 
   font-size:17px;
+
+  box-shadow:
+    0 7px 22px rgba(213,0,0,.2);
 }
 
 .send:disabled{
-  opacity:.5;
+  opacity:.45;
 }
 
-/* =========================================================
-   STATUS
-========================================================= */
+/* =========================
+   STATUS / LEAVE
+========================= */
 
 .status{
-  min-height:24px;
+  min-height:20px;
 
-  padding:5px 12px;
+  padding:
+    3px 10px;
 
-  color:var(--muted);
+  color:#7e8998;
 
-  font-size:8px;
+  font-size:7px;
 
   text-align:center;
-}
 
-/* =========================================================
-   LEAVE
-========================================================= */
+  background:#0e1218;
+}
 
 .leave{
   width:100%;
 
-  padding:9px;
+  height:28px;
 
-  color:var(--muted);
+  background:#0e1218;
 
-  background:none;
+  color:#687384;
 
-  font-size:9px;
+  font-size:8px;
 }
 
-/* =========================================================
-   MODAL BACKDROP
-========================================================= */
+/* =========================
+   CONTEXT MENU
+========================= */
 
-.modal-backdrop{
+.context-menu{
+  position:fixed;
+
+  z-index:1000;
+
+  min-width:150px;
+
+  padding:5px;
+
+  border-radius:15px;
+
+  background:#171c25;
+
+  border:1px solid var(--border);
+
+  box-shadow:
+    0 18px 50px rgba(0,0,0,.55);
+
+  animation:menuIn .12s ease;
+}
+
+@keyframes menuIn{
+  from{
+    opacity:0;
+    transform:scale(.94);
+  }
+  to{
+    opacity:1;
+    transform:scale(1);
+  }
+}
+
+.context-title{
+  padding:
+    7px 9px;
+
+  color:#758092;
+
+  font-size:7px;
+  font-weight:700;
+}
+
+.menu-btn{
+  width:100%;
+
+  height:38px;
+
+  display:flex;
+  align-items:center;
+
+  gap:9px;
+
+  padding:
+    0 10px;
+
+  border-radius:10px;
+
+  background:transparent;
+
+  color:#fff;
+
+  font-size:10px;
+
+  text-align:left;
+}
+
+.menu-btn:active{
+  background:#ffffff0d;
+}
+
+.menu-btn.delete{
+  color:#ff6475;
+}
+
+/* =========================
+   EDIT MODAL
+========================= */
+
+.modal{
   position:fixed;
 
   inset:0;
 
-  z-index:100;
+  z-index:2000;
 
-  display:none;
-
+  display:flex;
   align-items:center;
-
   justify-content:center;
 
   padding:20px;
 
-  background:#00000099;
+  background:rgba(0,0,0,.72);
 
   backdrop-filter:blur(8px);
 }
 
-.modal-backdrop.show{
-  display:flex;
-}
+.modal-card{
+  width:min(430px,100%);
 
-/* =========================================================
-   ACTION POPUP
-========================================================= */
-
-.action-modal{
-  width:min(330px,100%);
-
-  background:#171c25;
-
-  border:1px solid var(--border);
+  padding:17px;
 
   border-radius:20px;
 
-  padding:18px;
+  background:#151a22;
 
-  box-shadow:0 25px 80px #000b;
+  border:
+    1px solid var(--border);
 
-  animation:
-    popupIn .18s ease;
-}
-
-@keyframes popupIn{
-  from{
-    opacity:0;
-    transform:translateY(12px) scale(.96);
-  }
-
-  to{
-    opacity:1;
-    transform:translateY(0) scale(1);
-  }
+  box-shadow:
+    0 30px 80px rgba(0,0,0,.55);
 }
 
 .modal-title{
   font-size:15px;
+  font-weight:800;
 
-  font-weight:700;
-
-  margin-bottom:4px;
-}
-
-.modal-subtitle{
-  font-size:9px;
-
-  color:var(--muted);
-
-  margin-bottom:14px;
-}
-
-.action-buttons{
-  display:flex;
-
-  flex-direction:column;
-
-  gap:8px;
-}
-
-.action-btn{
-  width:100%;
-
-  min-height:44px;
-
-  border-radius:12px;
-
-  display:flex;
-
-  align-items:center;
-
-  gap:10px;
-
-  padding:0 13px;
-
-  background:#ffffff08;
-
-  border:1px solid #ffffff0d;
-
-  color:#fff;
-
-  text-align:left;
-
-  font-size:11px;
-
-  font-weight:600;
-}
-
-.action-btn:active{
-  background:#ffffff14;
-}
-
-.action-btn.delete{
-  color:#ff6073;
-}
-
-.action-btn.cancel{
-  color:var(--muted);
-}
-
-/* =========================================================
-   EDIT MODAL
-========================================================= */
-
-.edit-modal{
-  width:min(430px,100%);
-
-  background:#171c25;
-
-  border:1px solid var(--border);
-
-  border-radius:20px;
-
-  padding:18px;
-
-  box-shadow:0 25px 80px #000b;
-
-  animation:popupIn .18s ease;
+  margin-bottom:11px;
 }
 
 .edit-textarea{
@@ -893,24 +895,20 @@ input:focus{
 
   resize:none;
 
-  padding:12px;
+  padding:11px;
 
-  margin:8px 0 12px;
+  border-radius:13px;
 
-  border-radius:12px;
-
-  border:1px solid var(--border);
-
-  outline:none;
+  border:
+    1px solid var(--border);
 
   background:#10141b;
 
   color:#fff;
 
-  font-family:inherit;
+  outline:none;
 
   font-size:11px;
-
   line-height:1.5;
 }
 
@@ -918,31 +916,33 @@ input:focus{
   border-color:var(--primary2);
 }
 
-.edit-actions{
+.modal-buttons{
   display:flex;
-
   gap:8px;
+
+  margin-top:10px;
 }
 
-.edit-actions button{
+.modal-btn{
   flex:1;
 
-  min-height:44px;
+  height:43px;
 
   border-radius:12px;
 
-  font-size:11px;
-
+  font-size:10px;
   font-weight:700;
 }
 
-.cancel-edit{
-  background:#ffffff0a;
+.cancel-btn{
+  background:#ffffff08;
+  color:#fff;
 
-  color:var(--muted);
+  border:
+    1px solid var(--border);
 }
 
-.done-edit{
+.done-btn{
   background:
     linear-gradient(
       135deg,
@@ -953,132 +953,136 @@ input:focus{
   color:#fff;
 }
 
-/* =========================================================
-   HIDDEN
-========================================================= */
+/* =========================
+   CONFIRM MODAL
+========================= */
 
-.hidden{
-  display:none!important;
+.confirm-text{
+  color:var(--muted);
+
+  font-size:10px;
+
+  line-height:1.6;
+
+  margin-bottom:12px;
 }
 
-/* =========================================================
-   MOBILE
-========================================================= */
+/* =========================
+   TOAST
+========================= */
 
-@media(max-width:600px){
+.toast{
+  position:fixed;
+
+  left:50%;
+  bottom:
+    calc(78px + env(safe-area-inset-bottom));
+
+  z-index:3000;
+
+  transform:
+    translateX(-50%)
+    translateY(20px);
+
+  padding:
+    9px 14px;
+
+  border-radius:12px;
+
+  background:#191f29;
+
+  border:
+    1px solid var(--border);
+
+  color:#fff;
+
+  font-size:9px;
+
+  opacity:0;
+  pointer-events:none;
+
+  transition:.2s;
+
+  white-space:nowrap;
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,.4);
+}
+
+.toast.show{
+  opacity:1;
+
+  transform:
+    translateX(-50%)
+    translateY(0);
+}
+
+/* =========================
+   DESKTOP
+========================= */
+
+@media(min-width:601px){
 
   body{
-    padding:0;
+    padding:20px;
   }
 
   .app{
-    width:100%;
+    max-width:600px;
+    height:calc(100dvh - 40px);
 
-    height:100dvh;
+    margin:auto;
 
-    min-height:0;
+    border:
+      1px solid var(--border);
 
-    border:0;
+    border-radius:22px;
 
-    border-radius:0;
+    box-shadow:
+      0 30px 90px rgba(0,0,0,.5);
   }
 
   .header{
-    min-height:64px;
-
-    padding:
-      8px
-      10px
-      8px
-      8px;
+    border-radius:
+      22px 22px 0 0;
   }
-
-  .back-btn{
-    width:39px;
-    height:39px;
-    min-width:39px;
-  }
-
-  .logo{
-    width:40px;
-    height:40px;
-    min-width:40px;
-  }
-
-  .brand b{
-    font-size:13px;
-  }
-
-  .online{
-    font-size:8px;
-  }
-
-  .messages{
-    padding:10px;
-  }
-
 }
-
-/* =========================================================
-   REDUCED MOTION
-========================================================= */
-
-@media(prefers-reduced-motion:reduce){
-
-  *{
-    animation:none!important;
-    transition:none!important;
-    scroll-behavior:auto!important;
-  }
-
-}
-
 </style>
 </head>
-
 
 <body>
 
 <div class="app">
 
-  <!-- =====================================================
-       HEADER
-  ====================================================== -->
-
+  <!-- HEADER -->
   <header class="header">
 
-    <div class="header-left">
+    <button
+      id="backBtn"
+      class="back-btn"
+      aria-label="Back">
+      ‹
+    </button>
 
-      <button
-        id="backBtn"
-        class="back-btn"
-        aria-label="Go back"
-      >
-        ‹
-      </button>
+    <div class="brand">
 
-      <div class="brand">
+      <div class="logo">
+        GX
+      </div>
 
-        <div class="logo">
-          GX
-        </div>
+      <div class="brand-text">
 
-        <div class="brand-info">
+        <span class="brand-title">
+          Community Chat
+        </span>
 
-          <b>
-            Community Chat
-          </b>
-
-          <small>
-            GAMEND X
-          </small>
-
-        </div>
+        <span class="brand-sub">
+          GAMEND X • LIVE COMMUNITY
+        </span>
 
       </div>
 
     </div>
-
 
     <div class="online">
 
@@ -1093,14 +1097,10 @@ input:focus{
   </header>
 
 
-  <!-- =====================================================
-       JOIN
-  ====================================================== -->
-
+  <!-- JOIN -->
   <section
     id="joinBox"
-    class="join"
-  >
+    class="join">
 
     <div class="join-icon">
       👨‍🚀
@@ -1111,52 +1111,46 @@ input:focus{
     </h2>
 
     <p>
-      Enter a guest name and username.
-      No normal GAMEND X account is required.
+      Enter your guest name and username
+      to join the GAMEND X community.
     </p>
 
     <input
       id="name"
+      class="input"
       maxlength="30"
       placeholder="Your name"
-      autocomplete="name"
-    >
+      autocomplete="name">
 
     <input
       id="username"
+      class="input"
       maxlength="20"
       placeholder="@username"
-      autocomplete="username"
-    >
+      autocomplete="username">
 
     <button
       id="joinBtn"
-      class="primary"
-    >
+      class="primary-btn">
       Join Community
     </button>
 
     <div
       id="error"
-      class="error"
-    ></div>
+      class="error">
+    </div>
 
   </section>
 
 
-  <!-- =====================================================
-       CHAT
-  ====================================================== -->
-
+  <!-- CHAT -->
   <section
     id="chatBox"
-    class="chat hidden"
-  >
+    class="chat hidden">
 
     <div
       id="messages"
-      class="messages"
-    >
+      class="messages">
 
       <div class="empty">
         Loading messages…
@@ -1165,34 +1159,29 @@ input:focus{
     </div>
 
 
-    <!-- REPLY BAR -->
-
     <div
-      id="replyBar"
-      class="reply-bar"
-    >
+      id="replyPreview"
+      class="reply-preview hidden">
 
-      <div class="reply-bar-content">
+      <div class="reply-preview-line"></div>
+
+      <div class="reply-preview-content">
 
         <div
-          id="replyBarTitle"
-          class="reply-bar-title"
-        >
-          Replying
+          id="replyPreviewName"
+          class="reply-preview-name">
         </div>
 
         <div
-          id="replyBarText"
-          class="reply-bar-text"
-        ></div>
+          id="replyPreviewText"
+          class="reply-preview-text">
+        </div>
 
       </div>
 
       <button
-        id="replyCancel"
-        class="reply-cancel"
-        aria-label="Cancel reply"
-      >
+        id="cancelReply"
+        class="cancel-reply">
         ×
       </button>
 
@@ -1201,8 +1190,7 @@ input:focus{
 
     <div
       id="status"
-      class="status"
-    >
+      class="status">
       Connecting…
     </div>
 
@@ -1211,16 +1199,15 @@ input:focus{
 
       <input
         id="messageInput"
+        class="message-input"
         maxlength="500"
         placeholder="Write a message…"
-        autocomplete="off"
-      >
+        autocomplete="off">
 
       <button
         id="sendBtn"
         class="send"
-        aria-label="Send message"
-      >
+        aria-label="Send">
         ➤
       </button>
 
@@ -1229,8 +1216,7 @@ input:focus{
 
     <button
       id="leaveBtn"
-      class="leave"
-    >
+      class="leave">
       Leave guest profile
     </button>
 
@@ -1239,104 +1225,59 @@ input:focus{
 </div>
 
 
-<!-- =========================================================
-     ACTION MODAL
-========================================================= -->
+<!-- CONTEXT MENU -->
 
 <div
-  id="actionBackdrop"
-  class="modal-backdrop"
->
+  id="contextMenu"
+  class="context-menu hidden">
 
-  <div
-    class="action-modal"
-    role="dialog"
-    aria-modal="true"
-  >
-
-    <div class="modal-title">
-      Message options
-    </div>
-
-    <div class="modal-subtitle">
-      Choose what you want to do
-    </div>
-
-    <div class="action-buttons">
-
-      <button
-        id="editMessageBtn"
-        class="action-btn"
-      >
-        ✏️
-        <span>Edit message</span>
-      </button>
-
-      <button
-        id="deleteMessageBtn"
-        class="action-btn delete"
-      >
-        🗑️
-        <span>Delete message</span>
-      </button>
-
-      <button
-        id="cancelActionBtn"
-        class="action-btn cancel"
-      >
-        Cancel
-      </button>
-
-    </div>
-
+  <div class="context-title">
+    YOUR MESSAGE
   </div>
+
+  <button
+    id="editMenuBtn"
+    class="menu-btn">
+    ✏️ Edit message
+  </button>
+
+  <button
+    id="deleteMenuBtn"
+    class="menu-btn delete">
+    🗑️ Delete message
+  </button>
 
 </div>
 
 
-<!-- =========================================================
-     EDIT MODAL
-========================================================= -->
+<!-- EDIT MODAL -->
 
 <div
-  id="editBackdrop"
-  class="modal-backdrop"
->
+  id="editModal"
+  class="modal hidden">
 
-  <div
-    class="edit-modal"
-    role="dialog"
-    aria-modal="true"
-  >
+  <div class="modal-card">
 
     <div class="modal-title">
-      Edit message
-    </div>
-
-    <div class="modal-subtitle">
-      Update your message and tap Done.
+      Edit Message
     </div>
 
     <textarea
       id="editTextarea"
       class="edit-textarea"
-      maxlength="500"
-      spellcheck="true"
-    ></textarea>
+      maxlength="500"></textarea>
 
-    <div class="edit-actions">
+    <div class="modal-buttons">
 
       <button
-        id="cancelEditBtn"
-        class="cancel-edit"
-      >
+        id="editCancel"
+        class="modal-btn cancel-btn">
         Cancel
       </button>
 
       <button
-        id="doneEditBtn"
-        class="done-edit"
-      >
+        id="editDone"
+        class="modal-btn done-btn">
         Done
       </button>
 
@@ -1347,42 +1288,34 @@ input:focus{
 </div>
 
 
-<!-- =========================================================
-     DELETE CONFIRMATION
-========================================================= -->
+<!-- DELETE MODAL -->
 
 <div
-  id="deleteBackdrop"
-  class="modal-backdrop"
->
+  id="deleteModal"
+  class="modal hidden">
 
-  <div
-    class="action-modal"
-    role="dialog"
-    aria-modal="true"
-  >
+  <div class="modal-card">
 
     <div class="modal-title">
-      Delete message?
+      Delete Message?
     </div>
 
-    <div class="modal-subtitle">
-      This action cannot be undone.
+    <div class="confirm-text">
+      Are you sure you want to permanently
+      delete this message?
     </div>
 
-    <div class="edit-actions">
+    <div class="modal-buttons">
 
       <button
-        id="cancelDeleteBtn"
-        class="cancel-edit"
-      >
+        id="deleteCancel"
+        class="modal-btn cancel-btn">
         Cancel
       </button>
 
       <button
-        id="confirmDeleteBtn"
-        class="done-edit"
-      >
+        id="deleteConfirm"
+        class="modal-btn done-btn">
         Delete
       </button>
 
@@ -1393,11 +1326,17 @@ input:focus{
 </div>
 
 
-<!-- =========================================================
-     FIREBASE
-========================================================= -->
+<div
+  id="toast"
+  class="toast">
+</div>
+
 
 <script type="module">
+
+/* =====================================================
+   FIREBASE IMPORTS
+===================================================== */
 
 import {
   initializeApp,
@@ -1407,7 +1346,6 @@ import {
 from
 "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 
-
 import {
   getAuth,
   signInAnonymously,
@@ -1415,7 +1353,6 @@ import {
 }
 from
 "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
 
 import {
   getDatabase,
@@ -1435,9 +1372,9 @@ from
 "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 
-/* =========================================================
+/* =====================================================
    FIREBASE CONFIG
-========================================================= */
+===================================================== */
 
 const firebaseConfig = {
 
@@ -1461,31 +1398,31 @@ const firebaseConfig = {
 
   appId:
     "1:26278139327:web:db44a7e2d8d42d690abd0a"
-
 };
 
 
-/* =========================================================
+/* =====================================================
    FIREBASE INIT
-========================================================= */
+===================================================== */
 
 const app =
   getApps().length
     ? getApp()
     : initializeApp(firebaseConfig);
 
-
 const auth =
   getAuth(app);
-
 
 const db =
   getDatabase(app);
 
 
-/* =========================================================
+/* =====================================================
    DOM
-========================================================= */
+===================================================== */
+
+const backBtn =
+  document.getElementById("backBtn");
 
 const joinBox =
   document.getElementById("joinBox");
@@ -1502,8 +1439,17 @@ const usernameInput =
 const joinBtn =
   document.getElementById("joinBtn");
 
+const errorBox =
+  document.getElementById("error");
+
 const messagesBox =
   document.getElementById("messages");
+
+const onlineCount =
+  document.getElementById("onlineCount");
+
+const statusBox =
+  document.getElementById("status");
 
 const messageInput =
   document.getElementById("messageInput");
@@ -1511,94 +1457,64 @@ const messageInput =
 const sendBtn =
   document.getElementById("sendBtn");
 
-const errorBox =
-  document.getElementById("error");
-
-const statusBox =
-  document.getElementById("status");
-
-const onlineCount =
-  document.getElementById("onlineCount");
-
 const leaveBtn =
   document.getElementById("leaveBtn");
 
-const backBtn =
-  document.getElementById("backBtn");
+const replyPreview =
+  document.getElementById("replyPreview");
 
+const replyPreviewName =
+  document.getElementById("replyPreviewName");
 
-/* =========================================================
-   REPLY DOM
-========================================================= */
+const replyPreviewText =
+  document.getElementById("replyPreviewText");
 
-const replyBar =
-  document.getElementById("replyBar");
+const cancelReply =
+  document.getElementById("cancelReply");
 
-const replyBarTitle =
-  document.getElementById("replyBarTitle");
+const contextMenu =
+  document.getElementById("contextMenu");
 
-const replyBarText =
-  document.getElementById("replyBarText");
+const editMenuBtn =
+  document.getElementById("editMenuBtn");
 
-const replyCancel =
-  document.getElementById("replyCancel");
+const deleteMenuBtn =
+  document.getElementById("deleteMenuBtn");
 
-
-/* =========================================================
-   ACTION MODAL DOM
-========================================================= */
-
-const actionBackdrop =
-  document.getElementById("actionBackdrop");
-
-const editMessageBtn =
-  document.getElementById("editMessageBtn");
-
-const deleteMessageBtn =
-  document.getElementById("deleteMessageBtn");
-
-const cancelActionBtn =
-  document.getElementById("cancelActionBtn");
-
-
-/* =========================================================
-   EDIT DOM
-========================================================= */
-
-const editBackdrop =
-  document.getElementById("editBackdrop");
+const editModal =
+  document.getElementById("editModal");
 
 const editTextarea =
   document.getElementById("editTextarea");
 
-const cancelEditBtn =
-  document.getElementById("cancelEditBtn");
+const editCancel =
+  document.getElementById("editCancel");
 
-const doneEditBtn =
-  document.getElementById("doneEditBtn");
+const editDone =
+  document.getElementById("editDone");
 
+const deleteModal =
+  document.getElementById("deleteModal");
 
-/* =========================================================
-   DELETE DOM
-========================================================= */
+const deleteCancel =
+  document.getElementById("deleteCancel");
 
-const deleteBackdrop =
-  document.getElementById("deleteBackdrop");
+const deleteConfirm =
+  document.getElementById("deleteConfirm");
 
-const cancelDeleteBtn =
-  document.getElementById("cancelDeleteBtn");
-
-const confirmDeleteBtn =
-  document.getElementById("confirmDeleteBtn");
+const toast =
+  document.getElementById("toast");
 
 
-/* =========================================================
+/* =====================================================
    STATE
-========================================================= */
+===================================================== */
 
 let currentUser = null;
 
 let profile = null;
+
+let messages = [];
 
 let messagesUnsubscribe = null;
 
@@ -1606,24 +1522,16 @@ let presenceUnsubscribe = null;
 
 let sending = false;
 
-
-/* =========================================================
-   REPLY STATE
-========================================================= */
-
-let replyMessage = null;
-
-
-/* =========================================================
-   ACTION STATE
-========================================================= */
-
 let selectedMessage = null;
 
+let replyTo = null;
 
-/* =========================================================
+let toastTimer = null;
+
+
+/* =====================================================
    HELPERS
-========================================================= */
+===================================================== */
 
 function escapeHTML(value){
 
@@ -1633,27 +1541,43 @@ function escapeHTML(value){
     .replaceAll(">","&gt;")
     .replaceAll('"',"&quot;")
     .replaceAll("'","&#039;");
-
 }
 
 
 function setStatus(text){
 
-  statusBox.textContent = text;
-
+  statusBox.textContent =
+    text;
 }
 
 
-/* =========================================================
-   LOCAL PROFILE
-========================================================= */
+function showToast(text){
+
+  clearTimeout(toastTimer);
+
+  toast.textContent =
+    text;
+
+  toast.classList.add("show");
+
+  toastTimer =
+    setTimeout(
+      () => {
+        toast.classList.remove("show");
+      },
+      2200
+    );
+}
+
 
 function getStoredProfile(){
 
   try{
 
     return JSON.parse(
-      localStorage.getItem("gamend_guest")
+      localStorage.getItem(
+        "gamend_guest"
+      )
     );
 
   }catch{
@@ -1661,7 +1585,6 @@ function getStoredProfile(){
     return null;
 
   }
-
 }
 
 
@@ -1671,7 +1594,6 @@ function saveProfile(data){
     "gamend_guest",
     JSON.stringify(data)
   );
-
 }
 
 
@@ -1680,13 +1602,12 @@ function clearProfile(){
   localStorage.removeItem(
     "gamend_guest"
   );
-
 }
 
 
-/* =========================================================
+/* =====================================================
    AUTH
-========================================================= */
+===================================================== */
 
 async function authenticate(){
 
@@ -1696,35 +1617,30 @@ async function authenticate(){
       auth.currentUser;
 
     return currentUser;
-
   }
-
 
   setStatus(
     "Connecting to Firebase…"
   );
 
-
   const result =
     await signInAnonymously(auth);
-
 
   currentUser =
     result.user;
 
-
   return currentUser;
-
 }
 
 
-/* =========================================================
-   JOIN
-========================================================= */
+/* =====================================================
+   JOIN COMMUNITY
+===================================================== */
 
 async function joinCommunity(){
 
-  errorBox.textContent = "";
+  errorBox.textContent =
+    "";
 
   const name =
     nameInput.value.trim();
@@ -1732,24 +1648,19 @@ async function joinCommunity(){
   let username =
     usernameInput.value.trim();
 
-
   if(name.length < 2){
 
     errorBox.textContent =
       "Enter a valid name.";
 
     return;
-
   }
-
 
   if(username.startsWith("@")){
 
     username =
       username.substring(1);
-
   }
-
 
   if(
     !/^[A-Za-z0-9_]{3,20}$/
@@ -1760,35 +1671,33 @@ async function joinCommunity(){
       "Username must contain 3–20 letters, numbers or _.";
 
     return;
-
   }
 
-
-  joinBtn.disabled = true;
+  joinBtn.disabled =
+    true;
 
   joinBtn.textContent =
     "Connecting…";
-
 
   try{
 
     const user =
       await authenticate();
 
-
     profile = {
 
-      name:name,
+      name:
+        name,
 
-      username:"@" + username,
+      username:
+        "@" + username,
 
-      uid:user.uid
+      uid:
+        user.uid
 
     };
 
-
     saveProfile(profile);
-
 
     joinBox.classList.add(
       "hidden"
@@ -1798,14 +1707,11 @@ async function joinCommunity(){
       "hidden"
     );
 
-
     await startPresence();
 
     startMessages();
 
-
     messageInput.focus();
-
 
   }catch(error){
 
@@ -1817,24 +1723,24 @@ async function joinCommunity(){
 
   }finally{
 
-    joinBtn.disabled = false;
+    joinBtn.disabled =
+      false;
 
     joinBtn.textContent =
       "Join Community";
 
   }
-
 }
 
 
-/* =========================================================
+/* =====================================================
    PRESENCE
-========================================================= */
+===================================================== */
 
 async function startPresence(){
 
-  if(!currentUser) return;
-
+  if(!currentUser)
+    return;
 
   const presenceRef =
     ref(
@@ -1843,11 +1749,9 @@ async function startPresence(){
       currentUser.uid
     );
 
-
   await set(
     presenceRef,
     {
-
       uid:
         currentUser.uid,
 
@@ -1857,20 +1761,20 @@ async function startPresence(){
       username:
         profile.username,
 
-      online:true,
+      online:
+        true,
 
       lastSeen:
         serverTimestamp()
-
     }
   );
-
 
   await onDisconnect(
     presenceRef
   ).update({
 
-    online:false,
+    online:
+      false,
 
     lastSeen:
       serverTimestamp()
@@ -1895,17 +1799,17 @@ async function startPresence(){
   presenceUnsubscribe =
     onValue(
       presenceRoot,
+
       snapshot => {
 
-        let count = 0;
-
+        let count =
+          0;
 
         snapshot.forEach(
           child => {
 
             const value =
               child.val();
-
 
             if(
               value &&
@@ -1919,7 +1823,6 @@ async function startPresence(){
           }
         );
 
-
         onlineCount.textContent =
           count +
           (
@@ -1929,22 +1832,25 @@ async function startPresence(){
           );
 
       },
+
       error => {
 
-        console.error(error);
+        console.error(
+          "Presence error:",
+          error
+        );
 
         onlineCount.textContent =
           "— online";
 
       }
     );
-
 }
 
 
-/* =========================================================
-   START MESSAGES
-========================================================= */
+/* =====================================================
+   MESSAGES LISTENER
+===================================================== */
 
 function startMessages(){
 
@@ -1977,19 +1883,19 @@ function startMessages(){
 
   messagesUnsubscribe =
     onValue(
+
       messagesQuery,
 
       snapshot => {
 
-        const list = [];
-
+        const list =
+          [];
 
         snapshot.forEach(
           child => {
 
             const data =
               child.val();
-
 
             if(data){
 
@@ -2007,44 +1913,184 @@ function startMessages(){
           }
         );
 
+        messages =
+          list;
 
-        renderMessages(list);
+        renderMessages(
+          list
+        );
 
       },
 
       error => {
 
         console.error(
-          "Message listener error:",
           error
         );
 
-
         setStatus(
-          "Unable to read messages: " +
-          error.message
+          "Unable to read messages"
         );
 
       }
-    );
 
+    );
 }
 
 
-/* =========================================================
-   FORMAT TIME
-========================================================= */
+/* =====================================================
+   RENDER MESSAGES
+===================================================== */
 
-function formatMessageTime(
-  timestamp
-){
+function renderMessages(list){
 
-  if(!timestamp){
+  if(!list.length){
 
-    return "now";
+    messagesBox.innerHTML = `
+      <div class="empty">
+        No messages yet.<br>
+        Be the first to say hello 👋
+      </div>
+    `;
 
+    return;
   }
 
+
+  const wasNearBottom =
+    messagesBox.scrollHeight -
+    messagesBox.scrollTop -
+    messagesBox.clientHeight
+    < 120;
+
+
+  messagesBox.innerHTML =
+    list.map(
+      message => {
+
+        const mine =
+          message.uid ===
+          currentUser?.uid;
+
+
+        const time =
+          message.createdAt
+            ? formatTime(
+                message.createdAt
+              )
+            : "now";
+
+
+        const replyHTML =
+          message.replyTo
+            ? `
+              <div class="reply-box">
+
+                <strong>
+                  ${escapeHTML(
+                    message.replyTo.name ||
+                    "Guest"
+                  )}
+                  ${escapeHTML(
+                    message.replyTo.username ||
+                    ""
+                  )}
+                </strong>
+
+                <span>
+                  ${escapeHTML(
+                    message.replyTo.text ||
+                    ""
+                  )}
+                </span>
+
+              </div>
+            `
+            : "";
+
+
+        return `
+
+          <div
+            class="message-wrap"
+            data-id="${escapeHTML(message.id)}">
+
+            <div
+              class="reply-action left">
+              ↪
+            </div>
+
+            <div
+              class="reply-action right">
+              ↩
+            </div>
+
+            <div
+              class="message
+              ${mine ? "me" : "other"}">
+
+              <div class="user">
+
+                ${escapeHTML(
+                  message.name ||
+                  "Guest"
+                )}
+
+                ${escapeHTML(
+                  message.username ||
+                  ""
+                )}
+
+              </div>
+
+              ${replyHTML}
+
+              <div
+                class="bubble">
+
+                ${escapeHTML(
+                  message.text ||
+                  ""
+                )}
+
+                ${
+                  message.edited
+                    ? `<span class="edited">edited</span>`
+                    : ""
+                }
+
+              </div>
+
+              <div class="time">
+                ${escapeHTML(time)}
+              </div>
+
+            </div>
+
+          </div>
+        `;
+
+      }
+    ).join("");
+
+
+  attachMessageEvents();
+
+
+  if(wasNearBottom){
+
+    messagesBox.scrollTop =
+      messagesBox.scrollHeight;
+
+  }
+}
+
+
+/* =====================================================
+   FORMAT TIME
+===================================================== */
+
+function formatTime(timestamp){
 
   try{
 
@@ -2063,603 +2109,361 @@ function formatMessageTime(
     return "now";
 
   }
-
 }
 
 
-/* =========================================================
-   RENDER MESSAGES
-========================================================= */
+/* =====================================================
+   MESSAGE EVENTS
+===================================================== */
 
-function renderMessages(list){
+function attachMessageEvents(){
 
-  if(!list.length){
-
-    messagesBox.innerHTML = `
-
-      <div class="empty">
-
-        No messages yet.<br>
-
-        Be the first to say hello 👋
-
-      </div>
-
-    `;
-
-    return;
-
-  }
-
-
-  messagesBox.innerHTML =
-    list.map(
-      message => {
-
-        const mine =
-          message.uid ===
-          currentUser?.uid;
-
-
-        const time =
-          formatMessageTime(
-            message.createdAt
-          );
-
-
-        let replyHTML = "";
-
-
-        if(
-          message.replyTo &&
-          typeof message.replyTo === "object"
-        ){
-
-          replyHTML = `
-
-            <div class="reply-preview">
-
-              <strong>
-                Reply to
-                ${escapeHTML(
-                  message.replyTo.username ||
-                  message.replyTo.name ||
-                  "Guest"
-                )}
-              </strong>
-
-              <span>
-                ${escapeHTML(
-                  message.replyTo.text ||
-                  ""
-                )}
-              </span>
-
-            </div>
-
-          `;
-
-        }
-
-
-        const editedHTML =
-          message.edited
-            ? `<span class="edited">edited</span>`
-            : "";
-
-
-        return `
-
-          <div
-            class="message-row"
-            data-id="${escapeHTML(message.id)}"
-          >
-
-            <div class="reply-indicator">
-              ↩
-            </div>
-
-
-            <div
-              class="message ${mine ? "me" : ""}"
-              data-message-id="${escapeHTML(message.id)}"
-            >
-
-              <div class="user">
-
-                ${escapeHTML(
-                  message.name ||
-                  "Guest"
-                )}
-
-                ${escapeHTML(
-                  message.username ||
-                  ""
-                )}
-
-              </div>
-
-
-              <div class="bubble">
-
-                ${replyHTML}
-
-                ${escapeHTML(
-                  message.text ||
-                  ""
-                )}
-
-              </div>
-
-
-              <div class="time">
-
-                ${escapeHTML(time)}
-
-                ${editedHTML}
-
-              </div>
-
-            </div>
-
-          </div>
-
-        `;
-
-      }
-    ).join("");
-
-
-  attachMessageGestures();
-
-
-  messagesBox.scrollTop =
-    messagesBox.scrollHeight;
-
-}
-
-
-/* =========================================================
-   SWIPE + LONG PRESS
-========================================================= */
-
-function attachMessageGestures(){
-
-  const rows =
+  const wrappers =
     messagesBox.querySelectorAll(
-      ".message-row"
+      ".message-wrap"
     );
 
 
-  rows.forEach(row => {
+  wrappers.forEach(
+    wrapper => {
 
-    const messageId =
-      row.dataset.id;
+      const id =
+        wrapper.dataset.id;
+
+      const message =
+        messages.find(
+          item =>
+            item.id === id
+        );
+
+      if(!message)
+        return;
 
 
-    const messageElement =
-      row.querySelector(
-        ".message"
+      setupSwipe(
+        wrapper,
+        message
       );
 
 
-    if(!messageElement) return;
+      if(
+        message.uid ===
+        currentUser?.uid
+      ){
+
+        setupLongPress(
+          wrapper,
+          message
+        );
+
+      }
+
+    }
+  );
+}
 
 
-    let startX = 0;
+/* =====================================================
+   SWIPE
+   ANY MESSAGE
+===================================================== */
 
-    let startY = 0;
+function setupSwipe(
+  wrapper,
+  message
+){
 
-    let currentX = 0;
+  let startX =
+    0;
 
-    let dragging = false;
+  let startY =
+    0;
 
-    let longPressTimer = null;
+  let currentX =
+    0;
 
-    let longPressTriggered = false;
-
-
-    /* =====================================================
-       TOUCH START
-    ====================================================== */
-
-    messageElement.addEventListener(
-      "touchstart",
-      event => {
-
-        if(
-          !event.touches ||
-          !event.touches[0]
-        ){
-
-          return;
-
-        }
+  let dragging =
+    false;
 
 
-        const touch =
-          event.touches[0];
+  wrapper.addEventListener(
+    "touchstart",
+    event => {
+
+      if(
+        event.touches.length !== 1
+      )
+        return;
+
+      startX =
+        event.touches[0].clientX;
+
+      startY =
+        event.touches[0].clientY;
+
+      currentX =
+        startX;
+
+      dragging =
+        true;
+
+    },
+    {
+      passive:true
+    }
+  );
 
 
-        startX =
-          touch.clientX;
+  wrapper.addEventListener(
+    "touchmove",
+    event => {
 
-        startY =
-          touch.clientY;
+      if(!dragging)
+        return;
+
+      const x =
+        event.touches[0].clientX;
+
+      const y =
+        event.touches[0].clientY;
+
+      const dx =
+        x - startX;
+
+      const dy =
+        y - startY;
+
+
+      if(
+        Math.abs(dy) >
+        Math.abs(dx)
+      ){
+
+        return;
+
+      }
+
+
+      if(
+        Math.abs(dx) > 8
+      ){
 
         currentX =
-          startX;
+          x;
 
-        dragging = false;
-
-        longPressTriggered = false;
-
-
-        const message =
-          findMessageById(
-            messageId
+        const limited =
+          Math.max(
+            -85,
+            Math.min(
+              85,
+              dx
+            )
           );
 
 
-        if(
-          message &&
-          message.uid ===
-          currentUser?.uid
-        ){
-
-          longPressTimer =
-            setTimeout(
-              () => {
-
-                longPressTriggered =
-                  true;
-
-                dragging = false;
-
-                messageElement.style.transform =
-                  "translateX(0)";
-
-                openMessageActions(
-                  message
-                );
-
-              },
-              650
-            );
-
-        }
-
-      },
-      {
-        passive:true
-      }
-    );
-
-
-    /* =====================================================
-       TOUCH MOVE
-    ====================================================== */
-
-    messageElement.addEventListener(
-      "touchmove",
-      event => {
-
-        if(
-          !event.touches ||
-          !event.touches[0]
-        ){
-
-          return;
-
-        }
-
-
-        const touch =
-          event.touches[0];
-
-
-        currentX =
-          touch.clientX;
-
-
-        const deltaX =
-          currentX - startX;
-
-
-        const deltaY =
-          touch.clientY - startY;
-
-
-        if(
-          Math.abs(deltaY) >
-          Math.abs(deltaX) &&
-          Math.abs(deltaY) > 8
-        ){
-
-          clearTimeout(
-            longPressTimer
+        const msg =
+          wrapper.querySelector(
+            ".message"
           );
 
-          return;
-
-        }
-
-
-        if(
-          Math.abs(deltaX) > 8
-        ){
-
-          clearTimeout(
-            longPressTimer
-          );
-
-        }
+        msg.style.transform =
+          `translateX(${limited}px)`;
 
 
-        if(
-          Math.abs(deltaX) >
-          8 &&
-          Math.abs(deltaX) >
-          Math.abs(deltaY)
-        ){
-
-          dragging = true;
-
-
-          event.preventDefault();
-
-
-          const maxSwipe =
-            95;
-
-
-          let moveX =
-            deltaX;
-
-
-          if(
-            moveX > maxSwipe
-          ){
-
-            moveX =
-              maxSwipe;
-
-          }
-
-
-          if(
-            moveX < -maxSwipe
-          ){
-
-            moveX =
-              -maxSwipe;
-
-          }
-
-
-          messageElement.style.transform =
-            `translateX(${moveX}px)`;
-
-
-          row.classList.add(
-            "swiping"
-          );
-
-        }
-
-      },
-      {
-        passive:false
-      }
-    );
-
-
-    /* =====================================================
-       TOUCH END
-    ====================================================== */
-
-    messageElement.addEventListener(
-      "touchend",
-      () => {
-
-        clearTimeout(
-          longPressTimer
+        wrapper.classList.toggle(
+          "replying",
+          Math.abs(dx) > 35
         );
 
+      }
 
-        const deltaX =
-          currentX - startX;
+    },
+    {
+      passive:true
+    }
+  );
 
 
-        messageElement.style.transform =
-          "translateX(0)";
+  wrapper.addEventListener(
+    "touchend",
+    () => {
+
+      if(!dragging)
+        return;
+
+      dragging =
+        false;
 
 
-        row.classList.remove(
-          "swiping"
+      const dx =
+        currentX - startX;
+
+
+      const msg =
+        wrapper.querySelector(
+          ".message"
         );
 
-
-        if(
-          longPressTriggered
-        ){
-
-          return;
-
-        }
+      msg.style.transform =
+        "";
 
 
-        if(
-          dragging &&
-          Math.abs(deltaX) >= 55
-        ){
-
-          const message =
-            findMessageById(
-              messageId
-            );
+      wrapper.classList.remove(
+        "replying"
+      );
 
 
-          if(message){
+      if(
+        Math.abs(dx) >= 55
+      ){
 
-            activateReply(
-              message
-            );
-
-          }
-
-        }
-
-
-        dragging = false;
-
-      },
-      {
-        passive:true
-      }
-    );
-
-
-    /* =====================================================
-       TOUCH CANCEL
-    ====================================================== */
-
-    messageElement.addEventListener(
-      "touchcancel",
-      () => {
-
-        clearTimeout(
-          longPressTimer
+        selectReply(
+          message
         );
 
-        messageElement.style.transform =
-          "translateX(0)";
-
-        row.classList.remove(
-          "swiping"
-        );
-
-        dragging = false;
-
-      },
-      {
-        passive:true
       }
-    );
 
-
-    /* =====================================================
-       DESKTOP RIGHT CLICK
-    ====================================================== */
-
-    messageElement.addEventListener(
-      "contextmenu",
-      event => {
-
-        event.preventDefault();
-
-
-        const message =
-          findMessageById(
-            messageId
-          );
-
-
-        if(
-          message &&
-          message.uid ===
-          currentUser?.uid
-        ){
-
-          openMessageActions(
-            message
-          );
-
-        }
-
-      }
-    );
-
-  });
+    },
+    {
+      passive:true
+    }
+  );
 
 }
 
 
-/* =========================================================
-   FIND MESSAGE
-========================================================= */
+/* =====================================================
+   LONG PRESS
+   OWN MESSAGE ONLY
+===================================================== */
 
-function findMessageById(id){
+function setupLongPress(
+  wrapper,
+  message
+){
 
-  const element =
-    messagesBox.querySelector(
-      `[data-message-id="${CSS.escape(id)}"]`
-    );
+  let timer =
+    null;
+
+  let startX =
+    0;
+
+  let startY =
+    0;
 
 
-  if(!element){
+  function start(event){
 
-    return null;
+    const point =
+      event.touches
+        ? event.touches[0]
+        : event;
+
+
+    startX =
+      point.clientX;
+
+    startY =
+      point.clientY;
+
+
+    timer =
+      setTimeout(
+        () => {
+
+          showContextMenu(
+            message,
+            wrapper
+          );
+
+        },
+        600
+      );
 
   }
 
 
-  const row =
-    element.closest(
-      ".message-row"
-    );
+  function cancel(event){
 
+    if(timer){
 
-  if(!row){
+      clearTimeout(
+        timer
+      );
 
-    return null;
+      timer =
+        null;
+
+    }
 
   }
 
 
-  /*
-    Read current rendered message data
-    from Firebase cache below.
-  */
-
-  return messageCache.get(id) || null;
-
-}
-
-
-/* =========================================================
-   MESSAGE CACHE
-========================================================= */
-
-const messageCache =
-  new Map();
+  wrapper.addEventListener(
+    "touchstart",
+    start,
+    {
+      passive:true
+    }
+  );
 
 
-/* =========================================================
-   PATCH RENDER CACHE
-========================================================= */
+  wrapper.addEventListener(
+    "touchmove",
+    event => {
 
-const originalRender =
-  renderMessages;
+      const point =
+        event.touches[0];
+
+      if(
+        Math.abs(
+          point.clientX -
+          startX
+        ) > 12 ||
+        Math.abs(
+          point.clientY -
+          startY
+        ) > 12
+      ){
+
+        cancel();
+
+      }
+
+    },
+    {
+      passive:true
+    }
+  );
 
 
-/*
-  Replace render function internally
-  so gesture handlers can retrieve
-  exact Firebase message objects.
-*/
-
-function updateMessageCache(list){
-
-  messageCache.clear();
+  wrapper.addEventListener(
+    "touchend",
+    cancel,
+    {
+      passive:true
+    }
+  );
 
 
-  list.forEach(
-    message => {
+  wrapper.addEventListener(
+    "touchcancel",
+    cancel,
+    {
+      passive:true
+    }
+  );
 
-      messageCache.set(
-        message.id,
-        message
+
+  wrapper.addEventListener(
+    "contextmenu",
+    event => {
+
+      event.preventDefault();
+
+      showContextMenu(
+        message,
+        wrapper
       );
 
     }
@@ -2668,168 +2472,13 @@ function updateMessageCache(list){
 }
 
 
-/* =========================================================
-   REDEFINE RENDER WITH CACHE
-========================================================= */
+/* =====================================================
+   REPLY
+===================================================== */
 
-function renderMessages(list){
+function selectReply(message){
 
-  updateMessageCache(list);
-
-
-  if(!list.length){
-
-    messagesBox.innerHTML = `
-
-      <div class="empty">
-
-        No messages yet.<br>
-
-        Be the first to say hello 👋
-
-      </div>
-
-    `;
-
-    return;
-
-  }
-
-
-  messagesBox.innerHTML =
-    list.map(
-      message => {
-
-        const mine =
-          message.uid ===
-          currentUser?.uid;
-
-
-        const time =
-          formatMessageTime(
-            message.createdAt
-          );
-
-
-        let replyHTML = "";
-
-
-        if(
-          message.replyTo &&
-          typeof message.replyTo === "object"
-        ){
-
-          replyHTML = `
-
-            <div class="reply-preview">
-
-              <strong>
-                Reply to
-                ${escapeHTML(
-                  message.replyTo.username ||
-                  message.replyTo.name ||
-                  "Guest"
-                )}
-              </strong>
-
-              <span>
-                ${escapeHTML(
-                  message.replyTo.text ||
-                  ""
-                )}
-              </span>
-
-            </div>
-
-          `;
-
-        }
-
-
-        const editedHTML =
-          message.edited
-            ? `<span class="edited">edited</span>`
-            : "";
-
-
-        return `
-
-          <div
-            class="message-row"
-            data-id="${escapeHTML(message.id)}"
-          >
-
-            <div class="reply-indicator">
-              ↩
-            </div>
-
-
-            <div
-              class="message ${mine ? "me" : ""}"
-              data-message-id="${escapeHTML(message.id)}"
-            >
-
-              <div class="user">
-
-                ${escapeHTML(
-                  message.name ||
-                  "Guest"
-                )}
-
-                ${escapeHTML(
-                  message.username ||
-                  ""
-                )}
-
-              </div>
-
-
-              <div class="bubble">
-
-                ${replyHTML}
-
-                ${escapeHTML(
-                  message.text ||
-                  ""
-                )}
-
-              </div>
-
-
-              <div class="time">
-
-                ${escapeHTML(time)}
-
-                ${editedHTML}
-
-              </div>
-
-            </div>
-
-          </div>
-
-        `;
-
-      }
-    ).join("");
-
-
-  attachMessageGestures();
-
-
-  messagesBox.scrollTop =
-    messagesBox.scrollHeight;
-
-}
-
-
-/* =========================================================
-   ACTIVATE REPLY
-========================================================= */
-
-function activateReply(message){
-
-  replyMessage = {
+  replyTo = {
 
     id:
       message.id,
@@ -2852,90 +2501,69 @@ function activateReply(message){
   };
 
 
-  replyBarTitle.textContent =
-    "Replying to " +
+  replyPreviewName.textContent =
     (
-      message.username ||
       message.name ||
       "Guest"
+    ) +
+    " " +
+    (
+      message.username ||
+      ""
     );
 
 
-  replyBarText.textContent =
+  replyPreviewText.textContent =
     message.text ||
     "";
 
 
-  replyBar.classList.add(
-    "show"
+  replyPreview.classList.remove(
+    "hidden"
   );
-
-
-  messageInput.placeholder =
-    "Write a reply…";
 
 
   messageInput.focus();
 
 
-  setStatus(
-    "Reply mode • Live chat"
+  showToast(
+    "Replying to " +
+    (
+      message.name ||
+      "Guest"
+    )
   );
-
 }
 
 
-/* =========================================================
-   CANCEL REPLY
-========================================================= */
+function clearReply(){
 
-function cancelReply(){
-
-  replyMessage =
+  replyTo =
     null;
 
-
-  replyBar.classList.remove(
-    "show"
+  replyPreview.classList.add(
+    "hidden"
   );
-
-
-  messageInput.placeholder =
-    "Write a message…";
-
-
-  setStatus(
-    "Connected • Live chat"
-  );
-
-
-  messageInput.focus();
 
 }
 
 
-/* =========================================================
+/* =====================================================
    SEND MESSAGE
-========================================================= */
+===================================================== */
 
 async function sendMessage(){
 
-  if(sending){
-
+  if(sending)
     return;
-
-  }
 
 
   const text =
     messageInput.value.trim();
 
 
-  if(!text){
-
+  if(!text)
     return;
-
-  }
 
 
   if(
@@ -2952,9 +2580,11 @@ async function sendMessage(){
   }
 
 
-  sending = true;
+  sending =
+    true;
 
-  sendBtn.disabled = true;
+  sendBtn.disabled =
+    true;
 
   sendBtn.textContent =
     "…";
@@ -2969,72 +2599,68 @@ async function sendMessage(){
       );
 
 
-    const newMessageRef =
-      push(messagesRef);
-
-
-    const messageData = {
-
-      uid:
-        currentUser.uid,
-
-      name:
-        profile.name,
-
-      username:
-        profile.username,
-
-      text:
-        text.slice(0,500),
-
-      createdAt:
-        serverTimestamp()
-
-    };
-
-
-    if(replyMessage){
-
-      messageData.replyTo = {
-
-        id:
-          replyMessage.id,
+    const newMessage =
+      {
 
         uid:
-          replyMessage.uid,
+          currentUser.uid,
 
         name:
-          replyMessage.name,
+          profile.name,
 
         username:
-          replyMessage.username,
+          profile.username,
 
         text:
-          replyMessage.text.slice(
+          text.slice(
             0,
-            300
-          )
+            500
+          ),
+
+        createdAt:
+          serverTimestamp(),
+
+        edited:
+          false
 
       };
+
+
+    if(replyTo){
+
+      newMessage.replyTo =
+        {
+
+          id:
+            replyTo.id,
+
+          uid:
+            replyTo.uid,
+
+          name:
+            replyTo.name,
+
+          username:
+            replyTo.username,
+
+          text:
+            replyTo.text
+
+        };
 
     }
 
 
-    await set(
-      newMessageRef,
-      messageData
+    await push(
+      messagesRef,
+      newMessage
     );
 
 
     messageInput.value =
       "";
 
-
-    if(replyMessage){
-
-      cancelReply();
-
-    }
+    clearReply();
 
 
     setStatus(
@@ -3044,24 +2670,27 @@ async function sendMessage(){
 
     messageInput.focus();
 
+
   }catch(error){
 
     console.error(
-      "Send message error:",
+      "Send error:",
       error
     );
-
 
     setStatus(
       "Message failed: " +
       error.message
     );
 
+
   }finally{
 
-    sending = false;
+    sending =
+      false;
 
-    sendBtn.disabled = false;
+    sendBtn.disabled =
+      false;
 
     sendBtn.textContent =
       "➤";
@@ -3071,16 +2700,16 @@ async function sendMessage(){
 }
 
 
-/* =========================================================
-   OPEN ACTION POPUP
-========================================================= */
+/* =====================================================
+   CONTEXT MENU
+===================================================== */
 
-function openMessageActions(
-  message
+function showContextMenu(
+  message,
+  wrapper
 ){
 
   if(
-    !message ||
     message.uid !==
     currentUser?.uid
   ){
@@ -3094,53 +2723,102 @@ function openMessageActions(
     message;
 
 
-  actionBackdrop.classList.add(
-    "show"
-  );
-
-}
+  const rect =
+    wrapper.getBoundingClientRect();
 
 
-/* =========================================================
-   CLOSE ACTION POPUP
-========================================================= */
+  let left =
+    rect.left + 10;
 
-function closeActionModal(){
-
-  actionBackdrop.classList.remove(
-    "show"
-  );
-
-}
+  let top =
+    rect.bottom + 5;
 
 
-/* =========================================================
-   OPEN EDIT
-========================================================= */
+  if(
+    left + 160 >
+    window.innerWidth
+  ){
 
-function openEditModal(){
-
-  if(!selectedMessage){
-
-    return;
+    left =
+      window.innerWidth -
+      170;
 
   }
 
 
-  const message =
-    selectedMessage;
+  if(
+    top + 100 >
+    window.innerHeight
+  ){
+
+    top =
+      rect.top -
+      105;
+
+  }
 
 
-  closeActionModal();
+  contextMenu.style.left =
+    Math.max(
+      8,
+      left
+    ) + "px";
+
+
+  contextMenu.style.top =
+    Math.max(
+      8,
+      top
+    ) + "px";
+
+
+  contextMenu.classList.remove(
+    "hidden"
+  );
+
+}
+
+
+/* =====================================================
+   CLOSE CONTEXT MENU
+===================================================== */
+
+function closeContextMenu(){
+
+  contextMenu.classList.add(
+    "hidden"
+  );
+
+}
+
+
+/* =====================================================
+   EDIT
+===================================================== */
+
+function openEdit(){
+
+  if(!selectedMessage)
+    return;
+
+
+  if(
+    selectedMessage.uid !==
+    currentUser?.uid
+  )
+    return;
+
+
+  closeContextMenu();
 
 
   editTextarea.value =
-    message.text ||
+    selectedMessage.text ||
     "";
 
 
-  editBackdrop.classList.add(
-    "show"
+  editModal.classList.remove(
+    "hidden"
   );
 
 
@@ -3155,43 +2833,16 @@ function openEditModal(){
       );
 
     },
-    50
+    100
   );
 
 }
 
 
-/* =========================================================
-   CLOSE EDIT
-========================================================= */
+async function saveEdit(){
 
-function closeEditModal(){
-
-  editBackdrop.classList.remove(
-    "show"
-  );
-
-
-  editTextarea.value =
-    "";
-
-}
-
-
-/* =========================================================
-   DONE EDIT
-========================================================= */
-
-async function saveEditedMessage(){
-
-  if(
-    !selectedMessage ||
-    !currentUser
-  ){
-
+  if(!selectedMessage)
     return;
-
-  }
 
 
   const text =
@@ -3200,7 +2851,9 @@ async function saveEditedMessage(){
 
   if(!text){
 
-    editTextarea.focus();
+    showToast(
+      "Message cannot be empty"
+    );
 
     return;
 
@@ -3209,20 +2862,20 @@ async function saveEditedMessage(){
 
   if(
     selectedMessage.uid !==
-    currentUser.uid
+    currentUser?.uid
   ){
 
-    closeEditModal();
+    closeEdit();
 
     return;
 
   }
 
 
-  doneEditBtn.disabled =
+  editDone.disabled =
     true;
 
-  doneEditBtn.textContent =
+  editDone.textContent =
     "Saving…";
 
 
@@ -3241,9 +2894,13 @@ async function saveEditedMessage(){
       {
 
         text:
-          text.slice(0,500),
+          text.slice(
+            0,
+            500
+          ),
 
-        edited:true,
+        edited:
+          true,
 
         editedAt:
           serverTimestamp()
@@ -3252,33 +2909,29 @@ async function saveEditedMessage(){
     );
 
 
-    closeEditModal();
+    closeEdit();
 
-
-    setStatus(
-      "Message edited • Live chat"
+    showToast(
+      "Message edited"
     );
 
 
   }catch(error){
 
     console.error(
-      "Edit message error:",
       error
     );
 
-
-    setStatus(
-      "Edit failed: " +
-      error.message
+    showToast(
+      "Edit failed"
     );
 
   }finally{
 
-    doneEditBtn.disabled =
+    editDone.disabled =
       false;
 
-    doneEditBtn.textContent =
+    editDone.textContent =
       "Done";
 
   }
@@ -3286,74 +2939,64 @@ async function saveEditedMessage(){
 }
 
 
-/* =========================================================
-   OPEN DELETE CONFIRM
-========================================================= */
+function closeEdit(){
 
-function openDeleteModal(){
-
-  if(!selectedMessage){
-
-    return;
-
-  }
-
-
-  closeActionModal();
-
-
-  deleteBackdrop.classList.add(
-    "show"
+  editModal.classList.add(
+    "hidden"
   );
 
 }
 
 
-/* =========================================================
-   CLOSE DELETE
-========================================================= */
+/* =====================================================
+   DELETE
+===================================================== */
 
-function closeDeleteModal(){
+function openDelete(){
 
-  deleteBackdrop.classList.remove(
-    "show"
-  );
-
-}
-
-
-/* =========================================================
-   DELETE MESSAGE
-========================================================= */
-
-async function deleteSelectedMessage(){
-
-  if(
-    !selectedMessage ||
-    !currentUser
-  ){
-
+  if(!selectedMessage)
     return;
-
-  }
 
 
   if(
     selectedMessage.uid !==
-    currentUser.uid
+    currentUser?.uid
+  )
+    return;
+
+
+  closeContextMenu();
+
+
+  deleteModal.classList.remove(
+    "hidden"
+  );
+
+}
+
+
+async function confirmDelete(){
+
+  if(!selectedMessage)
+    return;
+
+
+  if(
+    selectedMessage.uid !==
+    currentUser?.uid
   ){
 
-    closeDeleteModal();
+    closeDelete();
 
     return;
 
   }
 
 
-  confirmDeleteBtn.disabled =
+  deleteConfirm.disabled =
     true;
 
-  confirmDeleteBtn.textContent =
+  deleteConfirm.textContent =
     "Deleting…";
 
 
@@ -3372,46 +3015,48 @@ async function deleteSelectedMessage(){
     );
 
 
-    closeDeleteModal();
+    closeDelete();
 
-
-    setStatus(
-      "Message deleted • Live chat"
+    showToast(
+      "Message deleted"
     );
 
 
   }catch(error){
 
     console.error(
-      "Delete message error:",
       error
     );
 
-
-    setStatus(
-      "Delete failed: " +
-      error.message
+    showToast(
+      "Delete failed"
     );
 
   }finally{
 
-    confirmDeleteBtn.disabled =
+    deleteConfirm.disabled =
       false;
 
-    confirmDeleteBtn.textContent =
+    deleteConfirm.textContent =
       "Delete";
-
-    selectedMessage =
-      null;
 
   }
 
 }
 
 
-/* =========================================================
-   LEAVE COMMUNITY
-========================================================= */
+function closeDelete(){
+
+  deleteModal.classList.add(
+    "hidden"
+  );
+
+}
+
+
+/* =====================================================
+   LEAVE
+===================================================== */
 
 async function leaveCommunity(){
 
@@ -3442,7 +3087,8 @@ async function leaveCommunity(){
             profile?.username ||
             "",
 
-          online:false,
+          online:
+            false,
 
           lastSeen:
             serverTimestamp()
@@ -3481,40 +3127,24 @@ async function leaveCommunity(){
 
   clearProfile();
 
-
   profile =
     null;
 
+  messages =
+    [];
 
-  replyMessage =
-    null;
-
-
-  selectedMessage =
-    null;
-
-
-  messageCache.clear();
-
+  clearReply();
 
   joinBox.classList.remove(
     "hidden"
   );
 
-
   chatBox.classList.add(
     "hidden"
   );
 
-
-  replyBar.classList.remove(
-    "show"
-  );
-
-
   messageInput.value =
     "";
-
 
   setStatus(
     "Disconnected"
@@ -3523,72 +3153,26 @@ async function leaveCommunity(){
 }
 
 
-/* =========================================================
+/* =====================================================
    BACK BUTTON
-========================================================= */
+===================================================== */
 
 backBtn.addEventListener(
   "click",
   () => {
 
-    /*
-      First priority:
-      close active UI states.
-    */
-
     if(
-      actionBackdrop.classList.contains(
-        "show"
+      !chatBox.classList.contains(
+        "hidden"
       )
     ){
 
-      closeActionModal();
+      leaveCommunity();
 
       return;
 
     }
 
-
-    if(
-      editBackdrop.classList.contains(
-        "show"
-      )
-    ){
-
-      closeEditModal();
-
-      return;
-
-    }
-
-
-    if(
-      deleteBackdrop.classList.contains(
-        "show"
-      )
-    ){
-
-      closeDeleteModal();
-
-      return;
-
-    }
-
-
-    if(replyMessage){
-
-      cancelReply();
-
-      return;
-
-    }
-
-
-    /*
-      If this page is opened from
-      another GAMEND X page,
-      return to previous page.
-    */
 
     if(
       window.history.length > 1
@@ -3596,24 +3180,15 @@ backBtn.addEventListener(
 
       window.history.back();
 
-    }else{
-
-      /*
-        Safe fallback.
-      */
-
-      window.location.href =
-        "index.html";
-
     }
 
   }
 );
 
 
-/* =========================================================
-   BUTTON EVENTS
-========================================================= */
+/* =====================================================
+   EVENTS
+===================================================== */
 
 joinBtn.addEventListener(
   "click",
@@ -3627,23 +3202,64 @@ sendBtn.addEventListener(
 );
 
 
-replyCancel.addEventListener(
+cancelReply.addEventListener(
   "click",
-  cancelReply
+  clearReply
 );
 
 
-/* =========================================================
-   ENTER TO SEND
-========================================================= */
+leaveBtn.addEventListener(
+  "click",
+  leaveCommunity
+);
+
+
+editMenuBtn.addEventListener(
+  "click",
+  openEdit
+);
+
+
+deleteMenuBtn.addEventListener(
+  "click",
+  openDelete
+);
+
+
+editCancel.addEventListener(
+  "click",
+  closeEdit
+);
+
+
+editDone.addEventListener(
+  "click",
+  saveEdit
+);
+
+
+deleteCancel.addEventListener(
+  "click",
+  closeDelete
+);
+
+
+deleteConfirm.addEventListener(
+  "click",
+  confirmDelete
+);
+
+
+/* =========================
+   ENTER SEND
+========================= */
 
 messageInput.addEventListener(
   "keydown",
   event => {
 
     if(
-      event.key === "Enter" &&
-      !event.shiftKey
+      event.key === "Enter"
     ){
 
       event.preventDefault();
@@ -3656,90 +3272,45 @@ messageInput.addEventListener(
 );
 
 
-/* =========================================================
-   ACTION POPUP EVENTS
-========================================================= */
+/* =========================
+   CLOSE MENUS
+========================= */
 
-editMessageBtn.addEventListener(
-  "click",
-  openEditModal
-);
-
-
-deleteMessageBtn.addEventListener(
-  "click",
-  openDeleteModal
-);
-
-
-cancelActionBtn.addEventListener(
-  "click",
-  closeActionModal
-);
-
-
-/* =========================================================
-   EDIT EVENTS
-========================================================= */
-
-cancelEditBtn.addEventListener(
-  "click",
-  closeEditModal
-);
-
-
-doneEditBtn.addEventListener(
-  "click",
-  saveEditedMessage
-);
-
-
-editTextarea.addEventListener(
-  "keydown",
+document.addEventListener(
+  "touchstart",
   event => {
 
     if(
-      event.key === "Escape"
+      !contextMenu.contains(
+        event.target
+      )
     ){
 
-      closeEditModal();
+      closeContextMenu();
 
     }
 
+  },
+  {
+    passive:true
   }
 );
 
 
-/* =========================================================
-   DELETE EVENTS
-========================================================= */
+/* =========================
+   MODAL OUTSIDE CLICK
+========================= */
 
-cancelDeleteBtn.addEventListener(
-  "click",
-  closeDeleteModal
-);
-
-
-confirmDeleteBtn.addEventListener(
-  "click",
-  deleteSelectedMessage
-);
-
-
-/* =========================================================
-   BACKDROP CLICK
-========================================================= */
-
-actionBackdrop.addEventListener(
+editModal.addEventListener(
   "click",
   event => {
 
     if(
       event.target ===
-      actionBackdrop
+      editModal
     ){
 
-      closeActionModal();
+      closeEdit();
 
     }
 
@@ -3747,16 +3318,16 @@ actionBackdrop.addEventListener(
 );
 
 
-editBackdrop.addEventListener(
+deleteModal.addEventListener(
   "click",
   event => {
 
     if(
       event.target ===
-      editBackdrop
+      deleteModal
     ){
 
-      closeEditModal();
+      closeDelete();
 
     }
 
@@ -3764,36 +3335,24 @@ editBackdrop.addEventListener(
 );
 
 
-deleteBackdrop.addEventListener(
-  "click",
-  event => {
+/* =====================================================
+   AUTH STATE
+===================================================== */
 
-    if(
-      event.target ===
-      deleteBackdrop
-    ){
+onAuthStateChanged(
+  auth,
+  user => {
 
-      closeDeleteModal();
-
-    }
+    currentUser =
+      user;
 
   }
 );
 
 
-/* =========================================================
-   LEAVE
-========================================================= */
-
-leaveBtn.addEventListener(
-  "click",
-  leaveCommunity
-);
-
-
-/* =========================================================
-   AUTO LOGIN
-========================================================= */
+/* =====================================================
+   AUTO JOIN
+===================================================== */
 
 async function autoJoin(){
 
@@ -3813,7 +3372,6 @@ async function autoJoin(){
 
   nameInput.value =
     stored.name;
-
 
   usernameInput.value =
     stored.username;
@@ -3839,13 +3397,14 @@ async function autoJoin(){
     };
 
 
-    saveProfile(profile);
+    saveProfile(
+      profile
+    );
 
 
     joinBox.classList.add(
       "hidden"
     );
-
 
     chatBox.classList.remove(
       "hidden"
@@ -3864,7 +3423,6 @@ async function autoJoin(){
       error
     );
 
-
     clearProfile();
 
   }
@@ -3872,37 +3430,17 @@ async function autoJoin(){
 }
 
 
-/* =========================================================
-   AUTH STATE
-========================================================= */
-
-onAuthStateChanged(
-  auth,
-  user => {
-
-    currentUser =
-      user;
-
-  }
-);
-
-
-/* =========================================================
-   START
-========================================================= */
-
-autoJoin();
-
-
-/* =========================================================
-   PAGE EXIT
-========================================================= */
+/* =====================================================
+   PAGE HIDE
+===================================================== */
 
 window.addEventListener(
   "pagehide",
   () => {
 
-    if(currentUser){
+    if(
+      currentUser
+    ){
 
       const presenceRef =
         ref(
@@ -3927,7 +3465,8 @@ window.addEventListener(
             profile?.username ||
             "",
 
-          online:false,
+          online:
+            false,
 
           lastSeen:
             serverTimestamp()
@@ -3941,6 +3480,13 @@ window.addEventListener(
 
   }
 );
+
+
+/* =====================================================
+   START
+===================================================== */
+
+autoJoin();
 
 </script>
 
