@@ -82,7 +82,7 @@
 
     <div id="sidebarOverlay"
          class="sidebar-overlay"
-         onclick="closeSidebar()">
+         aria-hidden="true">
     </div>
 
 
@@ -101,8 +101,7 @@
                 </div>
             </div>
 
-            <button class="icon-btn"
-                    onclick="closeSidebar()">
+            <button id="sidebarCloseBtn" class="icon-btn sidebar-close-btn" type="button" aria-label="Close menu">
                 <i class="fas fa-xmark"></i>
             </button>
 
@@ -465,8 +464,7 @@
                 <h2>Settings</h2>
             </div>
 
-            <button class="icon-btn"
-                    onclick="closeSettings()">
+            <button id="settingsCloseBtn" class="icon-btn" type="button" aria-label="Close settings">
                 <i class="fas fa-xmark"></i>
             </button>
 

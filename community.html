@@ -24,13 +24,14 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 
   try{
 
+    const rawTheme=localStorage.getItem("gx_theme");
+    const themeNames=["red","blue","green","purple","orange","pink"];
+    const parsedTheme=themeNames.indexOf(rawTheme);
     const theme=Math.min(
       5,
       Math.max(
         0,
-        Number(
-          localStorage.getItem("gx_theme") || 0
-        )
+        parsedTheme >= 0 ? parsedTheme : (Number(rawTheme) || 0)
       )
     );
 
@@ -242,6 +243,27 @@ body.reduced-motion *{
 
 }
 
+
+
+/* Advanced moving ambient objects */
+body::before,body::after{
+  content:"";position:fixed;pointer-events:none;z-index:0;
+  width:210px;height:210px;border-radius:50%;
+  background:radial-gradient(circle,var(--primary),transparent 68%);
+  opacity:.10;filter:blur(2px);
+  animation:communityFloat1 13s ease-in-out infinite alternate;
+}
+body::before{left:-85px;top:18%}
+body::after{right:-85px;bottom:15%;animation-name:communityFloat2;animation-duration:16s}
+@keyframes communityFloat1{
+  0%{transform:translate3d(0,0,0) scale(.8)}
+  100%{transform:translate3d(110px,130px,0) scale(1.15)}
+}
+@keyframes communityFloat2{
+  0%{transform:translate3d(0,0,0) scale(1.1)}
+  100%{transform:translate3d(-110px,-100px,0) scale(.75)}
+}
+.app,.header,.chat,.composer{position:relative;z-index:1}
 
 /* =====================================================
    APP
@@ -1193,6 +1215,25 @@ body.reduced-motion *{
 }
 
 
+
+
+/* Telegram-style selected message state */
+.message-row.message-selected .message-bubble{
+  outline:2px solid color-mix(in srgb,var(--primary) 70%,transparent);
+  box-shadow:0 0 0 5px color-mix(in srgb,var(--primary) 12%,transparent),var(--shadow);
+  transform:scale(1.012);
+}
+.message-row.message-selected{
+  z-index:4;
+}
+.context-menu{
+  min-width:190px;
+  z-index:1000;
+}
+.context-menu button:active{
+  transform:scale(.98);
+}
+
 /* =====================================================
    CONTEXT MENU
 ===================================================== */
@@ -1972,6 +2013,17 @@ body.reduced-motion *{
   hidden>
 
 
+  <button id="copyMessageBtn">
+
+    <i class="fa-solid fa-copy"></i>
+
+    <span>
+      Copy
+    </span>
+
+  </button>
+
+
   <button id="editMessageBtn">
 
     <i class="fa-solid fa-pen"></i>
@@ -2294,6 +2346,9 @@ const cancelReply =
 const contextMenu =
   $("contextMenu");
 
+const copyMessageBtn =
+  $("copyMessageBtn");
+
 const editMessageBtn =
   $("editMessageBtn");
 
@@ -2342,6 +2397,7 @@ let presenceUnsubscribe=null;
 let visitUnsubscribe=null;
 
 let selectedMessage=null;
+let selectedRow=null;
 
 let replyTarget=null;
 
@@ -2403,19 +2459,16 @@ function applyPrefs(){
   let theme=0;
 
   try{
-
+    const rawTheme=localStorage.getItem("gx_theme");
+    const names=["red","blue","green","purple","orange","pink"];
+    const byName=names.indexOf(rawTheme);
     theme=Math.min(
       5,
       Math.max(
         0,
-        Number(
-          localStorage.getItem(
-            "gx_theme"
-          ) || 0
-        )
+        byName >= 0 ? byName : (Number(rawTheme) || 0)
       )
     );
-
   }catch{}
 
 
@@ -3616,21 +3669,8 @@ function attachSwipe(
       clearLongPress();
 
 
-      /*
-        Only own message can
-        open Edit/Delete.
-      */
-
-      if(
-
-        currentUser &&
-        msg.uid===
-        currentUser.uid
-
-      ){
-
-        longPressTimer=
-          setTimeout(
+      longPressTimer=
+        setTimeout(
 
             ()=>{
 
@@ -3652,7 +3692,8 @@ function attachSwipe(
 
                   event.clientY,
 
-                  msg
+                  msg,
+                  row
 
                 );
 
@@ -3664,14 +3705,26 @@ function attachSwipe(
 
           );
 
-      }
-
     },
 
     {
       passive:true
     }
 
+  );
+
+
+  /* Desktop browser parity: right-click uses the same selection menu. */
+  row.addEventListener(
+    "contextmenu",
+    event=>{
+      event.preventDefault();
+      clearLongPress();
+      dragging=false;
+      selectedMessage=msg;
+      showContextMenu(event.clientX,event.clientY,msg,row);
+      tap();
+    }
   );
 
 
@@ -4023,6 +4076,11 @@ function closeContextMenu(
 
   contextMenu.hidden=true;
 
+  if(selectedRow){
+    selectedRow.classList.remove("message-selected");
+    selectedRow=null;
+  }
+
 
   /*
     Edit/Delete click போது
@@ -4045,23 +4103,26 @@ function closeContextMenu(
 function showContextMenu(
   x,
   y,
-  msg
+  msg,
+  row=null
 ){
 
-  if(
+  if(!msg)return;
 
-    !currentUser ||
-    msg.uid!==currentUser.uid
+  selectedMessage=msg;
 
-  ){
-
-    return;
-
+  if(selectedRow){
+    selectedRow.classList.remove("message-selected");
   }
+  selectedRow=row || null;
+  selectedRow?.classList.add("message-selected");
 
-
-  selectedMessage=
-    msg;
+  /* Edit/Delete are only meaningful for the message owner.
+     Copy remains available for every selected message. */
+  editMessageBtn.hidden =
+    !currentUser || msg.uid !== currentUser.uid;
+  deleteMessageBtn.hidden =
+    !currentUser || msg.uid !== currentUser.uid;
 
 
   contextMenu.hidden=false;
@@ -4069,7 +4130,7 @@ function showContextMenu(
 
   const width=170;
 
-  const height=100;
+  const height=150;
 
 
   let left=x;
@@ -4124,6 +4185,41 @@ function showContextMenu(
   contextMenu.style.top=
     top+"px";
 
+}
+
+
+/* =====================================================
+   COPY MESSAGE — Telegram-style content-only copy
+===================================================== */
+
+async function copySelectedMessage(){
+
+  const message=selectedMessage;
+
+  if(!message){
+    closeContextMenu();
+    return;
+  }
+
+  const value=String(message.text || "");
+
+  try{
+    await navigator.clipboard.writeText(value);
+  }catch{
+    const ta=document.createElement("textarea");
+    ta.value=value;
+    ta.style.position="fixed";
+    ta.style.opacity="0";
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    document.execCommand("copy");
+    ta.remove();
+  }
+
+  closeContextMenu();
+  tap();
+  toast("Message copied");
 }
 
 
@@ -4587,6 +4683,8 @@ async function logoutCommunity(){
     deleteModal.hidden=true;
 
     selectedMessage=null;
+    selectedRow?.classList.remove("message-selected");
+    selectedRow=null;
 
     updateSendState();
 
@@ -4652,6 +4750,14 @@ cancelReply.addEventListener(
     tap();
 
   }
+);
+
+
+/* COPY */
+
+copyMessageBtn.addEventListener(
+  "click",
+  copySelectedMessage
 );
 
 

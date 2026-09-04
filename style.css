@@ -1384,3 +1384,234 @@ body.dark .game-modal-head .icon-btn i{
 .game-modal-head .icon-btn.danger i{
     color:#fff !important;
 }
+
+
+/* =========================================================
+   GAMEND X ULTRA MAX — CROSS-BROWSER / TELEGRAM HARDENING
+   ========================================================= */
+
+/* Keep the sidebar close button above every scroll layer. */
+.sidebar{
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+}
+.sidebar-head{
+    position:relative;
+    z-index:5;
+    flex:0 0 80px;
+}
+.sidebar-head .icon-btn{
+    position:relative;
+    z-index:10;
+    pointer-events:auto !important;
+    touch-action:manipulation;
+}
+.sidebar.open{
+    transform:translate3d(0,0,0);
+    left:0;
+}
+.sidebar-overlay{
+    pointer-events:none;
+}
+.sidebar-overlay.show{
+    pointer-events:auto;
+}
+
+/* Moving ambient objects — theme-aware through --primary. */
+body::before,
+body::after{
+    content:"";
+    position:fixed;
+    width:180px;
+    height:180px;
+    border-radius:50%;
+    pointer-events:none;
+    z-index:-1;
+    opacity:.11;
+    background:radial-gradient(circle, var(--primary), transparent 68%);
+    filter:blur(3px);
+    animation:gxFloatA 12s ease-in-out infinite alternate;
+}
+body::before{top:14%;left:-70px}
+body::after{right:-70px;bottom:12%;animation-name:gxFloatB;animation-duration:15s}
+@keyframes gxFloatA{
+    0%{transform:translate3d(0,0,0) scale(.8)}
+    50%{transform:translate3d(80px,45px,0) scale(1.15)}
+    100%{transform:translate3d(20px,120px,0) scale(.9)}
+}
+@keyframes gxFloatB{
+    0%{transform:translate3d(0,0,0) scale(1)}
+    50%{transform:translate3d(-90px,-55px,0) scale(.75)}
+    100%{transform:translate3d(-20px,-130px,0) scale(1.1)}
+}
+
+/* Premium settings panel. */
+.settings-box{
+    width:min(680px,calc(100vw - 28px));
+    max-height:min(88vh,760px);
+    padding:0;
+    overflow:hidden;
+    border-radius:30px;
+    box-shadow:0 35px 100px rgba(0,0,0,.38);
+}
+.settings-box::before{
+    content:"";
+    display:block;
+    height:5px;
+    background:linear-gradient(90deg,var(--primary),var(--primary2),var(--primary));
+    background-size:200% 100%;
+    animation:gxGradient 5s linear infinite;
+}
+@keyframes gxGradient{to{background-position:200% 0}}
+.settings-box > .modal-head{
+    margin:0;
+    padding:24px 24px 18px;
+    background:
+      radial-gradient(circle at 90% 0%,color-mix(in srgb,var(--primary) 22%,transparent),transparent 38%),
+      var(--card);
+    border-bottom:1px solid var(--border);
+}
+.settings-box > .modal-head h2{
+    font-size:25px;
+    letter-spacing:-.5px;
+}
+.settings-box > .modal-head h2::before{
+    content:"GAMEND X  •  CONTROL CENTER";
+    display:block;
+    color:var(--primary);
+    font-size:9px;
+    letter-spacing:2.4px;
+    margin-bottom:6px;
+}
+.settings-box > .settings-list{
+    padding:20px 24px 24px;
+    max-height:calc(min(88vh,760px) - 100px);
+    overflow:auto;
+}
+
+/* Share fallback sheet. */
+.gx-share-sheet{position:fixed;inset:0;z-index:9000}
+.gx-share-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.62);backdrop-filter:blur(7px)}
+.gx-share-panel{
+    position:absolute;left:50%;bottom:18px;transform:translateX(-50%);
+    width:min(520px,calc(100vw - 24px));padding:18px;
+    background:var(--card);color:var(--text);border:1px solid var(--border);
+    border-radius:26px;box-shadow:0 30px 90px rgba(0,0,0,.4);
+    animation:gxSheetIn .24s ease-out;
+}
+@keyframes gxSheetIn{from{opacity:0;transform:translate(-50%,30px) scale(.97)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
+.gx-share-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.gx-share-head b{display:block;font-size:16px}.gx-share-head small{color:var(--muted);font-size:10px}
+.gx-share-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.gx-share-grid a{
+    min-height:76px;border:1px solid var(--border);border-radius:17px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;
+    color:var(--text);text-decoration:none;background:var(--bg);
+}
+.gx-share-grid a i{font-size:23px;color:var(--primary)}.gx-share-grid a span{font-size:10px;font-weight:700}
+
+/* WebView fallback for maximize. */
+#gameModal.immersive{padding:0;background:#000}
+#gameModal.immersive .game-modal-box{
+    width:100vw;height:100dvh;max-width:none;border-radius:0;
+}
+#gameModal.immersive .game-frame{height:calc(100dvh - 55px)}
+body.game-immersive{overflow:hidden}
+
+/* Fullscreen element sizing. */
+#gameModal:fullscreen,#gameModal:-webkit-full-screen{
+    width:100vw;height:100dvh;padding:0;background:#000;
+}
+#gameModal:fullscreen .game-modal-box,
+#gameModal:-webkit-full-screen .game-modal-box{
+    width:100vw;height:100dvh;border-radius:0;
+}
+#gameModal:fullscreen .game-frame,
+#gameModal:-webkit-full-screen .game-frame{
+    height:calc(100dvh - 55px);
+}
+
+@media(max-width:600px){
+    .settings-box{width:calc(100vw - 16px);max-height:92dvh;border-radius:26px}
+    .settings-box > .modal-head{padding:22px 18px 16px}
+    .settings-box > .settings-list{padding:16px 18px 20px;max-height:calc(92dvh - 95px)}
+    .gx-share-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+
+/* =========================================================
+   ULTRA MAX STABILITY PATCH — SIDEBAR + SETTINGS
+   ========================================================= */
+html,body{overscroll-behavior-x:none}
+body.sidebar-lock{overflow:hidden;touch-action:none}
+
+.sidebar{
+    left:0;
+    transform:translate3d(-105%,0,0);
+    transition:transform .30s cubic-bezier(.22,.8,.25,1),box-shadow .30s ease;
+    will-change:transform;
+    isolation:isolate;
+    overflow:hidden;
+}
+.sidebar.open{left:0;transform:translate3d(0,0,0);box-shadow:18px 0 55px rgba(0,0,0,.22)}
+.sidebar-head{position:relative;flex:0 0 80px;z-index:20;background:var(--card)}
+.sidebar-head .sidebar-close-btn{
+    position:relative;z-index:100;display:grid!important;place-items:center;
+    width:48px;height:48px;min-width:48px;min-height:48px;padding:0;margin:0;
+    cursor:pointer;pointer-events:auto!important;touch-action:manipulation;
+    -webkit-tap-highlight-color:transparent;user-select:none;
+}
+.sidebar-head .sidebar-close-btn i{pointer-events:none;font-size:19px}
+.side-nav{position:relative;z-index:2;flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;touch-action:pan-y;-webkit-overflow-scrolling:touch}
+.sidebar-overlay{z-index:2999;touch-action:none;-webkit-tap-highlight-color:transparent}
+.sidebar-overlay.show{pointer-events:auto!important}
+
+/* Full-screen Settings Control Center */
+#settingsModal{
+    padding:0!important;
+    align-items:stretch!important;
+    justify-content:stretch!important;
+    background:rgba(0,0,0,.72);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+}
+#settingsModal .settings-box{
+    width:100vw!important;max-width:none!important;height:100dvh!important;max-height:none!important;
+    margin:0!important;border:0!important;border-radius:0!important;padding:0!important;
+    display:flex;flex-direction:column;overflow:hidden;
+    background:var(--bg);
+    box-shadow:none;
+}
+#settingsModal .settings-box::before{flex:0 0 5px;height:5px}
+#settingsModal .settings-box>.modal-head{
+    flex:0 0 auto;margin:0;padding:24px max(22px,env(safe-area-inset-left)) 20px;
+    padding-right:max(22px,env(safe-area-inset-right));
+    min-height:104px;display:flex;align-items:center;
+    background:linear-gradient(135deg,var(--card),color-mix(in srgb,var(--primary) 7%,var(--card)));
+}
+#settingsModal .settings-box>.modal-head h2{
+    margin:2px 0 0;font-size:clamp(27px,5vw,38px);font-weight:900;letter-spacing:-1.2px;
+}
+#settingsModal .settings-box>.modal-head .section-kicker{font-size:9px;letter-spacing:3px;font-weight:900;color:var(--primary)}
+#settingsModal .settings-box>.modal-head h2::before{display:none}
+#settingsModal .settings-list{
+    flex:1;min-height:0;width:min(980px,100%);margin:0 auto;padding:22px max(18px,env(safe-area-inset-left)) 40px;
+    padding-right:max(18px,env(safe-area-inset-right));max-height:none!important;overflow-y:auto;overscroll-behavior:contain;
+    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-content:start;gap:14px;
+}
+#settingsModal .setting-group,#settingsModal .setting-row{
+    background:var(--card);border:1px solid var(--border);border-radius:20px;box-shadow:0 8px 28px rgba(0,0,0,.05)
+}
+#settingsModal .setting-group{padding:18px}
+#settingsModal .setting-row{min-height:76px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+#settingsModal .setting-row strong{font-size:13px;font-weight:800}
+#settingsModal .setting-row small{display:block;margin-top:4px;color:var(--muted);font-size:10px}
+#settingsModal .theme-options{gap:9px}
+#settingsModal .theme-option{min-height:42px;padding:0 13px;border-radius:13px;display:inline-flex;align-items:center}
+#settingsModal .toggle-btn{min-width:72px;min-height:40px;border-radius:13px;font-weight:800;border:1px solid var(--border);background:var(--bg);color:var(--text);touch-action:manipulation}
+@media(max-width:720px){
+ #settingsModal .settings-list{grid-template-columns:1fr;padding-top:16px}
+ #settingsModal .settings-box>.modal-head{min-height:92px;padding-top:18px;padding-bottom:16px}
+}
+@media(prefers-reduced-motion:reduce){.sidebar{transition:none!important}}
+body.modal-lock{overflow:hidden;touch-action:none}

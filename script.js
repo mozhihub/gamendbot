@@ -1279,7 +1279,14 @@ function closeGame(){
         $("#gameFrame");
 
 
-    modal.classList.remove("show");
+    modal.classList.remove("show","immersive");
+    document.body.classList.remove("game-immersive");
+
+    try{
+        if(document.fullscreenElement){
+            document.exitFullscreen?.();
+        }
+    }catch{}
 
     document.body.style.overflow = "";
 
@@ -1328,26 +1335,53 @@ function setGameLoading(value){
 }
 
 
-function fullscreenGame(){
+async function fullscreenGame(){
+
+    const modal =
+        $("#gameModal");
+
+    const box =
+        modal?.querySelector(".game-modal-box");
 
     const frame =
         $("#gameFrame");
 
-    if(!frame)return;
+    if(!modal || !box || !frame)return;
 
+    haptic();
 
-    if(frame.requestFullscreen){
+    /* Telegram Mini App: expand the WebApp first. */
+    try{
+        if(window.Telegram?.WebApp){
+            window.Telegram.WebApp.ready?.();
+            window.Telegram.WebApp.expand?.();
+        }
+    }catch{}
 
-        frame.requestFullscreen();
+    /* Native fullscreen: use the parent box, not the iframe.
+       This works more reliably in Telegram/WebView browsers. */
+    try{
+        if(document.fullscreenElement){
+            await document.exitFullscreen?.();
+            return;
+        }
 
+        if(box.requestFullscreen){
+            await box.requestFullscreen({navigationUI:"hide"});
+            return;
+        }
+
+        if(box.webkitRequestFullscreen){
+            box.webkitRequestFullscreen();
+            return;
+        }
+    }catch(error){
+        console.warn("Fullscreen API unavailable:",error);
     }
 
-    else if(frame.webkitRequestFullscreen){
-
-        frame.webkitRequestFullscreen();
-
-    }
-
+    /* WebView fallback: true visual fullscreen without API support. */
+    modal.classList.toggle("immersive");
+    document.body.classList.toggle("game-immersive", modal.classList.contains("immersive"));
 }
 
 
@@ -1405,29 +1439,50 @@ function openCommunity(){
    ========================================================= */
 
 function toggleSidebar(){
-
-    const sidebar =
-        $("#sidebar");
-
-    const overlay =
-        $("#sidebarOverlay");
-
-
-    sidebar.classList.toggle("open");
-
-    overlay.classList.toggle("show");
-
+    const sidebar = $("#sidebar");
+    const overlay = $("#sidebarOverlay");
+    if(!sidebar || !overlay) return;
+    const willOpen = !sidebar.classList.contains("open");
+    sidebar.classList.toggle("open", willOpen);
+    overlay.classList.toggle("show", willOpen);
+    overlay.setAttribute("aria-hidden", String(!willOpen));
+    document.body.classList.toggle("sidebar-lock", willOpen);
+    overlay.style.pointerEvents = willOpen ? "auto" : "none";
+    haptic();
 }
 
+function closeSidebar(event){
+    if(event){
+        event.preventDefault?.();
+        event.stopPropagation?.();
+    }
+    const sidebar = $("#sidebar");
+    const overlay = $("#sidebarOverlay");
+    if(!sidebar || !overlay) return;
+    sidebar.classList.remove("open");
+    overlay.classList.remove("show");
+    overlay.setAttribute("aria-hidden","true");
+    document.body.classList.remove("sidebar-lock");
+    overlay.style.pointerEvents="none";
+    haptic();
+}
 
-function closeSidebar(){
-
-    $("#sidebar")
-        ?.classList.remove("open");
-
-    $("#sidebarOverlay")
-        ?.classList.remove("show");
-
+function bindSidebarControls(){
+    const close = $("#sidebarCloseBtn");
+    const overlay = $("#sidebarOverlay");
+    if(close && !close.dataset.gxBound){
+        close.dataset.gxBound="1";
+        const handler=e=>closeSidebar(e);
+        close.addEventListener("pointerdown",handler,{capture:true,passive:false});
+        close.addEventListener("touchstart",handler,{capture:true,passive:false});
+        close.addEventListener("click",handler,{capture:true,passive:false});
+    }
+    if(overlay && !overlay.dataset.gxBound){
+        overlay.dataset.gxBound="1";
+        const handler=e=>closeSidebar(e);
+        overlay.addEventListener("pointerdown",handler,{capture:true,passive:false});
+        overlay.addEventListener("click",handler,{capture:true,passive:false});
+    }
 }
 
 
@@ -1437,36 +1492,54 @@ function closeSidebar(){
 
 async function shareHub(){
 
-    const data = {
-
-        title:"GAMEND X",
-
-        text:
-            "Play More. Stay Legendary. — GAMEND X",
-
-        url:window.location.href
-
-    };
-
+    const url = window.location.href;
+    const title = "GAMEND X";
+    const text = "Play More. Stay Legendary. — GAMEND X";
 
     try{
-
         if(navigator.share){
-
-            await navigator.share(data);
-
-        }else{
-
-            await navigator.clipboard.writeText(
-                window.location.href
-            );
-
-            toast("Hub link copied");
-
+            await navigator.share({title,text,url});
+            haptic();
+            return;
         }
+    }catch(error){
+        if(error?.name === "AbortError") return;
+    }
 
-    }catch{}
+    /* Browser fallback: offer real app share targets instead of
+       silently copying the URL. */
+    openShareSheet({title,text,url});
+}
 
+function openShareSheet({title,text,url}){
+
+    const old = document.getElementById("gxShareSheet");
+    old?.remove();
+
+    const enc = encodeURIComponent;
+    const targets = [
+        ["WhatsApp","https://wa.me/?text="+enc(text+"\n"+url),"fa-whatsapp"],
+        ["Telegram","https://t.me/share/url?url="+enc(url)+"&text="+enc(text),"fa-telegram"],
+        ["Facebook","https://www.facebook.com/sharer/sharer.php?u="+enc(url),"fa-facebook"],
+        ["X","https://twitter.com/intent/tweet?text="+enc(text)+"&url="+enc(url),"fa-x-twitter"]
+    ];
+
+    const sheet=document.createElement("div");
+    sheet.id="gxShareSheet";
+    sheet.className="gx-share-sheet";
+    sheet.innerHTML=`<div class="gx-share-backdrop"></div>
+      <div class="gx-share-panel">
+        <div class="gx-share-head"><div><b>Share GAMEND X</b><small>Choose an app</small></div>
+          <button class="icon-btn gx-share-close" aria-label="Close"><i class="fas fa-xmark"></i></button></div>
+        <div class="gx-share-grid">${targets.map(([name,href,icon])=>
+          `<a href="${href}" target="_blank" rel="noopener noreferrer"><i class="fa-brands ${icon}"></i><span>${name}</span></a>`
+        ).join("")}</div>
+      </div>`;
+    document.body.appendChild(sheet);
+    const close=()=>sheet.remove();
+    sheet.querySelector(".gx-share-backdrop").onclick=close;
+    sheet.querySelector(".gx-share-close").onclick=close;
+    haptic();
 }
 
 
@@ -1531,10 +1604,9 @@ function applyPrefs(){
     );
 
 
-    document.documentElement.style.setProperty(
-        "--primary",
-        getThemeColor(theme)
-    );
+    const themeColor = getThemeColor(theme);
+    document.documentElement.style.setProperty("--primary", themeColor);
+    document.documentElement.style.setProperty("--primary2", getThemeColor2(theme));
 
 
     const modeBtn =
@@ -1701,8 +1773,12 @@ function setTheme(theme){
         "--primary",
         getThemeColor(theme)
     );
+    document.documentElement.style.setProperty(
+        "--primary2",
+        getThemeColor2(theme)
+    );
 
-
+    haptic();
     renderThemeRadios();
 
 }
@@ -1719,6 +1795,24 @@ function getThemeColor(theme){
     );
 
 }
+
+function getThemeColor2(theme){
+    const map={
+        red:"#ff3030",
+        blue:"#4f8cff",
+        green:"#22c55e",
+        purple:"#9f67ff",
+        orange:"#ff8a3d",
+        pink:"#f35ca7"
+    };
+    return map[theme] || "#ff3030";
+}
+
+window.addEventListener("storage",event=>{
+    if(event.key==="gx_theme" || event.key==="gx_mode" || event.key==="gx_motion"){
+        applyPrefs();
+    }
+});
 
 
 function renderThemeRadios(){
@@ -1760,20 +1854,24 @@ function renderThemeRadios(){
    ========================================================= */
 
 function openSettings(){
-
-    $("#settingsModal")
-        ?.classList.add("show");
-
+    const modal=$("#settingsModal");
+    if(!modal)return;
+    modal.classList.add("show");
+    modal.setAttribute("aria-hidden","false");
+    document.body.classList.add("modal-lock");
     applyPrefs();
-
+    haptic();
 }
 
-
-function closeSettings(){
-
-    $("#settingsModal")
-        ?.classList.remove("show");
-
+function closeSettings(event){
+    event?.preventDefault?.();
+    event?.stopPropagation?.();
+    const modal=$("#settingsModal");
+    if(!modal)return;
+    modal.classList.remove("show");
+    modal.setAttribute("aria-hidden","true");
+    if(!$(".modal.show")) document.body.classList.remove("modal-lock");
+    haptic();
 }
 
 
@@ -2113,6 +2211,17 @@ async function init(){
 
     }
 
+
+    bindSidebarControls();
+
+    const settingsClose=$("#settingsCloseBtn");
+    if(settingsClose && !settingsClose.dataset.gxBound){
+        settingsClose.dataset.gxBound="1";
+        const handler=e=>closeSettings(e);
+        settingsClose.addEventListener("pointerdown",handler,{capture:true,passive:false});
+        settingsClose.addEventListener("touchstart",handler,{capture:true,passive:false});
+        settingsClose.addEventListener("click",handler,{capture:true,passive:false});
+    }
 
     /* ================= MODAL CLICK ================= */
 
