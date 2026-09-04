@@ -282,7 +282,7 @@ body.reduced-motion *{
 
   align-items:center;
 
-  gap:9px;
+  gap:7px;
 
   background:var(--glass);
 
@@ -376,6 +376,10 @@ body.reduced-motion *{
 }
 
 
+/* =====================================================
+   ONLINE PILL
+===================================================== */
+
 .online-pill{
 
   display:flex;
@@ -411,12 +415,57 @@ body.reduced-motion *{
   width:7px;
   height:7px;
 
+  flex:0 0 7px;
+
   border-radius:50%;
 
   background:#20d46b;
 
   box-shadow:
     0 0 10px rgba(32,212,107,.55);
+
+}
+
+
+/* =====================================================
+   VISITS PILL
+===================================================== */
+
+.visits-pill{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:5px;
+
+  height:31px;
+
+  padding:0 8px;
+
+  border:
+    1px solid var(--border);
+
+  border-radius:999px;
+
+  background:var(--card);
+
+  color:var(--muted);
+
+  font-size:10px;
+
+  font-weight:600;
+
+  white-space:nowrap;
+
+}
+
+
+.visits-pill i{
+
+  color:var(--primary);
+
+  font-size:10px;
 
 }
 
@@ -462,6 +511,7 @@ body.reduced-motion *{
   background:var(--glass);
 
   backdrop-filter:blur(20px);
+
   -webkit-backdrop-filter:blur(20px);
 
   box-shadow:var(--shadow);
@@ -954,6 +1004,7 @@ body.reduced-motion *{
   background:var(--glass);
 
   backdrop-filter:blur(18px);
+
   -webkit-backdrop-filter:blur(18px);
 
   border-top:
@@ -1164,6 +1215,7 @@ body.reduced-motion *{
   background:var(--glass);
 
   backdrop-filter:blur(20px);
+
   -webkit-backdrop-filter:blur(20px);
 
   box-shadow:var(--shadow);
@@ -1232,6 +1284,7 @@ body.reduced-motion *{
   background:rgba(0,0,0,.55);
 
   backdrop-filter:blur(7px);
+
   -webkit-backdrop-filter:blur(7px);
 
 }
@@ -1515,14 +1568,28 @@ body.reduced-motion *{
 }
 
 
-@media(max-width:360px){
+/* =====================================================
+   SMALL MOBILE
+===================================================== */
+
+@media(max-width:430px){
 
   .header{
 
-    padding-left:8px;
-    padding-right:8px;
+    gap:5px;
+
+    padding-left:7px;
+    padding-right:7px;
 
   }
+
+
+  .header-title{
+
+    min-width:70px;
+
+  }
+
 
   .header-title h1{
 
@@ -1530,11 +1597,97 @@ body.reduced-motion *{
 
   }
 
+
+  .header-title p{
+
+    font-size:9px;
+
+  }
+
+
+  .online-pill,
+  .visits-pill{
+
+    padding:0 7px;
+
+    font-size:9px;
+
+  }
+
+
+  .logout-btn,
+  .back-btn{
+
+    width:39px;
+    height:39px;
+
+    flex-basis:39px;
+
+  }
+
+}
+
+
+@media(max-width:370px){
+
+  .header{
+
+    gap:3px;
+
+  }
+
+
+  .online-pill,
+  .visits-pill{
+
+    height:29px;
+
+    padding:0 6px;
+
+    font-size:8px;
+
+  }
+
+
+  .online-pill .online-dot{
+
+    width:6px;
+    height:6px;
+
+  }
+
+
+  .logout-btn,
+  .back-btn{
+
+    width:37px;
+    height:37px;
+
+    flex-basis:37px;
+
+  }
+
+
+  .header-title h1{
+
+    font-size:14px;
+
+  }
+
+
+  .header-title p{
+
+    display:none;
+
+  }
+
+
   .message-bubble{
 
     max-width:86%;
 
   }
+
 
   .join-card{
 
@@ -1582,12 +1735,29 @@ body.reduced-motion *{
   </div>
 
 
+  <!-- ONLINE -->
+
   <div class="online-pill">
 
     <span class="online-dot"></span>
 
     <span id="onlineCount">
       0 Online
+    </span>
+
+  </div>
+
+
+  <!-- VISITS -->
+
+  <div
+    class="visits-pill"
+    title="Total Visits">
+
+    <i class="fa-solid fa-chart-line"></i>
+
+    <span id="visitCount">
+      —
     </span>
 
   </div>
@@ -2030,7 +2200,7 @@ const FIREBASE_CONFIG={
     "26278139327",
 
   appId:
-    "1:26278139327:web:db44e7d2e8d42d690abd0a"
+    "1:26278139327:web:db44e7d8d42d690abd0a"
 
 };
 
@@ -2100,6 +2270,9 @@ const sendBtn =
 const onlineCount =
   $("onlineCount");
 
+const visitCount =
+  $("visitCount");
+
 const backBtn =
   $("backBtn");
 
@@ -2165,6 +2338,8 @@ let presenceRef=null;
 let messagesUnsubscribe=null;
 
 let presenceUnsubscribe=null;
+
+let visitUnsubscribe=null;
 
 let selectedMessage=null;
 
@@ -2457,6 +2632,183 @@ function showJoin(){
   guestScreen.hidden=false;
 
   updateSendState();
+
+}
+
+
+/* =====================================================
+   VISIT COUNTER
+   Persistent Firebase Total
+===================================================== */
+
+async function countVisit(){
+
+  try{
+
+    /*
+      Always make sure Firebase
+      anonymous authentication exists.
+    */
+
+    if(!auth.currentUser){
+
+      await f.signInAnonymously(
+        auth
+      );
+
+    }
+
+
+    const user=
+      auth.currentUser;
+
+
+    if(!user){
+
+      return;
+
+    }
+
+
+    const visitRef=
+      f.ref(
+        db,
+        "community/stats/visits"
+      );
+
+
+    /*
+      Count only once per browser
+      session.
+
+      Refresh:
+      NO additional count.
+
+      New tab/session:
+      counts as a new visit.
+    */
+
+    if(
+      sessionStorage.getItem(
+        "gx_community_visit_counted"
+      ) !== "1"
+    ){
+
+      const result=
+        await f.runTransaction(
+
+          visitRef,
+
+          currentValue=>{
+
+            const current=
+              Number(currentValue) || 0;
+
+            return current+1;
+
+          }
+
+        );
+
+
+      if(result.committed){
+
+        sessionStorage.setItem(
+          "gx_community_visit_counted",
+          "1"
+        );
+
+      }
+
+    }
+
+
+    /*
+      Listen to the Firebase total
+      so every client gets the
+      latest number.
+    */
+
+    if(visitUnsubscribe){
+
+      visitUnsubscribe();
+
+      visitUnsubscribe=null;
+
+    }
+
+
+    visitUnsubscribe=
+      f.onValue(
+
+        visitRef,
+
+        snapshot=>{
+
+          const total=
+            Number(
+              snapshot.val()
+            ) || 0;
+
+
+          visitCount.textContent=
+            total.toLocaleString(
+              "en-IN"
+            );
+
+        },
+
+        error=>{
+
+          console.error(
+            "Visit listener error:",
+            error
+          );
+
+          /*
+            Keep existing value if
+            Firebase listener fails.
+          */
+
+          if(
+            visitCount.textContent===
+            "—"
+          ){
+
+            visitCount.textContent=
+              "0";
+
+          }
+
+        }
+
+      );
+
+
+  }catch(error){
+
+    console.error(
+      "Visit counter error:",
+      error
+    );
+
+
+    /*
+      Don't break Community if
+      visitor counter fails.
+    */
+
+    if(
+      visitCount.textContent===
+      "—"
+    ){
+
+      visitCount.textContent=
+        "0";
+
+    }
+
+  }
 
 }
 
@@ -3663,7 +4015,6 @@ async function sendMessage(){
 
 /* =====================================================
    CONTEXT MENU
-   IMPORTANT FIX
 ===================================================== */
 
 function closeContextMenu(
@@ -3674,7 +4025,6 @@ function closeContextMenu(
 
 
   /*
-    FIX:
     Edit/Delete click போது
     selectedMessage clear ஆகக்கூடாது.
   */
@@ -3697,11 +4047,6 @@ function showContextMenu(
   y,
   msg
 ){
-
-  /*
-    Extra safety:
-    Only owner can see this menu.
-  */
 
   if(
 
@@ -3784,7 +4129,6 @@ function showContextMenu(
 
 /* =====================================================
    OPEN EDIT
-   FIXED
 ===================================================== */
 
 function openEdit(){
@@ -3805,10 +4149,6 @@ function openEdit(){
   }
 
 
-  /*
-    Save reference BEFORE closing menu.
-  */
-
   const message=
     selectedMessage;
 
@@ -3816,11 +4156,6 @@ function openEdit(){
   editArea.value=
     message.text || "";
 
-
-  /*
-    IMPORTANT:
-    false = don't clear selectedMessage.
-  */
 
   closeContextMenu(false);
 
@@ -3851,14 +4186,9 @@ function openEdit(){
 
 /* =====================================================
    SAVE EDIT
-   FIXED
 ===================================================== */
 
 async function saveEdit(){
-
-  /*
-    Keep selected message reference.
-  */
 
   const message=
     selectedMessage;
@@ -3876,10 +4206,6 @@ async function saveEdit(){
 
   }
 
-
-  /*
-    Security check.
-  */
 
   if(
 
@@ -3932,10 +4258,6 @@ async function saveEdit(){
 
       );
 
-
-    /*
-      Firebase update.
-    */
 
     await f.update(
 
@@ -3994,7 +4316,6 @@ async function saveEdit(){
 
 /* =====================================================
    OPEN DELETE
-   FIXED
 ===================================================== */
 
 function openDelete(){
@@ -4015,13 +4336,7 @@ function openDelete(){
   }
 
 
-  /*
-    IMPORTANT:
-    Keep selectedMessage.
-  */
-
   closeContextMenu(false);
-
 
   deleteModal.hidden=false;
 
@@ -4030,14 +4345,9 @@ function openDelete(){
 
 /* =====================================================
    CONFIRM DELETE
-   FIXED
 ===================================================== */
 
 async function confirmDeleteMessage(){
-
-  /*
-    Save reference first.
-  */
 
   const message=
     selectedMessage;
@@ -4055,10 +4365,6 @@ async function confirmDeleteMessage(){
 
   }
 
-
-  /*
-    Owner check.
-  */
 
   if(
 
@@ -4096,10 +4402,6 @@ async function confirmDeleteMessage(){
 
       );
 
-
-    /*
-      Firebase remove.
-    */
 
     await f.remove(
       messageRef
@@ -4613,6 +4915,14 @@ f.onAuthStateChanged(
 async function boot(){
 
   try{
+
+    /*
+      Visitor counter starts immediately.
+      It does NOT depend on joining chat.
+    */
+
+    await countVisit();
+
 
     if(auth.currentUser){
 

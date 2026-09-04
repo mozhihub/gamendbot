@@ -1,21 +1,768 @@
-<!doctype html><html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#d50000"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><title>GAMEND X — Ultra Pro Hub</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"><link rel="stylesheet" href="style.css"></head><body>
-<div id="loader"><div class="loader-logo"><div class="game-logo">GX</div><div class="site-title">GAMEND X</div><div class="site-sub">ULTRA PRO GAME HUB</div><div class="loader-bar"><i></i></div><small id="loaderText">Loading game hub…</small></div></div>
-<div class="moving-bg"></div><div id="toastHost"></div><div id="overlay" onclick="closeSidebar()"></div>
-<header class="topbar"><button id="menuBtn" class="menu-btn" aria-label="Open menu" onclick="toggleSidebar()"><span></span><span></span><span></span></button><a class="logo" href="#" onclick="goHome(event)"><span class="logo-mark">GX</span><span>GAMEND X</span></a><div class="header-actions"><button class="icon-btn" onclick="shareBot()" aria-label="Share"><i class="fas fa-share-nodes"></i></button><button class="icon-btn" onclick="openSettings()" aria-label="Settings"><i class="fas fa-gear"></i></button></div></header>
-<aside id="sidebar"><div class="side-hero"><button class="side-close" onclick="closeSidebar()"><i class="fas fa-xmark"></i></button><div class="side-avatar">GX</div><strong>GAMEND X</strong><span>Ultra Pro Game Hub</span></div><div class="side-content"><p class="side-label">NAVIGATION</p><button class="side-link active" onclick="goHome();closeSidebar()"><i class="fas fa-house"></i><span>Home</span><i class="fas fa-chevron-right arrow"></i></button><button class="side-link" onclick="scrollGames();closeSidebar()"><i class="fas fa-gamepad"></i><span>Games</span><i class="fas fa-chevron-right arrow"></i></button><button class="side-link" onclick="showFavorites();closeSidebar()"><i class="fas fa-heart"></i><span>Favorites</span><i class="fas fa-chevron-right arrow"></i></button><button class="side-link" onclick="showHistory();closeSidebar()"><i class="fas fa-clock-rotate-left"></i><span>History</span><i class="fas fa-chevron-right arrow"></i></button><button class="side-link" onclick="openCommunity();closeSidebar()"><i class="fas fa-comments"></i><span>Community</span><i class="fas fa-chevron-right arrow"></i></button><div class="side-divider"></div><p class="side-label">QUICK ACTIONS</p><button class="side-link" onclick="shareBot();closeSidebar()"><i class="fas fa-share-nodes"></i><span>Share Hub</span><i class="fas fa-chevron-right arrow"></i></button><div class="side-divider"></div><p class="side-label">SUPPORT</p><button class="side-link" onclick="openFeedback();closeSidebar()"><i class="fas fa-comment-dots"></i><span>Feedback</span><i class="fas fa-chevron-right arrow"></i></button><button class="side-link" onclick="openReport();closeSidebar()"><i class="fas fa-flag"></i><span>Report Bug</span><i class="fas fa-chevron-right arrow"></i></button><button class="side-link" onclick="openInfo();closeSidebar()"><i class="fas fa-circle-info"></i><span>Info / About</span><i class="fas fa-chevron-right arrow"></i></button></div><div class="side-footer">GAMEND X • 2026<br><span>Powered for mobile & Telegram</span></div></aside>
-<main><section class="hero"><div class="hero-copy"><span class="eyebrow"><i class="fas fa-bolt"></i> INSTANT PLAY • NO LOGIN</span><h1>Play More.<br><span>Stay Legendary.</span></h1><p>A premium mobile-first game hub. Search, favorite and play instantly. Firebase is used only for Community and viewer count.</p><div class="hero-actions"><button class="btn primary" onclick="scrollGames()"><i class="fas fa-play"></i> Play Games</button><button class="btn glass" onclick="openCommunity()"><i class="fas fa-comments"></i> Community</button></div></div><div class="hero-art"><div class="hero-ring"></div><div class="hero-icon"><i class="fas fa-gamepad"></i></div></div></section>
-<section class="quick-stats"><div><i class="fas fa-gamepad"></i><b id="gameCount">0</b><small>Games</small></div><div><i class="fas fa-heart"></i><b id="favCount">0</b><small>Favorites</small></div><div><i class="fas fa-clock"></i><b id="historyCount">0</b><small>Played</small></div><div><i class="fas fa-users"></i><b id="viewerCount">—</b><small>Viewers</small></div></section>
-<section id="gamesSection" class="section"><div class="toolbar"><div class="search"><i class="fas fa-search"></i><input id="searchInput" placeholder="Search games or categories…" autocomplete="off"><button onclick="clearSearch()" aria-label="Clear search"><i class="fas fa-xmark"></i></button></div><div class="filter-row"><div id="chips" class="chips"></div><button class="sort-btn" onclick="cycleSort()" title="Sort"><i class="fas fa-arrow-down-wide-short"></i></button></div></div><div class="section-title"><div><span class="section-eyebrow">GAME LIBRARY</span><h2 id="sectionTitle">All Games</h2><small id="resultText"></small></div><button class="text-btn" onclick="resetFilters()">Reset</button></div><div id="gameGrid" class="game-grid"></div><div id="empty" class="empty"><i class="fas fa-ghost"></i><h3>No games found</h3><p>Try a different search or category.</p></div></section>
-<section id="historySection" class="section history-section"><div class="section-title"><div><span class="section-eyebrow">LOCAL ACTIVITY</span><h2>Recently Played</h2></div><button class="text-btn" onclick="clearHistory()">Clear</button></div><div id="historyList" class="history-list"></div></section></main>
-<nav class="bottom-nav"><button class="active" onclick="navHome(this)"><i class="fas fa-house"></i><span>Home</span></button><button onclick="navGames(this)"><i class="fas fa-gamepad"></i><span>Games</span></button><button onclick="navChat(this)"><i class="fas fa-comments"></i><span>Chat</span></button><button onclick="navFav(this)"><i class="fas fa-heart"></i><span>Favorites</span></button></nav>
-<div id="gameModal" class="modal"><div class="game-shell"><div class="game-head"><div><b id="gameTitle">Game</b><small id="gameMeta">GAMEND X</small></div><div class="game-actions"><button class="icon-btn" onclick="reloadGame()" title="Reload"><i class="fas fa-rotate-right"></i></button><button class="icon-btn" onclick="openGameExternal()" title="Open externally"><i class="fas fa-arrow-up-right-from-square"></i></button><button class="icon-btn" onclick="fullscreenGame()" title="Fullscreen"><i class="fas fa-expand"></i></button><button class="icon-btn" onclick="closeGame()" title="Close"><i class="fas fa-xmark"></i></button></div></div><div id="gameLoading" class="game-loading"><div class="spinner"></div><b>Loading game…</b><small>If it does not load, use Open External.</small></div><iframe id="gameFrame" title="GAMEND X Game" allow="fullscreen; autoplay; gamepad; gyroscope; accelerometer" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div></div>
-<div id="settingsModal" class="modal"><div class="modal-box"><div class="modal-head"><div><b>Settings</b><small>GAMEND X experience</small></div><button class="icon-btn" onclick="closeSettings()"><i class="fas fa-xmark"></i></button></div><div class="settings"><div class="settings-title">APPEARANCE</div><div class="setting-card"><div class="setting-icon"><i class="fas fa-palette"></i></div><div class="setting-info"><b>Theme</b><small id="themeText">Neon Red</small></div><div class="radio-row" id="themeRadios"></div></div><div class="setting-card"><div class="setting-icon"><i class="fas fa-circle-half-stroke"></i></div><div class="setting-info"><b>Appearance</b><small>Choose light or dark</small></div><div class="radio-row"><label><input type="radio" name="mode" value="dark" onchange="setMode('dark')"><span>Dark</span></label><label><input type="radio" name="mode" value="light" onchange="setMode('light')"><span>Light</span></label></div></div><div class="settings-title">EXPERIENCE</div><div class="setting-card"><div class="setting-icon"><i class="fas fa-wand-magic-sparkles"></i></div><div class="setting-info"><b>Animations</b><small>Motion effects</small></div><div class="radio-row"><label><input type="radio" name="motion" value="on" onchange="setMotion(true)"><span>On</span></label><label><input type="radio" name="motion" value="off" onchange="setMotion(false)"><span>Off</span></label></div></div><div class="setting-card"><div class="setting-icon"><i class="fas fa-mobile-screen-button"></i></div><div class="setting-info"><b>Haptic feedback</b><small>Touch feedback</small></div><div class="radio-row"><label><input type="radio" name="haptic" value="on" onchange="setHaptic(true)"><span>On</span></label><label><input type="radio" name="haptic" value="off" onchange="setHaptic(false)"><span>Off</span></label></div></div><div class="settings-title">TOOLS</div><button class="setting-link" onclick="showFavorites();closeSettings()"><i class="fas fa-heart"></i><span><b>Favorites</b><small id="favSetting">0 saved games</small></span><i class="fas fa-chevron-right"></i></button><button class="setting-link" onclick="showHistory();closeSettings()"><i class="fas fa-clock-rotate-left"></i><span><b>Play History</b><small id="historySetting">0 games</small></span><i class="fas fa-chevron-right"></i></button><div class="settings-title">SUPPORT</div><button class="setting-link" onclick="openFeedback();closeSettings()"><i class="fas fa-comment-dots"></i><span><b>Feedback</b><small>Send your suggestion</small></span><i class="fas fa-chevron-right"></i></button><button class="setting-link" onclick="openReport();closeSettings()"><i class="fas fa-flag"></i><span><b>Report Bug</b><small>Tell us what went wrong</small></span><i class="fas fa-chevron-right"></i></button><button class="setting-link" onclick="openInfo();closeSettings()"><i class="fas fa-circle-info"></i><span><b>Info / About</b><small>Version & credits</small></span><i class="fas fa-chevron-right"></i></button><button class="danger-btn" onclick="resetLocal()">Reset Local Data</button></div></div></div>
-<div id="infoModal" class="modal"><div class="modal-box small"><div class="modal-head"><div><b>GAMEND X</b><small>Ultra Pro Game Hub</small></div><button class="icon-btn" onclick="closeInfo()"><i class="fas fa-xmark"></i></button></div><div class="info-body"><div class="info-logo">GX</div><h2>Ultra Pro Game Hub</h2><p>Built for fast mobile gaming and Telegram WebApp use.</p><div class="info-grid"><span><b id="infoGameCount">0</b>Games</span><span><b>2026</b>Edition</span><span><b>v5.1</b>Version</span></div><p class="muted">Normal features work without Firebase. Firebase is limited to Community Chat and viewer count.</p><button class="btn primary full" onclick="shareBot()">Share GAMEND X</button></div></div></div>
-<div id="feedbackModal" class="modal"><div class="modal-box small"><div class="modal-head"><div><b>Feedback</b><small>Help us improve GAMEND X</small></div><button class="icon-btn" onclick="closeFeedback()"><i class="fas fa-xmark"></i></button></div><form class="form" onsubmit="submitFeedback(event)"><input type="hidden" name="access_key" value="5e51a205-46d1-4db6-916f-0703efb327ab"><input id="fbName" maxlength="40" placeholder="Name (optional)"><select id="fbType"><option>Suggestion</option><option>Game Request</option><option>UI / Design</option><option>Other</option></select><textarea id="fbText" maxlength="1000" required placeholder="Write your feedback…"></textarea><button class="btn primary full">Prepare Feedback</button></form></div></div>
-<div id="reportModal" class="modal"><div class="modal-box small"><div class="modal-head"><div><b>Report Bug</b><small>Help fix the game hub</small></div><button class="icon-btn" onclick="closeReport()"><i class="fas fa-xmark"></i></button></div><form class="form" onsubmit="submitReport(event)"><input type="hidden" name="access_key" value="5e51a205-46d1-4db6-916f-0703efb327ab"><select id="bugGame"></select><textarea id="bugText" maxlength="1000" required placeholder="Describe the problem…"></textarea><button class="btn primary full">Open Bug Report</button></form></div></div>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 
-<script src="https://telegram.org/js/telegram-web-app.js"></script><script type="module" src="script.js"></script></body></html>
+<meta name="theme-color" content="#d50000">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+<title>GAMEND X — Ultra Pro Game Hub</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+
+<body>
+
+<!-- ================= LOADER ================= -->
+
+<div id="loader" class="loader">
+    <div class="loader-logo"> GX</div>
+    <div class="loader-title">GAMEND X</div>
+    <div class="loader-sub">ULTRA PRO GAME HUB</div>
+    <div class="loader-line">
+        <span></span>
+    </div>
+</div>
+
+
+<!-- ================= APP ================= -->
+
+<div id="app" class="app">
+
+    <!-- ================= TOPBAR ================= -->
+
+    <header class="topbar">
+
+        <button class="icon-btn"
+                onclick="toggleSidebar()"
+                aria-label="Menu">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <div class="brand">
+          GAMEND  <div class="brand-logo">GX</div>
+            <div class="brand-text">
+                <strong>GAMEND X</strong>
+                <span>ULTRA PRO</span>
+            </div>
+        </div>
+
+        <div class="top-actions">
+
+            <button class="icon-btn"
+                    onclick="shareHub()"
+                    aria-label="Share">
+                <i class="fas fa-share-nodes"></i>
+            </button>
+
+            <button class="icon-btn"
+                    onclick="openSettings()"
+                    aria-label="Settings">
+                <i class="fas fa-gear"></i>
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- ================= SIDEBAR OVERLAY ================= -->
+
+    <div id="sidebarOverlay"
+         class="sidebar-overlay"
+         onclick="closeSidebar()">
+    </div>
+
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside id="sidebar" class="sidebar">
+
+        <div class="sidebar-head">
+
+            <div class="side-brand">
+                <div class="side-logo">GX</div>
+
+                <div>
+                    <strong>GAMEND X</strong>
+                    <small>GAME HUB</small>
+                </div>
+            </div>
+
+            <button class="icon-btn"
+                    onclick="closeSidebar()">
+                <i class="fas fa-xmark"></i>
+            </button>
+
+        </div>
+
+
+        <nav class="side-nav">
+
+            <button onclick="goHome()">
+                <i class="fas fa-house"></i>
+                <span>Home</span>
+            </button>
+
+            <button onclick="scrollGames();closeSidebar()">
+                <i class="fas fa-gamepad"></i>
+                <span>Games</span>
+            </button>
+
+            <button onclick="showFavorites();closeSidebar()">
+                <i class="fas fa-heart"></i>
+                <span>Favorites</span>
+            </button>
+
+            <button onclick="showHistory();closeSidebar()">
+                <i class="fas fa-clock-rotate-left"></i>
+                <span>History</span>
+            </button>
+
+            <button onclick="openCommunity();closeSidebar()">
+                <i class="fas fa-comments"></i>
+                <span>Community</span>
+            </button>
+
+            <button onclick="shareHub();closeSidebar()">
+                <i class="fas fa-share-nodes"></i>
+                <span>Share Hub</span>
+            </button>
+
+            <button onclick="openFeedback();closeSidebar()">
+                <i class="fas fa-message"></i>
+                <span>Feedback</span>
+            </button>
+
+            <button onclick="openReport();closeSidebar()">
+                <i class="fas fa-bug"></i>
+                <span>Report Bug</span>
+            </button>
+
+            <button onclick="openInfo();closeSidebar()">
+                <i class="fas fa-circle-info"></i>
+                <span>About</span>
+            </button>
+
+        </nav>
+
+        <div class="sidebar-footer">
+            <span>GAMEND X</span>
+            <small>Play More. Stay Legendary.</small>
+        </div>
+
+    </aside>
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main id="main">
+
+        <!-- ================= HERO ================= -->
+
+        <section class="hero">
+
+            <div class="hero-bg"></div>
+
+            <div class="hero-content">
+
+                <div class="hero-badge">
+                    <i class="fas fa-bolt"></i>
+                    NEXT GEN GAME HUB
+                </div>
+
+                <h1>
+                    Play More.<br>
+                    <span>Stay Legendary.</span>
+                </h1>
+
+                <p>
+                    Discover games, play instantly and build your gaming history.
+                </p>
+
+                <div class="hero-actions">
+
+                    <button class="primary-btn"
+                            onclick="scrollGames()">
+                        <i class="fas fa-play"></i>
+                        Play Games
+                    </button>
+
+                    <button class="secondary-btn"
+                            onclick="openCommunity()">
+                        <i class="fas fa-comments"></i>
+                        Community
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= QUICK STATS ================= -->
+
+        <section class="quick-stats">
+
+            <div class="stat-card">
+                <i class="fas fa-gamepad"></i>
+                <b id="gameCount">0</b>
+                <small>Games</small>
+            </div>
+
+            <div class="stat-card">
+                <i class="fas fa-heart"></i>
+                <b id="favCount">0</b>
+                <small>Favorites</small>
+            </div>
+
+            <div class="stat-card">
+                <i class="fas fa-clock-rotate-left"></i>
+                <b id="historyCount">0</b>
+                <small>Played</small>
+            </div>
+
+            <div class="stat-card">
+                <i class="fas fa-users"></i>
+                <b id="viewerCount">0</b>
+                <small>Viewers</small>
+            </div>
+
+            <!-- VISITS -->
+
+            <div class="stat-card visit-stat">
+
+                <i class="fas fa-chart-line"></i>
+
+                <b id="visitCount">—</b>
+
+                <small>Visits</small>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= GAMES ================= -->
+
+        <section id="gamesSection" class="games-section">
+
+            <div class="section-head">
+
+                <div>
+                    <span class="section-kicker">EXPLORE</span>
+                    <h2>Game Library</h2>
+                </div>
+
+                <button class="sort-btn"
+                        onclick="cycleSort()">
+                    <i class="fas fa-arrow-down-wide-short"></i>
+                    <span id="sortText">Latest</span>
+                </button>
+
+            </div>
+
+
+            <!-- SEARCH -->
+
+            <div class="search-box">
+
+                <i class="fas fa-magnifying-glass"></i>
+
+                <input id="gameSearch"
+                       type="search"
+                       placeholder="Search games..."
+                       autocomplete="off">
+
+                <button id="clearSearch"
+                        class="clear-search"
+                        onclick="clearSearch()">
+                    <i class="fas fa-xmark"></i>
+                </button>
+
+            </div>
+
+
+            <!-- CATEGORY -->
+
+            <div id="categoryChips"
+                 class="category-chips">
+            </div>
+
+
+            <!-- GAME GRID -->
+
+            <div id="gameGrid"
+                 class="game-grid">
+            </div>
+
+
+            <!-- EMPTY -->
+
+            <div id="emptyState"
+                 class="empty-state hidden">
+
+                <div class="empty-icon">
+                    <i class="fas fa-gamepad"></i>
+                </div>
+
+                <h3>No Games Found</h3>
+
+                <p>
+                    Try another search or category.
+                </p>
+
+                <button class="primary-btn"
+                        onclick="resetFilters()">
+                    Reset Filters
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= RECENT ================= -->
+
+        <section id="recentSection"
+                 class="recent-section">
+
+            <div class="section-head">
+
+                <div>
+                    <span class="section-kicker">YOUR ACTIVITY</span>
+                    <h2>Recently Played</h2>
+                </div>
+
+                <button class="text-btn"
+                        onclick="showHistory()">
+                    View All
+                </button>
+
+            </div>
+
+            <div id="historyGrid"
+                 class="history-grid">
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- ================= BOTTOM NAV ================= -->
+
+    <nav class="bottom-nav">
+
+        <button onclick="goHome()">
+            <i class="fas fa-house"></i>
+            <span>Home</span>
+        </button>
+
+        <button onclick="scrollGames()">
+            <i class="fas fa-gamepad"></i>
+            <span>Games</span>
+        </button>
+
+        <button onclick="openCommunity()">
+            <i class="fas fa-comments"></i>
+            <span>Chat</span>
+        </button>
+
+        <button onclick="showFavorites()">
+            <i class="fas fa-heart"></i>
+            <span>Favorites</span>
+        </button>
+
+    </nav>
+
+</div>
+
+
+<!-- ================= GAME MODAL ================= -->
+
+<div id="gameModal"
+     class="modal">
+
+    <div class="game-modal-box">
+
+        <div class="game-modal-head">
+
+            <strong id="gameModalTitle">
+                Game
+            </strong>
+
+            <div>
+
+                <button class="icon-btn"
+                        onclick="reloadGame()">
+                    <i class="fas fa-rotate"></i>
+                </button>
+
+                <button class="icon-btn"
+                        onclick="openGameExternal()">
+                    <i class="fas fa-up-right-from-square"></i>
+                </button>
+
+                <button class="icon-btn"
+                        onclick="fullscreenGame()">
+                    <i class="fas fa-expand"></i>
+                </button>
+
+                <button class="icon-btn danger"
+                        onclick="closeGame()">
+                    <i class="fas fa-xmark"></i>
+                </button>
+
+            </div>
+
+        </div>
+
+        <div id="gameLoading"
+             class="game-loading">
+
+            <div class="spinner"></div>
+            <span>Loading Game...</span>
+
+        </div>
+
+        <iframe id="gameFrame"
+                class="game-frame"
+                allowfullscreen
+                loading="eager"
+                referrerpolicy="no-referrer">
+        </iframe>
+
+    </div>
+
+</div>
+
+
+<!-- ================= SETTINGS ================= -->
+
+<div id="settingsModal"
+     class="modal">
+
+    <div class="modal-box settings-box">
+
+        <div class="modal-head">
+
+            <div>
+                <span class="section-kicker">CONTROL CENTER</span>
+                <h2>Settings</h2>
+            </div>
+
+            <button class="icon-btn"
+                    onclick="closeSettings()">
+                <i class="fas fa-xmark"></i>
+            </button>
+
+        </div>
+
+
+        <div class="settings-list">
+
+            <div class="setting-group">
+
+                <label>Theme</label>
+
+                <div id="themeRadios"
+                     class="theme-options">
+                </div>
+
+            </div>
+
+
+            <div class="setting-row">
+
+                <div>
+                    <strong>Appearance</strong>
+                    <small>Light / Dark mode</small>
+                </div>
+
+                <button id="modeBtn"
+                        class="toggle-btn"
+                        onclick="cycleTheme()">
+                    Auto
+                </button>
+
+            </div>
+
+
+            <div class="setting-row">
+
+                <div>
+                    <strong>Animations</strong>
+                    <small>UI animations</small>
+                </div>
+
+                <button id="motionBtn"
+                        class="toggle-btn"
+                        onclick="setMotion()">
+                    On
+                </button>
+
+            </div>
+
+
+            <div class="setting-row">
+
+                <div>
+                    <strong>Haptic Feedback</strong>
+                    <small>Touch vibration</small>
+                </div>
+
+                <button id="hapticBtn"
+                        class="toggle-btn"
+                        onclick="setHaptic()">
+                    On
+                </button>
+
+            </div>
+
+
+            <button class="setting-action"
+                    onclick="openFeedback()">
+                <i class="fas fa-message"></i>
+                <span>Send Feedback</span>
+                <i class="fas fa-chevron-right"></i>
+            </button>
+
+
+            <button class="setting-action"
+                    onclick="openReport()">
+                <i class="fas fa-bug"></i>
+                <span>Report a Bug</span>
+                <i class="fas fa-chevron-right"></i>
+            </button>
+
+
+            <button class="setting-action"
+                    onclick="openInfo()">
+                <i class="fas fa-circle-info"></i>
+                <span>About GAMEND X</span>
+                <i class="fas fa-chevron-right"></i>
+            </button>
+
+
+            <button class="setting-action danger-action"
+                    onclick="resetLocal()">
+                <i class="fas fa-trash"></i>
+                <span>Reset Local Data</span>
+                <i class="fas fa-chevron-right"></i>
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================= INFO ================= -->
+
+<div id="infoModal"
+     class="modal">
+
+    <div class="modal-box">
+
+        <div class="modal-head">
+
+            <div>
+                <span class="section-kicker">ABOUT</span>
+                <h2>GAMEND X</h2>
+            </div>
+
+            <button class="icon-btn"
+                    onclick="closeInfo()">
+                <i class="fas fa-xmark"></i>
+            </button>
+
+        </div>
+
+        <div class="info-content">
+
+            <div class="gx-big-logo">GX</div>
+
+            <h3>Ultra Pro Game Hub</h3>
+
+            <p>
+                GAMEND X is a modern mobile-first gaming hub
+                designed for instant browser gaming.
+            </p>
+
+            <div class="info-points">
+
+                <div>
+                    <i class="fas fa-bolt"></i>
+                    <span>Fast Gaming</span>
+                </div>
+
+                <div>
+                    <i class="fas fa-mobile-screen"></i>
+                    <span>Mobile Optimized</span>
+                </div>
+
+                <div>
+                    <i class="fas fa-cloud"></i>
+                    <span>Community Powered</span>
+                </div>
+
+            </div>
+
+            <small>
+                GAMEND X • Ultra Pro
+            </small>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================= FEEDBACK ================= -->
+
+<div id="feedbackModal"
+     class="modal">
+
+    <div class="modal-box">
+
+        <div class="modal-head">
+
+            <div>
+                <span class="section-kicker">HELP US</span>
+                <h2>Feedback</h2>
+            </div>
+
+            <button class="icon-btn"
+                    onclick="closeFeedback()">
+                <i class="fas fa-xmark"></i>
+            </button>
+
+        </div>
+
+        <form id="feedbackForm"
+              onsubmit="submitFeedback(event)">
+
+            <input type="hidden"
+                   name="access_key"
+                   value="5e51a205-46d1-4db6-916f-0703efb327ab">
+
+            <input type="hidden"
+                   name="subject"
+                   value="GAMEND X Feedback">
+
+            <input name="name"
+                   placeholder="Your name"
+                   required>
+
+            <input name="email"
+                   type="email"
+                   placeholder="Email">
+
+            <textarea name="message"
+                      placeholder="Write your feedback..."
+                      required></textarea>
+
+            <button class="primary-btn"
+                    type="submit">
+                <i class="fas fa-paper-plane"></i>
+                Send Feedback
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- ================= REPORT ================= -->
+
+<div id="reportModal"
+     class="modal">
+
+    <div class="modal-box">
+
+        <div class="modal-head">
+
+            <div>
+                <span class="section-kicker">BUG REPORT</span>
+                <h2>Report Bug</h2>
+            </div>
+
+            <button class="icon-btn"
+                    onclick="closeReport()">
+                <i class="fas fa-xmark"></i>
+            </button>
+
+        </div>
+
+        <form id="reportForm"
+              onsubmit="submitReport(event)">
+
+            <input type="hidden"
+                   name="access_key"
+                   value="5e51a205-46d1-4db6-916f-0703efb327ab">
+
+            <input type="hidden"
+                   name="subject"
+                   value="GAMEND X Bug Report">
+
+            <input name="name"
+                   placeholder="Your name"
+                   required>
+
+            <input name="email"
+                   type="email"
+                   placeholder="Email">
+
+            <input name="game"
+                   placeholder="Game name">
+
+            <textarea name="message"
+                      placeholder="Describe the problem..."
+                      required></textarea>
+
+            <button class="primary-btn"
+                    type="submit">
+                <i class="fas fa-bug"></i>
+                Submit Report
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- ================= TOAST ================= -->
+
+<div id="toast"
+     class="toast">
+
+    <i class="fas fa-circle-check"></i>
+    <span></span>
+
+</div>
+
+
+<script type="module" src="script.js"></script>
+
+</body>
+</html>
