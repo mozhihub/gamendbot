@@ -1328,3 +1328,59 @@ body.no-motion *::after{
     transition:none!important;
     scroll-behavior:auto!important;
 }
+/* =========================================================
+   GAME PLAY CONTROLS — LIGHT/DARK THEME FIX
+   ========================================================= */
+
+.game-modal-head .icon-btn{
+    color:#fff !important;
+    background:transparent !important;
+    opacity:1 !important;
+    visibility:visible !important;
+}
+
+.game-modal-head .icon-btn i{
+    color:#fff !important;
+    opacity:1 !important;
+    visibility:visible !important;
+}
+
+/* Light / Day mode */
+body:not(.dark) .game-modal-head .icon-btn{
+    color:#fff !important;
+}
+
+body:not(.dark) .game-modal-head .icon-btn i{
+    color:#fff !important;
+}
+
+/* Dark mode */
+body.dark .game-modal-head .icon-btn{
+    color:#fff !important;
+}
+
+body.dark .game-modal-head .icon-btn i{
+    color:#fff !important;
+}
+
+/* Hover / Touch */
+.game-modal-head .icon-btn:hover{
+    background:rgba(255,255,255,.12) !important;
+    color:#fff !important;
+}
+
+.game-modal-head .icon-btn:active{
+    background:rgba(255,255,255,.18) !important;
+    color:#fff !important;
+}
+
+.game-modal-head .icon-btn:hover i,
+.game-modal-head .icon-btn:active i{
+    color:#fff !important;
+}
+
+/* Close button */
+.game-modal-head .icon-btn.danger,
+.game-modal-head .icon-btn.danger i{
+    color:#fff !important;
+}
