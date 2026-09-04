@@ -107,3 +107,9 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
   body{padding-bottom:10px}
 }
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* Telegram Mini App game viewport fallback — keeps browser behavior unchanged */
+#gameModal.telegram-fit{padding:0;align-items:stretch;justify-content:stretch;background:#000}
+#gameModal.telegram-fit .game-shell{width:100%;height:100dvh;max-height:none;border-radius:0;border:0}
+#gameModal.telegram-fit .game-shell iframe{height:calc(100dvh - 62px);min-height:0}
+@media(max-width:700px){#gameModal.telegram-fit .game-head{height:56px;padding:8px 10px}#gameModal.telegram-fit .game-shell iframe{height:calc(100dvh - 56px)}}
