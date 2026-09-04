@@ -1,0 +1,1190 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#d50000">
+
+  <title>GAMEND X — Community Chat Test</title>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+      -webkit-tap-highlight-color:transparent;
+    }
+
+    :root{
+      --primary:#d50000;
+      --primary2:#ff1744;
+      --bg:#0b0e14;
+      --card:#151a22;
+      --text:#f7f9fc;
+      --muted:#a8b2c0;
+      --border:#242b36;
+    }
+
+    body{
+      min-height:100vh;
+      background:
+        radial-gradient(circle at 20% 10%,#d5000018,transparent 30%),
+        radial-gradient(circle at 80% 20%,#00d9ff0d,transparent 30%),
+        var(--bg);
+      color:var(--text);
+      font-family:Poppins,sans-serif;
+      display:flex;
+      justify-content:center;
+      padding:20px;
+    }
+
+    .app{
+      width:min(600px,100%);
+      height:calc(100vh - 40px);
+      min-height:500px;
+      display:flex;
+      flex-direction:column;
+      background:rgba(21,26,34,.94);
+      border:1px solid var(--border);
+      border-radius:22px;
+      overflow:hidden;
+      box-shadow:0 30px 80px #0008;
+    }
+
+    .header{
+      min-height:72px;
+      padding:12px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      border-bottom:1px solid var(--border);
+      background:rgba(18,22,30,.9);
+      backdrop-filter:blur(18px);
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .logo{
+      width:44px;
+      height:44px;
+      border-radius:13px;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(135deg,var(--primary2),var(--primary));
+      color:#fff;
+      font-weight:900;
+    }
+
+    .brand b{
+      display:block;
+      font-size:15px;
+    }
+
+    .brand small{
+      display:block;
+      color:var(--muted);
+      font-size:9px;
+    }
+
+    .online{
+      display:flex;
+      align-items:center;
+      gap:6px;
+      color:#55e6a5;
+      font-size:9px;
+    }
+
+    .online-dot{
+      width:7px;
+      height:7px;
+      border-radius:50%;
+      background:#35dc91;
+      box-shadow:0 0 10px #35dc91;
+    }
+
+    .join{
+      padding:30px 20px;
+      text-align:center;
+    }
+
+    .join-icon{
+      font-size:48px;
+      margin-bottom:10px;
+    }
+
+    .join h2{
+      font-size:22px;
+    }
+
+    .join p{
+      color:var(--muted);
+      font-size:11px;
+      line-height:1.7;
+      margin:8px auto 18px;
+      max-width:400px;
+    }
+
+    input{
+      width:100%;
+      height:46px;
+      padding:0 13px;
+      margin-bottom:9px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      outline:none;
+      background:#10141b;
+      color:var(--text);
+      font-family:inherit;
+    }
+
+    input:focus{
+      border-color:var(--primary2);
+    }
+
+    button{
+      border:0;
+      cursor:pointer;
+      font-family:inherit;
+    }
+
+    .primary{
+      width:100%;
+      min-height:46px;
+      border-radius:12px;
+      color:#fff;
+      font-weight:700;
+      background:linear-gradient(135deg,var(--primary2),var(--primary));
+      box-shadow:0 10px 30px #d5000030;
+    }
+
+    .error{
+      color:#ff6678;
+      font-size:9px;
+      margin-top:10px;
+      min-height:15px;
+    }
+
+    .chat{
+      flex:1;
+      min-height:0;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .messages{
+      flex:1;
+      min-height:0;
+      overflow-y:auto;
+      padding:14px;
+    }
+
+    .empty{
+      height:100%;
+      display:grid;
+      place-items:center;
+      text-align:center;
+      color:var(--muted);
+      font-size:11px;
+    }
+
+    .message{
+      max-width:88%;
+      margin:8px 0;
+    }
+
+    .message.me{
+      margin-left:auto;
+      text-align:right;
+    }
+
+    .user{
+      font-size:9px;
+      font-weight:700;
+      margin-bottom:3px;
+      color:var(--primary2);
+    }
+
+    .bubble{
+      display:inline-block;
+      max-width:100%;
+      padding:9px 12px;
+      border-radius:13px;
+      border:1px solid var(--border);
+      background:#ffffff08;
+      text-align:left;
+      font-size:11px;
+      line-height:1.5;
+      word-break:break-word;
+    }
+
+    .me .bubble{
+      background:#d5000018;
+      border-color:#d5000040;
+    }
+
+    .time{
+      color:var(--muted);
+      font-size:7px;
+      margin-top:3px;
+    }
+
+    .composer{
+      display:flex;
+      gap:7px;
+      padding:10px;
+      border-top:1px solid var(--border);
+      background:#10141b;
+    }
+
+    .composer input{
+      flex:1;
+      margin:0;
+    }
+
+    .send{
+      width:48px;
+      min-width:48px;
+      border-radius:12px;
+      background:linear-gradient(135deg,var(--primary2),var(--primary));
+      color:#fff;
+      font-size:17px;
+    }
+
+    .send:disabled{
+      opacity:.5;
+    }
+
+    .status{
+      min-height:24px;
+      padding:5px 12px;
+      color:var(--muted);
+      font-size:8px;
+      text-align:center;
+    }
+
+    .leave{
+      width:100%;
+      padding:9px;
+      color:var(--muted);
+      background:none;
+      font-size:9px;
+    }
+
+    .hidden{
+      display:none!important;
+    }
+
+    @media(max-width:600px){
+      body{
+        padding:0;
+      }
+
+      .app{
+        width:100%;
+        height:100dvh;
+        min-height:0;
+        border:0;
+        border-radius:0;
+      }
+
+      .header{
+        min-height:64px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="app">
+
+    <!-- HEADER -->
+    <header class="header">
+
+      <div class="brand">
+        <div class="logo">GX</div>
+
+        <div>
+          <b>Community Chat</b>
+          <small>GAMEND X</small>
+        </div>
+      </div>
+
+      <div class="online">
+        <span class="online-dot"></span>
+        <span id="onlineCount">0 online</span>
+      </div>
+
+    </header>
+
+
+    <!-- JOIN -->
+    <section id="joinBox" class="join">
+
+      <div class="join-icon">👨‍🚀</div>
+
+      <h2>Join Community</h2>
+
+      <p>
+        Enter a guest name and username.
+        No normal GAMEND X account is required.
+      </p>
+
+      <input
+        id="name"
+        maxlength="30"
+        placeholder="Your name"
+        autocomplete="name"
+      >
+
+      <input
+        id="username"
+        maxlength="20"
+        placeholder="@username"
+        autocomplete="username"
+      >
+
+      <button
+        id="joinBtn"
+        class="primary"
+      >
+        Join Community
+      </button>
+
+      <div
+        id="error"
+        class="error"
+      ></div>
+
+    </section>
+
+
+    <!-- CHAT -->
+    <section
+      id="chatBox"
+      class="chat hidden"
+    >
+
+      <div
+        id="messages"
+        class="messages"
+      >
+        <div class="empty">
+          Loading messages…
+        </div>
+      </div>
+
+
+      <div
+        id="status"
+        class="status"
+      >
+        Connecting…
+      </div>
+
+
+      <div class="composer">
+
+        <input
+          id="messageInput"
+          maxlength="500"
+          placeholder="Write a message…"
+          autocomplete="off"
+        >
+
+        <button
+          id="sendBtn"
+          class="send"
+          aria-label="Send message"
+        >
+          ➤
+        </button>
+
+      </div>
+
+
+      <button
+        id="leaveBtn"
+        class="leave"
+      >
+        Leave guest profile
+      </button>
+
+    </section>
+
+  </div>
+
+
+  <!-- Firebase -->
+  <script type="module">
+
+    import {
+      initializeApp,
+      getApps,
+      getApp
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
+    import {
+      getAuth,
+      signInAnonymously,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    import {
+      getDatabase,
+      ref,
+      push,
+      set,
+      onValue,
+      onDisconnect,
+      serverTimestamp,
+      query,
+      orderByChild,
+      limitToLast
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+
+    /* =========================================================
+       FIREBASE CONFIG
+    ========================================================== */
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCaALqxdtEPCNxg5XPPG81T9853gOPO4qY",
+      authDomain: "server-41203.firebaseapp.com",
+      databaseURL: "https://server-41203-default-rtdb.firebaseio.com",
+      projectId: "server-41203",
+      storageBucket: "server-41203.firebasestorage.app",
+      messagingSenderId: "26278139327",
+      appId: "1:26278139327:web:db44a7e2d8d42d690abd0a"
+    };
+
+
+    /* =========================================================
+       FIREBASE INIT
+    ========================================================== */
+
+    const app = getApps().length
+      ? getApp()
+      : initializeApp(firebaseConfig);
+
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+
+    /* =========================================================
+       DOM
+    ========================================================== */
+
+    const joinBox = document.getElementById("joinBox");
+    const chatBox = document.getElementById("chatBox");
+
+    const nameInput = document.getElementById("name");
+    const usernameInput = document.getElementById("username");
+
+    const joinBtn = document.getElementById("joinBtn");
+
+    const messagesBox = document.getElementById("messages");
+    const messageInput = document.getElementById("messageInput");
+    const sendBtn = document.getElementById("sendBtn");
+
+    const errorBox = document.getElementById("error");
+    const statusBox = document.getElementById("status");
+    const onlineCount = document.getElementById("onlineCount");
+
+    const leaveBtn = document.getElementById("leaveBtn");
+
+
+    /* =========================================================
+       STATE
+    ========================================================== */
+
+    let currentUser = null;
+    let profile = null;
+
+    let messagesUnsubscribe = null;
+    let presenceUnsubscribe = null;
+
+    let sending = false;
+
+
+    /* =========================================================
+       HELPERS
+    ========================================================== */
+
+    function escapeHTML(value){
+
+      return String(value ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+
+    }
+
+
+    function setStatus(text){
+      statusBox.textContent = text;
+    }
+
+
+    function getStoredProfile(){
+
+      try{
+        return JSON.parse(
+          localStorage.getItem("gamend_guest")
+        );
+      }catch{
+        return null;
+      }
+
+    }
+
+
+    function saveProfile(data){
+
+      localStorage.setItem(
+        "gamend_guest",
+        JSON.stringify(data)
+      );
+
+    }
+
+
+    function clearProfile(){
+
+      localStorage.removeItem("gamend_guest");
+
+    }
+
+
+    /* =========================================================
+       AUTH
+    ========================================================== */
+
+    async function authenticate(){
+
+      if(auth.currentUser){
+        currentUser = auth.currentUser;
+        return currentUser;
+      }
+
+      setStatus("Connecting to Firebase…");
+
+      const result = await signInAnonymously(auth);
+
+      currentUser = result.user;
+
+      return currentUser;
+
+    }
+
+
+    /* =========================================================
+       JOIN COMMUNITY
+    ========================================================== */
+
+    async function joinCommunity(){
+
+      errorBox.textContent = "";
+
+      const name = nameInput.value.trim();
+
+      let username = usernameInput.value.trim();
+
+      if(name.length < 2){
+
+        errorBox.textContent =
+          "Enter a valid name.";
+
+        return;
+
+      }
+
+
+      if(username.startsWith("@")){
+        username = username.substring(1);
+      }
+
+
+      if(!/^[A-Za-z0-9_]{3,20}$/.test(username)){
+
+        errorBox.textContent =
+          "Username must contain 3–20 letters, numbers or _.";
+
+        return;
+
+      }
+
+
+      joinBtn.disabled = true;
+      joinBtn.textContent = "Connecting…";
+
+
+      try{
+
+        const user = await authenticate();
+
+        profile = {
+          name,
+          username: "@" + username,
+          uid: user.uid
+        };
+
+        saveProfile(profile);
+
+        joinBox.classList.add("hidden");
+        chatBox.classList.remove("hidden");
+
+        await startPresence();
+
+        startMessages();
+
+        messageInput.focus();
+
+      }catch(error){
+
+        console.error(error);
+
+        errorBox.textContent =
+          error?.message ||
+          "Firebase connection failed.";
+
+      }finally{
+
+        joinBtn.disabled = false;
+        joinBtn.textContent = "Join Community";
+
+      }
+
+    }
+
+
+    /* =========================================================
+       PRESENCE
+    ========================================================== */
+
+    async function startPresence(){
+
+      if(!currentUser) return;
+
+      const presenceRef = ref(
+        db,
+        "community/presence/" + currentUser.uid
+      );
+
+
+      await set(
+        presenceRef,
+        {
+          uid: currentUser.uid,
+          name: profile.name,
+          username: profile.username,
+          online: true,
+          lastSeen: serverTimestamp()
+        }
+      );
+
+
+      await onDisconnect(presenceRef).update({
+
+        online: false,
+        lastSeen: serverTimestamp()
+
+      });
+
+
+      if(presenceUnsubscribe){
+        presenceUnsubscribe();
+      }
+
+
+      const presenceRoot = ref(
+        db,
+        "community/presence"
+      );
+
+
+      presenceUnsubscribe = onValue(
+        presenceRoot,
+        snapshot => {
+
+          let count = 0;
+
+          snapshot.forEach(child => {
+
+            const value = child.val();
+
+            if(value && value.online === true){
+              count++;
+            }
+
+          });
+
+          onlineCount.textContent =
+            count + (count === 1 ? " online" : " online");
+
+        },
+        error => {
+
+          console.error(error);
+
+          onlineCount.textContent =
+            "— online";
+
+        }
+      );
+
+    }
+
+
+    /* =========================================================
+       REALTIME MESSAGES
+    ========================================================== */
+
+    function startMessages(){
+
+      if(messagesUnsubscribe){
+        messagesUnsubscribe();
+      }
+
+
+      const messagesRef = ref(
+        db,
+        "community/messages"
+      );
+
+
+      const messagesQuery = query(
+        messagesRef,
+        orderByChild("createdAt"),
+        limitToLast(100)
+      );
+
+
+      setStatus("Connected • Live chat");
+
+
+      messagesUnsubscribe = onValue(
+        messagesQuery,
+
+        snapshot => {
+
+          const list = [];
+
+          snapshot.forEach(child => {
+
+            const data = child.val();
+
+            if(data){
+              list.push({
+                id: child.key,
+                ...data
+              });
+            }
+
+          });
+
+
+          renderMessages(list);
+
+        },
+
+        error => {
+
+          console.error(
+            "Message listener error:",
+            error
+          );
+
+          setStatus(
+            "Unable to read messages: " +
+            error.message
+          );
+
+        }
+      );
+
+    }
+
+
+    /* =========================================================
+       RENDER MESSAGES
+    ========================================================== */
+
+    function renderMessages(list){
+
+      if(!list.length){
+
+        messagesBox.innerHTML = `
+          <div class="empty">
+            No messages yet.<br>
+            Be the first to say hello 👋
+          </div>
+        `;
+
+        return;
+
+      }
+
+
+      messagesBox.innerHTML = list.map(message => {
+
+        const mine =
+          message.uid === currentUser?.uid;
+
+
+        const time =
+          message.createdAt
+            ? new Date(message.createdAt)
+                .toLocaleTimeString(
+                  [],
+                  {
+                    hour:"2-digit",
+                    minute:"2-digit"
+                  }
+                )
+            : "now";
+
+
+        return `
+          <div class="message ${mine ? "me" : ""}">
+
+            <div class="user">
+              ${escapeHTML(message.name || "Guest")}
+              ${escapeHTML(message.username || "")}
+            </div>
+
+            <div class="bubble">
+              ${escapeHTML(message.text || "")}
+            </div>
+
+            <div class="time">
+              ${escapeHTML(time)}
+            </div>
+
+          </div>
+        `;
+
+      }).join("");
+
+
+      messagesBox.scrollTop =
+        messagesBox.scrollHeight;
+
+    }
+
+
+    /* =========================================================
+       SEND MESSAGE
+    ========================================================== */
+
+    async function sendMessage(){
+
+      if(sending) return;
+
+      const text =
+        messageInput.value.trim();
+
+
+      if(!text){
+        return;
+      }
+
+
+      if(!currentUser || !profile){
+
+        setStatus(
+          "Join the community first."
+        );
+
+        return;
+
+      }
+
+
+      sending = true;
+
+      sendBtn.disabled = true;
+
+      sendBtn.textContent = "…";
+
+
+      try{
+
+        const messagesRef =
+          ref(db,"community/messages");
+
+
+        await push(
+          messagesRef,
+          {
+            uid: currentUser.uid,
+            name: profile.name,
+            username: profile.username,
+            text: text.slice(0,500),
+            createdAt: serverTimestamp()
+          }
+        );
+
+
+        messageInput.value = "";
+
+        setStatus(
+          "Message sent • Live chat"
+        );
+
+        messageInput.focus();
+
+      }catch(error){
+
+        console.error(
+          "Send message error:",
+          error
+        );
+
+        setStatus(
+          "Message failed: " +
+          error.message
+        );
+
+      }finally{
+
+        sending = false;
+
+        sendBtn.disabled = false;
+
+        sendBtn.textContent = "➤";
+
+      }
+
+    }
+
+
+    /* =========================================================
+       LEAVE
+    ========================================================== */
+
+    async function leaveCommunity(){
+
+      try{
+
+        if(currentUser){
+
+          const presenceRef =
+            ref(
+              db,
+              "community/presence/" +
+              currentUser.uid
+            );
+
+
+          await set(
+            presenceRef,
+            {
+              uid: currentUser.uid,
+              name: profile?.name || "Guest",
+              username: profile?.username || "",
+              online:false,
+              lastSeen:serverTimestamp()
+            }
+          );
+
+        }
+
+      }catch(error){
+
+        console.warn(error);
+
+      }
+
+
+      if(messagesUnsubscribe){
+        messagesUnsubscribe();
+        messagesUnsubscribe = null;
+      }
+
+
+      if(presenceUnsubscribe){
+        presenceUnsubscribe();
+        presenceUnsubscribe = null;
+      }
+
+
+      clearProfile();
+
+      profile = null;
+
+      joinBox.classList.remove("hidden");
+      chatBox.classList.add("hidden");
+
+      messageInput.value = "";
+
+      setStatus("Disconnected");
+
+    }
+
+
+    /* =========================================================
+       BUTTON EVENTS
+    ========================================================== */
+
+    joinBtn.addEventListener(
+      "click",
+      joinCommunity
+    );
+
+
+    sendBtn.addEventListener(
+      "click",
+      sendMessage
+    );
+
+
+    messageInput.addEventListener(
+      "keydown",
+      event => {
+
+        if(event.key === "Enter"){
+
+          event.preventDefault();
+
+          sendMessage();
+
+        }
+
+      }
+    );
+
+
+    leaveBtn.addEventListener(
+      "click",
+      leaveCommunity
+    );
+
+
+    /* =========================================================
+       AUTO LOGIN FROM LOCAL PROFILE
+    ========================================================== */
+
+    async function autoJoin(){
+
+      const stored =
+        getStoredProfile();
+
+
+      if(!stored?.name || !stored?.username){
+        return;
+      }
+
+
+      nameInput.value =
+        stored.name;
+
+      usernameInput.value =
+        stored.username;
+
+
+      try{
+
+        const user =
+          await authenticate();
+
+
+        profile = {
+          name: stored.name,
+          username: stored.username,
+          uid: user.uid
+        };
+
+
+        saveProfile(profile);
+
+        joinBox.classList.add("hidden");
+        chatBox.classList.remove("hidden");
+
+        await startPresence();
+
+        startMessages();
+
+      }catch(error){
+
+        console.warn(
+          "Auto join failed:",
+          error
+        );
+
+        clearProfile();
+
+      }
+
+    }
+
+
+    /* =========================================================
+       AUTH STATE
+    ========================================================== */
+
+    onAuthStateChanged(
+      auth,
+      user => {
+
+        currentUser = user;
+
+      }
+    );
+
+
+    /* =========================================================
+       START
+    ========================================================== */
+
+    autoJoin();
+
+
+    /* =========================================================
+       PAGE EXIT
+    ========================================================== */
+
+    window.addEventListener(
+      "pagehide",
+      () => {
+
+        if(currentUser){
+
+          const presenceRef =
+            ref(
+              db,
+              "community/presence/" +
+              currentUser.uid
+            );
+
+          set(
+            presenceRef,
+            {
+              uid: currentUser.uid,
+              name: profile?.name || "Guest",
+              username: profile?.username || "",
+              online:false,
+              lastSeen:serverTimestamp()
+            }
+          ).catch(()=>{});
+
+        }
+
+      }
+    );
+
+  </script>
+
+</body>
+</html>
