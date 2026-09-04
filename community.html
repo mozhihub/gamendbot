@@ -1,1050 +1,884 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport"
-      content="width=device-width,initial-scale=1,viewport-fit=cover">
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#d50000">
-
 <title>GAMEND X — Community</title>
 
-<link
-href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
-rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<!-- Apply index.html settings before UI appears -->
+<script>
+(function(){
+  const themes=[
+    ["#d50000","#ff1744"],
+    ["#0066ff","#00c6ff"],
+    ["#00a86b","#00d99b"],
+    ["#e30613","#ff4b57"],
+    ["#d08a00","#ffc62e"],
+    ["#7b2cff","#c14dff"]
+  ];
+
+  let theme=Math.min(
+    5,
+    Math.max(0,Number(localStorage.getItem("gx_theme")||0))
+  );
+
+  const mode=localStorage.getItem("gx_mode")||"dark";
+
+  let motion=true;
+  try{
+    const v=JSON.parse(localStorage.getItem("gx_motion"));
+    motion=v==null?true:!!v;
+  }catch{}
+
+  const root=document.documentElement;
+  root.dataset.theme=theme;
+  root.classList.toggle("light",mode==="light");
+  root.classList.toggle("reduced-motion",!motion);
+
+  const c=themes[theme];
+  root.style.setProperty("--primary",c[0]);
+  root.style.setProperty("--primary2",c[1]);
+})();
+</script>
 
 <style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-  -webkit-tap-highlight-color:transparent;
-}
-
 :root{
   --primary:#d50000;
   --primary2:#ff1744;
-  --bg:#080b10;
-  --header:#11151d;
+  --accent:#00d9ff;
+  --bg:#0b0e14;
   --card:#151a22;
-  --card2:#10141b;
   --text:#f7f9fc;
-  --muted:#9ca7b5;
-  --border:#252c37;
-  --green:#35dc91;
+  --muted:#a8b2c0;
+  --border:#242b36;
+  --glass:rgba(18,22,30,.84);
+  --shadow:0 16px 44px rgba(0,0,0,.32);
+  --danger:#ff3b30;
+  --success:#19c37d;
+}
+
+html.light{
+  --bg:#f4f6fb;
+  --card:#fff;
+  --text:#172033;
+  --muted:#687185;
+  --border:#e7eaf0;
+  --glass:rgba(255,255,255,.84);
+  --shadow:0 14px 40px rgba(15,23,42,.08);
+}
+
+html[data-theme="1"]{
+  --primary:#0066ff;
+  --primary2:#00c6ff;
+}
+
+html[data-theme="2"]{
+  --primary:#00a86b;
+  --primary2:#00d99b;
+}
+
+html[data-theme="3"]{
+  --primary:#e30613;
+  --primary2:#ff4b57;
+}
+
+html[data-theme="4"]{
+  --primary:#d08a00;
+  --primary2:#ffc62e;
+}
+
+html[data-theme="5"]{
+  --primary:#7b2cff;
+  --primary2:#c14dff;
+}
+
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
 }
 
 html,
 body{
   width:100%;
   height:100%;
-  overflow:hidden;
+  margin:0;
 }
 
 body{
-  background:
-    radial-gradient(
-      circle at 15% 5%,
-      rgba(213,0,0,.13),
-      transparent 30%
-    ),
-    radial-gradient(
-      circle at 90% 20%,
-      rgba(0,210,255,.05),
-      transparent 30%
-    ),
-    var(--bg);
-
-  color:var(--text);
-  font-family:Poppins,sans-serif;
-}
-
-button,
-input,
-textarea{
-  font-family:inherit;
-}
-
-button{
-  border:0;
-  outline:none;
-  cursor:pointer;
-}
-
-.hidden{
-  display:none!important;
-}
-
-/* =========================
-   APP
-========================= */
-
-.app{
-  width:100%;
-  height:100dvh;
-  display:flex;
-  flex-direction:column;
   overflow:hidden;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Poppins,Arial,sans-serif;
+  transition:
+    background .25s ease,
+    color .25s ease;
 }
 
-/* =========================
-   HEADER
-========================= */
+/* BACKGROUND */
+.moving-bg{
+  position:fixed;
+  inset:0;
+  z-index:-5;
+  overflow:hidden;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 10% 10%,
+      color-mix(in srgb,var(--primary) 14%,transparent),
+      transparent 32%),
+    radial-gradient(circle at 90% 90%,
+      color-mix(in srgb,var(--primary2) 10%,transparent),
+      transparent 32%),
+    var(--bg);
+}
 
-.header{
-  height:68px;
-  min-height:68px;
+.moving-bg::before,
+.moving-bg::after{
+  content:"";
+  position:absolute;
+  width:280px;
+  height:280px;
+  border-radius:50%;
+  filter:blur(70px);
+  opacity:.18;
+  background:var(--primary);
+}
 
+.moving-bg::before{
+  top:-80px;
+  left:-80px;
+  animation:floatOne 12s ease-in-out infinite alternate;
+}
+
+.moving-bg::after{
+  right:-100px;
+  bottom:-100px;
+  background:var(--primary2);
+  animation:floatTwo 15s ease-in-out infinite alternate;
+}
+
+@keyframes floatOne{
+  from{transform:translate(0,0)}
+  to{transform:translate(90px,100px)}
+}
+
+@keyframes floatTwo{
+  from{transform:translate(0,0)}
+  to{transform:translate(-80px,-70px)}
+}
+
+html.reduced-motion .moving-bg::before,
+html.reduced-motion .moving-bg::after{
+  animation:none!important;
+}
+
+/* HEADER */
+.topbar{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  height:64px;
+  z-index:50;
   display:flex;
   align-items:center;
-  gap:10px;
-
+  gap:12px;
   padding:
-    calc(8px + env(safe-area-inset-top))
-    12px
-    8px
-    12px;
-
-  background:rgba(15,18,25,.96);
+    env(safe-area-inset-top)
+    14px
+    0;
+  background:var(--glass);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
   border-bottom:1px solid var(--border);
-
-  backdrop-filter:blur(20px);
-  -webkit-backdrop-filter:blur(20px);
-
-  z-index:20;
+  box-shadow:0 5px 25px rgba(0,0,0,.08);
 }
 
 .back-btn{
   width:42px;
   height:42px;
-  min-width:42px;
-
-  border-radius:13px;
-
-  display:grid;
-  place-items:center;
-
-  background:#ffffff08;
+  flex:0 0 42px;
   border:1px solid var(--border);
-
-  color:#fff;
-  font-size:23px;
-
-  transition:.15s;
+  border-radius:13px;
+  background:var(--card);
+  color:var(--text);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:17px;
+  cursor:pointer;
 }
 
 .back-btn:active{
-  transform:scale(.92);
-  background:#ffffff12;
+  transform:scale(.93);
 }
 
-.brand{
-  display:flex;
-  align-items:center;
-  gap:10px;
+.title-wrap{
   min-width:0;
   flex:1;
 }
 
-.logo{
-  width:42px;
-  height:42px;
-  min-width:42px;
-
-  border-radius:13px;
-
-  display:grid;
-  place-items:center;
-
-  color:#fff;
-  font-size:13px;
-  font-weight:900;
-
-  background:
-    linear-gradient(
-      135deg,
-      var(--primary2),
-      var(--primary)
-    );
-
-  box-shadow:
-    0 8px 25px rgba(213,0,0,.28);
-}
-
-.brand-text{
-  min-width:0;
-}
-
-.brand-title{
-  display:block;
-
-  font-size:14px;
+.title{
+  margin:0;
+  font-size:18px;
   font-weight:800;
-
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+  line-height:1.1;
 }
 
-.brand-sub{
-  display:block;
-
+.subtitle{
+  margin-top:3px;
   color:var(--muted);
-  font-size:8px;
-
-  margin-top:1px;
+  font-size:11px;
+  font-weight:500;
 }
 
-.online{
+.online-pill{
   display:flex;
   align-items:center;
-  gap:5px;
-
-  color:var(--green);
-  font-size:8px;
+  gap:6px;
+  padding:7px 10px;
+  border:1px solid var(--border);
+  border-radius:999px;
+  background:var(--card);
+  color:var(--muted);
+  font-size:11px;
   font-weight:600;
-
   white-space:nowrap;
 }
 
 .online-dot{
   width:7px;
   height:7px;
-
   border-radius:50%;
-
-  background:var(--green);
-
-  box-shadow:
-    0 0 10px var(--green);
-
-  animation:pulse 1.8s infinite;
+  background:var(--success);
+  box-shadow:0 0 10px rgba(25,195,125,.65);
 }
 
-@keyframes pulse{
-  0%,100%{
-    opacity:1;
-  }
-  50%{
-    opacity:.45;
-  }
+/* APP */
+.app{
+  position:fixed;
+  inset:64px 0 0;
+  display:flex;
+  flex-direction:column;
+  min-height:0;
 }
 
-/* =========================
-   JOIN
-========================= */
+/* GUEST */
+.guest-screen{
+  position:absolute;
+  inset:0;
+  z-index:20;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:var(--bg);
+}
 
-.join{
-  width:100%;
-  max-width:480px;
-
-  margin:auto;
-
-  padding:25px;
-
+.guest-card{
+  width:min(420px,100%);
+  padding:26px 20px 22px;
+  border:1px solid var(--border);
+  border-radius:24px;
+  background:var(--glass);
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
   text-align:center;
 }
 
-.join-icon{
-  font-size:50px;
-  margin-bottom:8px;
-}
-
-.join h2{
-  font-size:23px;
-  font-weight:800;
-}
-
-.join p{
-  color:var(--muted);
-  font-size:10px;
-  line-height:1.7;
-
-  margin:
-    7px auto
-    18px;
-
-  max-width:380px;
-}
-
-.input{
-  width:100%;
-  height:48px;
-
-  padding:0 14px;
-  margin-bottom:9px;
-
-  color:var(--text);
-  background:#10141b;
-
-  border:
-    1px solid var(--border);
-
-  border-radius:13px;
-
-  outline:none;
-
-  font-size:12px;
-}
-
-.input:focus{
-  border-color:var(--primary2);
-}
-
-.primary-btn{
-  width:100%;
-  height:48px;
-
-  border-radius:13px;
-
-  color:#fff;
-
-  font-size:12px;
-  font-weight:800;
-
+.guest-icon{
+  width:68px;
+  height:68px;
+  margin:0 auto 15px;
+  border-radius:20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   background:
-    linear-gradient(
-      135deg,
-      var(--primary2),
-      var(--primary)
-    );
-
-  box-shadow:
-    0 10px 30px rgba(213,0,0,.22);
+    linear-gradient(135deg,var(--primary),var(--primary2));
+  color:#fff;
+  font-size:27px;
+  box-shadow:0 12px 28px color-mix(
+    in srgb,var(--primary) 25%,transparent
+  );
 }
 
-.primary-btn:disabled{
-  opacity:.55;
+.guest-card h2{
+  margin:0 0 7px;
+  font-size:22px;
 }
 
-.error{
-  min-height:17px;
-
-  color:#ff6475;
-
-  font-size:9px;
-
-  margin-top:8px;
+.guest-card p{
+  margin:0 auto 20px;
+  max-width:330px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.7;
 }
 
-/* =========================
-   CHAT
-========================= */
+.name-input{
+  width:100%;
+  height:50px;
+  border:1px solid var(--border);
+  border-radius:15px;
+  outline:none;
+  padding:0 15px;
+  background:var(--card);
+  color:var(--text);
+  font-family:inherit;
+  font-size:14px;
+}
 
-.chat{
+.name-input:focus{
+  border-color:var(--primary);
+  box-shadow:0 0 0 3px color-mix(
+    in srgb,var(--primary) 12%,transparent
+  );
+}
+
+.start-btn{
+  width:100%;
+  height:50px;
+  margin-top:12px;
+  border:0;
+  border-radius:15px;
+  background:linear-gradient(
+    135deg,
+    var(--primary),
+    var(--primary2)
+  );
+  color:#fff;
+  font-family:inherit;
+  font-size:14px;
+  font-weight:700;
+  cursor:pointer;
+  box-shadow:0 10px 25px color-mix(
+    in srgb,var(--primary) 25%,transparent
+  );
+}
+
+.start-btn:active{
+  transform:scale(.98);
+}
+
+/* CHAT */
+.chat-shell{
   flex:1;
   min-height:0;
-
   display:flex;
   flex-direction:column;
 }
-
-/* =========================
-   MESSAGES
-========================= */
 
 .messages{
   flex:1;
   min-height:0;
-
   overflow-y:auto;
   overflow-x:hidden;
-
-  padding:
-    12px
-    10px
-    14px;
-
-  scroll-behavior:smooth;
-
+  padding:15px 12px 10px;
   overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  scroll-behavior:smooth;
 }
 
 .messages::-webkit-scrollbar{
-  width:3px;
+  width:4px;
 }
 
 .messages::-webkit-scrollbar-thumb{
-  background:#ffffff18;
+  background:var(--border);
   border-radius:20px;
 }
 
-.empty{
-  height:100%;
-
-  display:grid;
-  place-items:center;
-
-  text-align:center;
-
+.date-divider{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:7px 0 14px;
   color:var(--muted);
-
   font-size:10px;
+  font-weight:600;
 }
 
-/* =========================
-   MESSAGE ROW
-========================= */
+.date-divider::before,
+.date-divider::after{
+  content:"";
+  height:1px;
+  flex:1;
+  background:var(--border);
+}
 
-.message-wrap{
-  position:relative;
-
+/* MESSAGE */
+.message-row{
+  display:flex;
+  margin:7px 0;
   width:100%;
+  position:relative;
+}
 
-  margin:
-    5px 0;
-
-  touch-action:pan-y;
+.message-row.mine{
+  justify-content:flex-end;
 }
 
 .message{
   position:relative;
-
-  max-width:88%;
-
-  display:flex;
-  flex-direction:column;
-
-  transition:
-    transform .18s ease;
-}
-
-.message.me{
-  margin-left:auto;
-  align-items:flex-end;
-}
-
-.message.other{
-  align-items:flex-start;
-}
-
-.user{
-  margin-bottom:3px;
-
-  color:var(--primary2);
-
-  font-size:8px;
-  font-weight:800;
-
+  width:max-content;
+  max-width:min(82%,480px);
+  min-width:72px;
+  padding:9px 11px 7px;
+  border:1px solid var(--border);
+  border-radius:17px;
+  background:var(--card);
+  box-shadow:0 5px 18px rgba(0,0,0,.07);
   user-select:none;
+  -webkit-user-select:none;
+  touch-action:pan-y;
+  transition:
+    transform .16s ease,
+    background .2s ease,
+    border-color .2s ease;
 }
 
-.other .user{
-  color:#b8c1ce;
+.message-row.mine .message{
+  border-color:color-mix(
+    in srgb,var(--primary) 35%,var(--border)
+  );
+  background:linear-gradient(
+    145deg,
+    color-mix(in srgb,var(--primary) 18%,var(--card)),
+    var(--card)
+  );
 }
 
-.bubble{
-  position:relative;
+.message.swiping{
+  transition:none;
+}
 
-  max-width:100%;
+.sender{
+  margin-bottom:3px;
+  color:var(--primary2);
+  font-size:10px;
+  font-weight:700;
+}
 
-  padding:
-    9px
-    12px;
+.mine .sender{
+  color:var(--primary);
+}
 
-  color:var(--text);
-
-  background:#ffffff08;
-
-  border:
-    1px solid var(--border);
-
-  border-radius:14px;
-
-  text-align:left;
-
-  font-size:11px;
-  line-height:1.55;
-
+.message-text{
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
   word-break:break-word;
-
+  font-size:13px;
+  line-height:1.55;
   user-select:text;
+  -webkit-user-select:text;
 }
 
-.me .bubble{
-  background:
-    linear-gradient(
-      135deg,
-      rgba(213,0,0,.22),
-      rgba(213,0,0,.08)
-    );
-
-  border-color:#d5000040;
-}
-
-.reply-box{
-  width:100%;
-
-  margin-bottom:5px;
-
-  padding:
-    6px 8px;
-
-  border-left:
-    3px solid var(--primary2);
-
-  border-radius:7px;
-
-  background:#ffffff08;
-
-  font-size:8px;
-
+.message-meta{
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  gap:4px;
+  margin-top:3px;
   color:var(--muted);
-
-  overflow:hidden;
-}
-
-.reply-box strong{
-  display:block;
-
-  color:#ff6475;
-
   font-size:8px;
-
-  margin-bottom:2px;
-}
-
-.reply-box span{
-  display:block;
-
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
 }
 
 .edited{
-  color:var(--muted);
-
-  font-size:7px;
-  margin-left:3px;
+  font-size:8px;
 }
 
-.time{
-  color:#687384;
-
-  font-size:7px;
-
-  margin-top:3px;
-
-  user-select:none;
-}
-
-/* =========================
-   SWIPE REPLY ICON
-========================= */
-
-.reply-action{
-  position:absolute;
-
-  top:50%;
-
-  width:34px;
-  height:34px;
-
-  margin-top:-17px;
-
-  border-radius:50%;
-
-  display:grid;
-  place-items:center;
-
-  background:
-    linear-gradient(
-      135deg,
-      var(--primary2),
-      var(--primary)
-    );
-
-  color:#fff;
-
-  font-size:16px;
-
-  opacity:0;
-
-  transform:scale(.6);
-
-  transition:.15s;
-
-  pointer-events:none;
-
-  box-shadow:
-    0 6px 20px rgba(213,0,0,.3);
-}
-
-.reply-action.left{
-  right:5px;
-}
-
-.reply-action.right{
-  left:5px;
-}
-
-.message-wrap.replying .reply-action{
-  opacity:1;
-  transform:scale(1);
-}
-
-/* =========================
-   REPLY PREVIEW
-========================= */
-
+/* REPLY PREVIEW */
 .reply-preview{
-  display:flex;
-  align-items:center;
-  gap:8px;
-
-  min-height:48px;
-
-  padding:
-    7px
-    10px;
-
-  background:#121720;
-
-  border-top:
-    1px solid var(--border);
-
-  border-bottom:
-    1px solid var(--border);
+  margin-bottom:7px;
+  padding:6px 8px;
+  border-left:3px solid var(--primary);
+  border-radius:7px;
+  background:color-mix(
+    in srgb,var(--primary) 8%,var(--bg)
+  );
+  overflow:hidden;
 }
 
-.reply-preview-line{
-  width:3px;
-  height:32px;
-
-  min-width:3px;
-
-  border-radius:5px;
-
-  background:
-    linear-gradient(
-      var(--primary2),
-      var(--primary)
-    );
+.reply-name{
+  color:var(--primary2);
+  font-size:9px;
+  font-weight:700;
 }
 
-.reply-preview-content{
-  min-width:0;
-  flex:1;
-}
-
-.reply-preview-name{
-  color:#ff6475;
-
-  font-size:8px;
-  font-weight:800;
-}
-
-.reply-preview-text{
+.reply-text{
+  margin-top:2px;
   color:var(--muted);
-
-  font-size:8px;
-
+  font-size:9px;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
 }
 
-.cancel-reply{
-  width:30px;
-  height:30px;
-
-  border-radius:50%;
-
-  background:#ffffff08;
-
-  color:#fff;
-
-  font-size:17px;
+/* INPUT */
+.composer{
+  position:relative;
+  flex:0 0 auto;
+  display:flex;
+  align-items:flex-end;
+  gap:8px;
+  padding:
+    8px 10px
+    calc(8px + env(safe-area-inset-bottom));
+  background:var(--glass);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border-top:1px solid var(--border);
 }
 
-/* =========================
-   COMPOSER
-========================= */
+.reply-bar{
+  position:absolute;
+  left:10px;
+  right:10px;
+  bottom:calc(100% + 7px);
+  display:none;
+  align-items:center;
+  gap:8px;
+  padding:8px 10px;
+  border:1px solid var(--border);
+  border-radius:13px;
+  background:var(--glass);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+}
 
-.composer{
+.reply-bar.show{
+  display:flex;
+}
+
+.reply-bar-icon{
+  width:28px;
+  height:28px;
+  flex:0 0 28px;
   display:flex;
   align-items:center;
-  gap:7px;
+  justify-content:center;
+  border-radius:8px;
+  background:color-mix(
+    in srgb,var(--primary) 12%,transparent
+  );
+  color:var(--primary2);
+}
 
-  padding:
-    8px 9px
-    calc(8px + env(safe-area-inset-bottom));
+.reply-info{
+  flex:1;
+  min-width:0;
+}
 
-  background:#10141b;
+.reply-info strong{
+  display:block;
+  font-size:10px;
+  color:var(--primary2);
+}
 
-  border-top:
-    1px solid var(--border);
+.reply-info span{
+  display:block;
+  margin-top:2px;
+  color:var(--muted);
+  font-size:9px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.reply-cancel{
+  width:30px;
+  height:30px;
+  border:0;
+  border-radius:8px;
+  background:transparent;
+  color:var(--muted);
 }
 
 .message-input{
   flex:1;
-
-  width:100%;
-  height:45px;
-
-  padding:
-    0 13px;
-
-  border-radius:13px;
-
-  border:
-    1px solid var(--border);
-
-  background:#151a22;
-
-  color:#fff;
-
+  min-width:0;
+  height:46px;
+  border:1px solid var(--border);
+  border-radius:15px;
   outline:none;
-
-  font-size:11px;
+  padding:0 13px;
+  background:var(--card);
+  color:var(--text);
+  font-family:inherit;
+  font-size:13px;
 }
 
 .message-input:focus{
-  border-color:var(--primary2);
+  border-color:var(--primary);
 }
 
-.send{
-  width:45px;
-  height:45px;
-
-  min-width:45px;
-
-  border-radius:13px;
-
-  display:grid;
-  place-items:center;
-
-  background:
-    linear-gradient(
-      135deg,
-      var(--primary2),
-      var(--primary)
-    );
-
+.send-btn{
+  width:46px;
+  height:46px;
+  flex:0 0 46px;
+  border:0;
+  border-radius:15px;
+  background:linear-gradient(
+    135deg,
+    var(--primary),
+    var(--primary2)
+  );
   color:#fff;
-
-  font-size:17px;
-
-  box-shadow:
-    0 7px 22px rgba(213,0,0,.2);
+  font-size:16px;
+  cursor:pointer;
+  box-shadow:0 8px 20px color-mix(
+    in srgb,var(--primary) 22%,transparent
+  );
 }
 
-.send:disabled{
+.send-btn:disabled{
   opacity:.45;
+  box-shadow:none;
 }
 
-/* =========================
-   STATUS / LEAVE
-========================= */
+.send-btn:active{
+  transform:scale(.93);
+}
 
-.status{
-  min-height:20px;
-
-  padding:
-    3px 10px;
-
-  color:#7e8998;
-
-  font-size:7px;
-
+/* EMPTY / LOADING */
+.center-state{
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  color:var(--muted);
   text-align:center;
-
-  background:#0e1218;
 }
 
-.leave{
-  width:100%;
-
-  height:28px;
-
-  background:#0e1218;
-
-  color:#687384;
-
-  font-size:8px;
+.center-state i{
+  margin-bottom:10px;
+  color:var(--primary);
+  font-size:27px;
 }
 
-/* =========================
-   CONTEXT MENU
-========================= */
+.center-state strong{
+  color:var(--text);
+  font-size:13px;
+}
 
+.center-state span{
+  margin-top:4px;
+  font-size:10px;
+}
+
+/* CONTEXT MENU */
 .context-menu{
   position:fixed;
-
-  z-index:1000;
-
-  min-width:150px;
-
-  padding:5px;
-
-  border-radius:15px;
-
-  background:#171c25;
-
+  z-index:100;
+  display:none;
+  min-width:155px;
+  padding:6px;
   border:1px solid var(--border);
-
-  box-shadow:
-    0 18px 50px rgba(0,0,0,.55);
-
-  animation:menuIn .12s ease;
+  border-radius:15px;
+  background:var(--glass);
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
 }
 
-@keyframes menuIn{
-  from{
-    opacity:0;
-    transform:scale(.94);
-  }
-  to{
-    opacity:1;
-    transform:scale(1);
-  }
+.context-menu.show{
+  display:block;
 }
 
-.context-title{
-  padding:
-    7px 9px;
-
-  color:#758092;
-
-  font-size:7px;
-  font-weight:700;
-}
-
-.menu-btn{
+.context-item{
   width:100%;
-
-  height:38px;
-
+  height:42px;
   display:flex;
   align-items:center;
-
-  gap:9px;
-
-  padding:
-    0 10px;
-
+  gap:10px;
+  border:0;
   border-radius:10px;
-
+  padding:0 11px;
   background:transparent;
-
-  color:#fff;
-
-  font-size:10px;
-
+  color:var(--text);
+  font-family:inherit;
+  font-size:12px;
+  font-weight:600;
   text-align:left;
 }
 
-.menu-btn:active{
-  background:#ffffff0d;
+.context-item:active{
+  background:color-mix(
+    in srgb,var(--primary) 10%,transparent
+  );
 }
 
-.menu-btn.delete{
-  color:#ff6475;
+.context-item.delete{
+  color:var(--danger);
 }
 
-/* =========================
-   EDIT MODAL
-========================= */
-
-.modal{
+/* MODAL */
+.modal-layer{
   position:fixed;
-
   inset:0;
-
-  z-index:2000;
-
-  display:flex;
+  z-index:120;
+  display:none;
   align-items:center;
   justify-content:center;
-
   padding:20px;
-
-  background:rgba(0,0,0,.72);
-
-  backdrop-filter:blur(8px);
+  background:rgba(0,0,0,.55);
+  backdrop-filter:blur(5px);
+  -webkit-backdrop-filter:blur(5px);
 }
 
-.modal-card{
+.modal-layer.show{
+  display:flex;
+}
+
+.modal{
   width:min(430px,100%);
-
-  padding:17px;
-
-  border-radius:20px;
-
-  background:#151a22;
-
-  border:
-    1px solid var(--border);
-
-  box-shadow:
-    0 30px 80px rgba(0,0,0,.55);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:19px;
+  background:var(--card);
+  box-shadow:var(--shadow);
 }
 
-.modal-title{
-  font-size:15px;
-  font-weight:800;
-
-  margin-bottom:11px;
+.modal-head{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:13px;
 }
 
-.edit-textarea{
+.modal-head h3{
+  flex:1;
+  margin:0;
+  font-size:16px;
+}
+
+.modal-close{
+  width:34px;
+  height:34px;
+  border:0;
+  border-radius:10px;
+  background:color-mix(
+    in srgb,var(--primary) 8%,transparent
+  );
+  color:var(--muted);
+}
+
+.edit-area{
   width:100%;
-
   min-height:120px;
-
+  max-height:240px;
   resize:none;
-
-  padding:11px;
-
-  border-radius:13px;
-
-  border:
-    1px solid var(--border);
-
-  background:#10141b;
-
-  color:#fff;
-
+  border:1px solid var(--border);
+  border-radius:14px;
   outline:none;
-
-  font-size:11px;
+  padding:12px;
+  background:var(--bg);
+  color:var(--text);
+  font-family:inherit;
+  font-size:13px;
   line-height:1.5;
 }
 
-.edit-textarea:focus{
-  border-color:var(--primary2);
+.edit-area:focus{
+  border-color:var(--primary);
 }
 
-.modal-buttons{
+.modal-actions{
   display:flex;
   gap:8px;
-
-  margin-top:10px;
+  margin-top:12px;
 }
 
 .modal-btn{
   flex:1;
-
-  height:43px;
-
-  border-radius:12px;
-
-  font-size:10px;
+  height:44px;
+  border:1px solid var(--border);
+  border-radius:13px;
+  background:var(--card);
+  color:var(--text);
+  font-family:inherit;
   font-weight:700;
 }
 
-.cancel-btn{
-  background:#ffffff08;
+.modal-btn.primary{
+  border:0;
   color:#fff;
-
-  border:
-    1px solid var(--border);
+  background:linear-gradient(
+    135deg,
+    var(--primary),
+    var(--primary2)
+  );
 }
 
-.done-btn{
-  background:
-    linear-gradient(
-      135deg,
-      var(--primary2),
-      var(--primary)
-    );
-
-  color:#fff;
-}
-
-/* =========================
-   CONFIRM MODAL
-========================= */
-
-.confirm-text{
-  color:var(--muted);
-
-  font-size:10px;
-
-  line-height:1.6;
-
-  margin-bottom:12px;
-}
-
-/* =========================
-   TOAST
-========================= */
-
+/* TOAST */
 .toast{
   position:fixed;
-
   left:50%;
-  bottom:
-    calc(78px + env(safe-area-inset-bottom));
-
-  z-index:3000;
-
-  transform:
-    translateX(-50%)
-    translateY(20px);
-
-  padding:
-    9px 14px;
-
-  border-radius:12px;
-
-  background:#191f29;
-
-  border:
-    1px solid var(--border);
-
-  color:#fff;
-
-  font-size:9px;
-
+  bottom:90px;
+  z-index:200;
+  max-width:85%;
+  padding:10px 14px;
+  border:1px solid var(--border);
+  border-radius:13px;
+  background:var(--glass);
+  color:var(--text);
+  font-size:11px;
+  font-weight:600;
+  box-shadow:var(--shadow);
+  transform:translate(-50%,20px);
   opacity:0;
   pointer-events:none;
-
-  transition:.2s;
-
-  white-space:nowrap;
-
-  box-shadow:
-    0 10px 30px rgba(0,0,0,.4);
+  transition:.22s ease;
+  backdrop-filter:blur(15px);
+  -webkit-backdrop-filter:blur(15px);
 }
 
 .toast.show{
   opacity:1;
-
-  transform:
-    translateX(-50%)
-    translateY(0);
+  transform:translate(-50%,0);
 }
 
-/* =========================
-   DESKTOP
-========================= */
+/* REDUCED MOTION */
+html.reduced-motion *,
+html.reduced-motion *::before,
+html.reduced-motion *::after{
+  animation-duration:.001ms!important;
+  animation-iteration-count:1!important;
+  transition-duration:.001ms!important;
+  scroll-behavior:auto!important;
+}
 
-@media(min-width:601px){
-
-  body{
-    padding:20px;
+/* SMALL MOBILE */
+@media(max-width:380px){
+  .topbar{
+    padding-left:10px;
+    padding-right:10px;
   }
 
-  .app{
-    max-width:600px;
-    height:calc(100dvh - 40px);
-
-    margin:auto;
-
-    border:
-      1px solid var(--border);
-
-    border-radius:22px;
-
-    box-shadow:
-      0 30px 90px rgba(0,0,0,.5);
+  .title{
+    font-size:16px;
   }
 
-  .header{
-    border-radius:
-      22px 22px 0 0;
+  .online-pill{
+    padding:6px 8px;
+    font-size:10px;
+  }
+
+  .message{
+    max-width:87%;
+  }
+
+  .messages{
+    padding-left:8px;
+    padding-right:8px;
   }
 }
 </style>
@@ -1052,2442 +886,1695 @@ button{
 
 <body>
 
-<div class="app">
+<div class="moving-bg"></div>
 
-  <!-- HEADER -->
-  <header class="header">
+<header class="topbar">
+  <button class="back-btn" id="backBtn" aria-label="Back">
+    <i class="fas fa-arrow-left"></i>
+  </button>
 
-    <button
-      id="backBtn"
-      class="back-btn"
-      aria-label="Back">
-      ‹
-    </button>
+  <div class="title-wrap">
+    <h1 class="title">Community</h1>
+    <div class="subtitle">GAMEND X Community Chat</div>
+  </div>
 
-    <div class="brand">
+  <div class="online-pill">
+    <span class="online-dot"></span>
+    <span id="onlineCount">0 online</span>
+  </div>
+</header>
 
-      <div class="logo">
-        GX
+<main class="app">
+
+  <!-- GUEST NAME -->
+  <section class="guest-screen" id="guestScreen">
+    <div class="guest-card">
+      <div class="guest-icon">
+        <i class="fas fa-comments"></i>
       </div>
 
-      <div class="brand-text">
+      <h2>Join Community</h2>
 
-        <span class="brand-title">
-          Community Chat
-        </span>
+      <p>
+        Choose a display name and join the GAMEND X community chat.
+      </p>
 
-        <span class="brand-sub">
-          GAMEND X • LIVE COMMUNITY
-        </span>
+      <input
+        id="guestName"
+        class="name-input"
+        type="text"
+        maxlength="30"
+        autocomplete="off"
+        placeholder="Enter your name"
+      >
 
-      </div>
-
+      <button class="start-btn" id="joinBtn">
+        <i class="fas fa-right-to-bracket"></i>
+        &nbsp; Join Chat
+      </button>
     </div>
-
-    <div class="online">
-
-      <span class="online-dot"></span>
-
-      <span id="onlineCount">
-        0 online
-      </span>
-
-    </div>
-
-  </header>
-
-
-  <!-- JOIN -->
-  <section
-    id="joinBox"
-    class="join">
-
-    <div class="join-icon">
-      👨‍🚀
-    </div>
-
-    <h2>
-      Join Community
-    </h2>
-
-    <p>
-      Enter your guest name and username
-      to join the GAMEND X community.
-    </p>
-
-    <input
-      id="name"
-      class="input"
-      maxlength="30"
-      placeholder="Your name"
-      autocomplete="name">
-
-    <input
-      id="username"
-      class="input"
-      maxlength="20"
-      placeholder="@username"
-      autocomplete="username">
-
-    <button
-      id="joinBtn"
-      class="primary-btn">
-      Join Community
-    </button>
-
-    <div
-      id="error"
-      class="error">
-    </div>
-
   </section>
 
-
   <!-- CHAT -->
-  <section
-    id="chatBox"
-    class="chat hidden">
+  <section class="chat-shell" id="chatShell" hidden>
 
-    <div
-      id="messages"
-      class="messages">
-
-      <div class="empty">
-        Loading messages…
+    <div class="messages" id="messages">
+      <div class="center-state">
+        <i class="fas fa-spinner fa-spin"></i>
+        <strong>Loading community...</strong>
+        <span>Please wait</span>
       </div>
-
     </div>
-
-
-    <div
-      id="replyPreview"
-      class="reply-preview hidden">
-
-      <div class="reply-preview-line"></div>
-
-      <div class="reply-preview-content">
-
-        <div
-          id="replyPreviewName"
-          class="reply-preview-name">
-        </div>
-
-        <div
-          id="replyPreviewText"
-          class="reply-preview-text">
-        </div>
-
-      </div>
-
-      <button
-        id="cancelReply"
-        class="cancel-reply">
-        ×
-      </button>
-
-    </div>
-
-
-    <div
-      id="status"
-      class="status">
-      Connecting…
-    </div>
-
 
     <div class="composer">
+
+      <div class="reply-bar" id="replyBar">
+        <div class="reply-bar-icon">
+          <i class="fas fa-reply"></i>
+        </div>
+
+        <div class="reply-info">
+          <strong id="replyName">Reply</strong>
+          <span id="replyText"></span>
+        </div>
+
+        <button class="reply-cancel" id="cancelReply">
+          <i class="fas fa-xmark"></i>
+        </button>
+      </div>
 
       <input
         id="messageInput"
         class="message-input"
-        maxlength="500"
-        placeholder="Write a message…"
-        autocomplete="off">
+        type="text"
+        maxlength="1000"
+        autocomplete="off"
+        placeholder="Message community..."
+      >
 
-      <button
-        id="sendBtn"
-        class="send"
-        aria-label="Send">
-        ➤
+      <button class="send-btn" id="sendBtn" disabled>
+        <i class="fas fa-paper-plane"></i>
       </button>
-
     </div>
 
-
-    <button
-      id="leaveBtn"
-      class="leave">
-      Leave guest profile
-    </button>
-
   </section>
+</main>
 
-</div>
-
-
-<!-- CONTEXT MENU -->
-
-<div
-  id="contextMenu"
-  class="context-menu hidden">
-
-  <div class="context-title">
-    YOUR MESSAGE
-  </div>
-
-  <button
-    id="editMenuBtn"
-    class="menu-btn">
-    ✏️ Edit message
+<!-- LONG PRESS MENU -->
+<div class="context-menu" id="contextMenu">
+  <button class="context-item" id="editMessageBtn">
+    <i class="fas fa-pen"></i>
+    Edit
   </button>
 
-  <button
-    id="deleteMenuBtn"
-    class="menu-btn delete">
-    🗑️ Delete message
+  <button class="context-item delete" id="deleteMessageBtn">
+    <i class="fas fa-trash"></i>
+    Delete
   </button>
-
 </div>
-
 
 <!-- EDIT MODAL -->
+<div class="modal-layer" id="editModal">
+  <div class="modal">
 
-<div
-  id="editModal"
-  class="modal hidden">
+    <div class="modal-head">
+      <h3>Edit message</h3>
 
-  <div class="modal-card">
-
-    <div class="modal-title">
-      Edit Message
+      <button class="modal-close" id="editClose">
+        <i class="fas fa-xmark"></i>
+      </button>
     </div>
 
     <textarea
-      id="editTextarea"
-      class="edit-textarea"
-      maxlength="500"></textarea>
+      id="editArea"
+      class="edit-area"
+      maxlength="1000"
+    ></textarea>
 
-    <div class="modal-buttons">
-
-      <button
-        id="editCancel"
-        class="modal-btn cancel-btn">
+    <div class="modal-actions">
+      <button class="modal-btn" id="editCancel">
         Cancel
       </button>
 
-      <button
-        id="editDone"
-        class="modal-btn done-btn">
+      <button class="modal-btn primary" id="editDone">
         Done
       </button>
-
     </div>
 
   </div>
-
 </div>
 
-
 <!-- DELETE MODAL -->
+<div class="modal-layer" id="deleteModal">
+  <div class="modal">
 
-<div
-  id="deleteModal"
-  class="modal hidden">
+    <div class="modal-head">
+      <h3>Delete message?</h3>
 
-  <div class="modal-card">
-
-    <div class="modal-title">
-      Delete Message?
+      <button class="modal-close" id="deleteClose">
+        <i class="fas fa-xmark"></i>
+      </button>
     </div>
 
-    <div class="confirm-text">
-      Are you sure you want to permanently
-      delete this message?
+    <div style="
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.6;
+      margin-bottom:14px;
+    ">
+      This message will be permanently removed from the community.
     </div>
 
-    <div class="modal-buttons">
-
-      <button
-        id="deleteCancel"
-        class="modal-btn cancel-btn">
+    <div class="modal-actions">
+      <button class="modal-btn" id="deleteCancel">
         Cancel
       </button>
 
-      <button
-        id="deleteConfirm"
-        class="modal-btn done-btn">
+      <button class="modal-btn primary" id="deleteConfirm">
         Delete
       </button>
-
     </div>
 
   </div>
-
 </div>
 
+<div class="toast" id="toast"></div>
 
-<div
-  id="toast"
-  class="toast">
-</div>
+<script>
+/* =========================================================
+   GAMEND X COMMUNITY
+   Uses the SAME settings saved by index.html
 
+   gx_theme
+   gx_mode
+   gx_motion
+   gx_haptic
+   gx_guest
+========================================================= */
 
-<script type="module">
-
-/* =====================================================
-   FIREBASE IMPORTS
-===================================================== */
-
-import {
-  initializeApp,
-  getApps,
-  getApp
-}
-from
-"https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-
-import {
-  getAuth,
-  signInAnonymously,
-  onAuthStateChanged
-}
-from
-"https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-import {
-  getDatabase,
-  ref,
-  push,
-  set,
-  update,
-  remove,
-  onValue,
-  onDisconnect,
-  serverTimestamp,
-  query,
-  orderByChild,
-  limitToLast
-}
-from
-"https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-
-/* =====================================================
-   FIREBASE CONFIG
-===================================================== */
-
-const firebaseConfig = {
-
-  apiKey:
-    "AIzaSyCaALqxdtEPCNxg5XPPG81T9853gOPO4qY",
-
-  authDomain:
-    "server-41203.firebaseapp.com",
-
-  databaseURL:
-    "https://server-41203-default-rtdb.firebaseio.com",
-
-  projectId:
-    "server-41203",
-
-  storageBucket:
-    "server-41203.firebasestorage.app",
-
-  messagingSenderId:
-    "26278139327",
-
-  appId:
-    "1:26278139327:web:db44a7e2d8d42d690abd0a"
+const FIREBASE_CONFIG={
+  apiKey:"AIzaSyCaALqxdtEPCNxg5XPPG81T9853gOPO4qY",
+  authDomain:"server-41203.firebaseapp.com",
+  databaseURL:"https://server-41203-default-rtdb.firebaseio.com",
+  projectId:"server-41203",
+  storageBucket:"server-41203.firebasestorage.app",
+  messagingSenderId:"26278139327",
+  appId:"1:26278139327:web:db44e7d2e8d42d690abd0a"
 };
 
+const themes=[
+  "Neon Red",
+  "Neon Blue",
+  "Emerald",
+  "Crimson",
+  "Gold",
+  "Purple"
+];
 
-/* =====================================================
-   FIREBASE INIT
-===================================================== */
+const themeColors=[
+  ["#d50000","#ff1744"],
+  ["#0066ff","#00c6ff"],
+  ["#00a86b","#00d99b"],
+  ["#e30613","#ff4b57"],
+  ["#d08a00","#ffc62e"],
+  ["#7b2cff","#c14dff"]
+];
 
-const app =
-  getApps().length
-    ? getApp()
-    : initializeApp(firebaseConfig);
-
-const auth =
-  getAuth(app);
-
-const db =
-  getDatabase(app);
-
-
-/* =====================================================
+/* ---------------------------------------------------------
    DOM
-===================================================== */
+--------------------------------------------------------- */
+const $=id=>document.getElementById(id);
 
-const backBtn =
-  document.getElementById("backBtn");
+const backBtn=$("backBtn");
+const guestScreen=$("guestScreen");
+const chatShell=$("chatShell");
+const guestName=$("guestName");
+const joinBtn=$("joinBtn");
 
-const joinBox =
-  document.getElementById("joinBox");
+const messages=$("messages");
+const messageInput=$("messageInput");
+const sendBtn=$("sendBtn");
 
-const chatBox =
-  document.getElementById("chatBox");
+const onlineCount=$("onlineCount");
 
-const nameInput =
-  document.getElementById("name");
+const replyBar=$("replyBar");
+const replyName=$("replyName");
+const replyText=$("replyText");
+const cancelReply=$("cancelReply");
 
-const usernameInput =
-  document.getElementById("username");
+const contextMenu=$("contextMenu");
+const editMessageBtn=$("editMessageBtn");
+const deleteMessageBtn=$("deleteMessageBtn");
 
-const joinBtn =
-  document.getElementById("joinBtn");
+const editModal=$("editModal");
+const editArea=$("editArea");
+const editClose=$("editClose");
+const editCancel=$("editCancel");
+const editDone=$("editDone");
 
-const errorBox =
-  document.getElementById("error");
+const deleteModal=$("deleteModal");
+const deleteClose=$("deleteClose");
+const deleteCancel=$("deleteCancel");
+const deleteConfirm=$("deleteConfirm");
 
-const messagesBox =
-  document.getElementById("messages");
+const toastEl=$("toast");
 
-const onlineCount =
-  document.getElementById("onlineCount");
-
-const statusBox =
-  document.getElementById("status");
-
-const messageInput =
-  document.getElementById("messageInput");
-
-const sendBtn =
-  document.getElementById("sendBtn");
-
-const leaveBtn =
-  document.getElementById("leaveBtn");
-
-const replyPreview =
-  document.getElementById("replyPreview");
-
-const replyPreviewName =
-  document.getElementById("replyPreviewName");
-
-const replyPreviewText =
-  document.getElementById("replyPreviewText");
-
-const cancelReply =
-  document.getElementById("cancelReply");
-
-const contextMenu =
-  document.getElementById("contextMenu");
-
-const editMenuBtn =
-  document.getElementById("editMenuBtn");
-
-const deleteMenuBtn =
-  document.getElementById("deleteMenuBtn");
-
-const editModal =
-  document.getElementById("editModal");
-
-const editTextarea =
-  document.getElementById("editTextarea");
-
-const editCancel =
-  document.getElementById("editCancel");
-
-const editDone =
-  document.getElementById("editDone");
-
-const deleteModal =
-  document.getElementById("deleteModal");
-
-const deleteCancel =
-  document.getElementById("deleteCancel");
-
-const deleteConfirm =
-  document.getElementById("deleteConfirm");
-
-const toast =
-  document.getElementById("toast");
-
-
-/* =====================================================
-   STATE
-===================================================== */
-
-let currentUser = null;
-
-let profile = null;
-
-let messages = [];
-
-let messagesUnsubscribe = null;
-
-let presenceUnsubscribe = null;
-
-let sending = false;
-
-let selectedMessage = null;
-
-let replyTo = null;
-
-let toastTimer = null;
-
-
-/* =====================================================
-   HELPERS
-===================================================== */
-
-function escapeHTML(value){
-
-  return String(value ?? "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
+/* ---------------------------------------------------------
+   SETTINGS — READ ONLY
+   No settings options are displayed on this page.
+--------------------------------------------------------- */
+function getJSON(key,def){
+  try{
+    const v=JSON.parse(localStorage.getItem(key));
+    return v==null?def:v;
+  }catch{
+    return def;
+  }
 }
 
+function applyIndexSettings(){
 
-function setStatus(text){
+  let theme=Math.min(
+    5,
+    Math.max(
+      0,
+      Number(localStorage.getItem("gx_theme")||0)
+    )
+  );
 
-  statusBox.textContent =
-    text;
+  const mode=localStorage.getItem("gx_mode")||"dark";
+
+  const motion=getJSON("gx_motion",true);
+
+  document.documentElement.dataset.theme=theme;
+
+  document.documentElement.classList.toggle(
+    "light",
+    mode==="light"
+  );
+
+  document.documentElement.classList.toggle(
+    "reduced-motion",
+    !motion
+  );
+
+  const colors=themeColors[theme];
+
+  document.documentElement.style.setProperty(
+    "--primary",
+    colors[0]
+  );
+
+  document.documentElement.style.setProperty(
+    "--primary2",
+    colors[1]
+  );
 }
 
+applyIndexSettings();
 
-function showToast(text){
+/* If index settings are changed in another tab/window,
+   Community automatically follows them. */
+window.addEventListener("storage",e=>{
+  if([
+    "gx_theme",
+    "gx_mode",
+    "gx_motion",
+    "gx_haptic"
+  ].includes(e.key)){
+    applyIndexSettings();
+  }
+});
 
+/* ---------------------------------------------------------
+   HAPTIC — same logic as index.html
+--------------------------------------------------------- */
+function tap(){
+  if(getJSON("gx_haptic",true)&&navigator.vibrate){
+    try{
+      navigator.vibrate(10);
+    }catch{}
+  }
+}
+
+/* ---------------------------------------------------------
+   TOAST
+--------------------------------------------------------- */
+let toastTimer;
+
+function toast(text){
   clearTimeout(toastTimer);
 
-  toast.textContent =
-    text;
+  toastEl.textContent=text;
+  toastEl.classList.add("show");
 
-  toast.classList.add("show");
-
-  toastTimer =
-    setTimeout(
-      () => {
-        toast.classList.remove("show");
-      },
-      2200
-    );
+  toastTimer=setTimeout(()=>{
+    toastEl.classList.remove("show");
+  },1800);
 }
 
+/* ---------------------------------------------------------
+   GUEST
+--------------------------------------------------------- */
+function readGuest(){
 
-function getStoredProfile(){
+  let data=getJSON("gx_guest",null);
+
+  /* Compatibility with older Community version */
+  if(!data){
+    data=getJSON("gamend_guest",null);
+  }
+
+  return data;
+}
+
+function saveGuest(name){
+
+  const data={
+    name:name.trim()
+  };
+
+  try{
+    localStorage.setItem(
+      "gx_guest",
+      JSON.stringify(data)
+    );
+  }catch{}
+
+  return data;
+}
+
+let guest=readGuest();
+
+function showGuest(){
+
+  guestScreen.hidden=false;
+  chatShell.hidden=true;
+
+  setTimeout(()=>{
+    guestName.focus();
+  },100);
+}
+
+function showChat(){
+
+  guestScreen.hidden=true;
+  chatShell.hidden=false;
+}
+
+/* ---------------------------------------------------------
+   FIREBASE
+--------------------------------------------------------- */
+let firebaseReady=false;
+
+let f={};
+
+let db=null;
+let auth=null;
+let currentUser=null;
+
+let messagesUnsubscribe=null;
+let presenceUnsubscribe=null;
+let presenceRef=null;
+
+async function initFirebase(){
+
+  if(firebaseReady)return;
 
   try{
 
-    return JSON.parse(
-      localStorage.getItem(
-        "gamend_guest"
-      )
+    const appMod=await import(
+      "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"
     );
 
-  }catch{
+    const authMod=await import(
+      "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"
+    );
 
-    return null;
+    const dbMod=await import(
+      "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"
+    );
 
-  }
-}
-
-
-function saveProfile(data){
-
-  localStorage.setItem(
-    "gamend_guest",
-    JSON.stringify(data)
-  );
-}
-
-
-function clearProfile(){
-
-  localStorage.removeItem(
-    "gamend_guest"
-  );
-}
-
-
-/* =====================================================
-   AUTH
-===================================================== */
-
-async function authenticate(){
-
-  if(auth.currentUser){
-
-    currentUser =
-      auth.currentUser;
-
-    return currentUser;
-  }
-
-  setStatus(
-    "Connecting to Firebase…"
-  );
-
-  const result =
-    await signInAnonymously(auth);
-
-  currentUser =
-    result.user;
-
-  return currentUser;
-}
-
-
-/* =====================================================
-   JOIN COMMUNITY
-===================================================== */
-
-async function joinCommunity(){
-
-  errorBox.textContent =
-    "";
-
-  const name =
-    nameInput.value.trim();
-
-  let username =
-    usernameInput.value.trim();
-
-  if(name.length < 2){
-
-    errorBox.textContent =
-      "Enter a valid name.";
-
-    return;
-  }
-
-  if(username.startsWith("@")){
-
-    username =
-      username.substring(1);
-  }
-
-  if(
-    !/^[A-Za-z0-9_]{3,20}$/
-      .test(username)
-  ){
-
-    errorBox.textContent =
-      "Username must contain 3–20 letters, numbers or _.";
-
-    return;
-  }
-
-  joinBtn.disabled =
-    true;
-
-  joinBtn.textContent =
-    "Connecting…";
-
-  try{
-
-    const user =
-      await authenticate();
-
-    profile = {
-
-      name:
-        name,
-
-      username:
-        "@" + username,
-
-      uid:
-        user.uid
-
+    f={
+      ...appMod,
+      ...authMod,
+      ...dbMod
     };
 
-    saveProfile(profile);
+    const app=f.initializeApp(FIREBASE_CONFIG);
 
-    joinBox.classList.add(
-      "hidden"
-    );
+    db=f.getDatabase(app);
+    auth=f.getAuth(app);
 
-    chatBox.classList.remove(
-      "hidden"
-    );
+    firebaseReady=true;
 
-    await startPresence();
+  }catch(err){
 
-    startMessages();
+    console.error(err);
 
-    messageInput.focus();
+    toast("Firebase connection failed");
 
-  }catch(error){
-
-    console.error(error);
-
-    errorBox.textContent =
-      error?.message ||
-      "Firebase connection failed.";
-
-  }finally{
-
-    joinBtn.disabled =
-      false;
-
-    joinBtn.textContent =
-      "Join Community";
-
+    throw err;
   }
 }
 
+/* ---------------------------------------------------------
+   AUTH
+--------------------------------------------------------- */
+async function login(){
 
-/* =====================================================
+  await initFirebase();
+
+  const result=
+    await f.signInAnonymously(auth);
+
+  currentUser=result.user;
+
+  await startPresence();
+
+  listenMessages();
+}
+
+/* ---------------------------------------------------------
    PRESENCE
-===================================================== */
-
+--------------------------------------------------------- */
 async function startPresence(){
 
-  if(!currentUser)
-    return;
+  if(!currentUser)return;
 
-  const presenceRef =
-    ref(
-      db,
-      "community/presence/" +
-      currentUser.uid
-    );
+  presenceRef=f.ref(
+    db,
+    "community/presence/"+currentUser.uid
+  );
 
-  await set(
+  await f.set(
     presenceRef,
     {
-      uid:
-        currentUser.uid,
-
-      name:
-        profile.name,
-
-      username:
-        profile.username,
-
-      online:
-        true,
-
-      lastSeen:
-        serverTimestamp()
+      online:true,
+      lastSeen:f.serverTimestamp()
     }
   );
 
-  await onDisconnect(
-    presenceRef
-  ).update({
+  const disconnect=f.onDisconnect(presenceRef);
 
-    online:
-      false,
-
-    lastSeen:
-      serverTimestamp()
-
+  await disconnect.set({
+    online:false,
+    lastSeen:f.serverTimestamp()
   });
 
-
-  if(presenceUnsubscribe){
-
-    presenceUnsubscribe();
-
-  }
-
-
-  const presenceRoot =
-    ref(
-      db,
-      "community/presence"
-    );
-
-
-  presenceUnsubscribe =
-    onValue(
-      presenceRoot,
-
-      snapshot => {
-
-        let count =
-          0;
-
-        snapshot.forEach(
-          child => {
-
-            const value =
-              child.val();
-
-            if(
-              value &&
-              value.online === true
-            ){
-
-              count++;
-
-            }
-
-          }
-        );
-
-        onlineCount.textContent =
-          count +
-          (
-            count === 1
-              ? " online"
-              : " online"
-          );
-
-      },
-
-      error => {
-
-        console.error(
-          "Presence error:",
-          error
-        );
-
-        onlineCount.textContent =
-          "— online";
-
-      }
-    );
-}
-
-
-/* =====================================================
-   MESSAGES LISTENER
-===================================================== */
-
-function startMessages(){
-
-  if(messagesUnsubscribe){
-
-    messagesUnsubscribe();
-
-  }
-
-
-  const messagesRef =
-    ref(
-      db,
-      "community/messages"
-    );
-
-
-  const messagesQuery =
-    query(
-      messagesRef,
-      orderByChild("createdAt"),
-      limitToLast(100)
-    );
-
-
-  setStatus(
-    "Connected • Live chat"
+  const allPresence=f.ref(
+    db,
+    "community/presence"
   );
 
+  presenceUnsubscribe=f.onValue(
+    allPresence,
+    snapshot=>{
 
-  messagesUnsubscribe =
-    onValue(
+      let count=0;
 
-      messagesQuery,
+      snapshot.forEach(child=>{
 
-      snapshot => {
+        const value=child.val();
 
-        const list =
-          [];
+        if(value && value.online===true){
+          count++;
+        }
 
-        snapshot.forEach(
-          child => {
+      });
 
-            const data =
-              child.val();
-
-            if(data){
-
-              list.push({
-
-                id:
-                  child.key,
-
-                ...data
-
-              });
-
-            }
-
-          }
-        );
-
-        messages =
-          list;
-
-        renderMessages(
-          list
-        );
-
-      },
-
-      error => {
-
-        console.error(
-          error
-        );
-
-        setStatus(
-          "Unable to read messages"
-        );
-
-      }
-
-    );
+      onlineCount.textContent=
+        count+" online";
+    }
+  );
 }
 
+/* ---------------------------------------------------------
+   MESSAGE STATE
+--------------------------------------------------------- */
+let messageMap=new Map();
 
-/* =====================================================
-   RENDER MESSAGES
-===================================================== */
+let replyTarget=null;
 
-function renderMessages(list){
+let contextMessage=null;
+
+let editingMessage=null;
+
+let deletingMessage=null;
+
+/* ---------------------------------------------------------
+   SAFE TEXT
+--------------------------------------------------------- */
+function safeText(value){
+
+  return String(value??"")
+    .replace(/\s+/g," ")
+    .trim();
+}
+
+function formatTime(timestamp){
+
+  if(!timestamp)return "";
+
+  const date=new Date(timestamp);
+
+  if(Number.isNaN(date.getTime())){
+    return "";
+  }
+
+  return date.toLocaleTimeString(
+    [],
+    {
+      hour:"numeric",
+      minute:"2-digit"
+    }
+  );
+}
+
+function sameDay(a,b){
+
+  const x=new Date(a);
+  const y=new Date(b);
+
+  return x.getFullYear()===y.getFullYear()
+    &&x.getMonth()===y.getMonth()
+    &&x.getDate()===y.getDate();
+}
+
+function formatDate(timestamp){
+
+  const date=new Date(timestamp);
+
+  if(
+    date.toDateString()===
+    new Date().toDateString()
+  ){
+    return "Today";
+  }
+
+  const yesterday=new Date();
+
+  yesterday.setDate(
+    yesterday.getDate()-1
+  );
+
+  if(
+    date.toDateString()===
+    yesterday.toDateString()
+  ){
+    return "Yesterday";
+  }
+
+  return date.toLocaleDateString(
+    [],
+    {
+      day:"numeric",
+      month:"short",
+      year:"numeric"
+    }
+  );
+}
+
+/* ---------------------------------------------------------
+   LISTEN MESSAGES
+--------------------------------------------------------- */
+function listenMessages(){
+
+  const messagesRef=f.ref(
+    db,
+    "community/messages"
+  );
+
+  if(messagesUnsubscribe){
+    messagesUnsubscribe();
+  }
+
+  messagesUnsubscribe=f.onValue(
+    messagesRef,
+    snapshot=>{
+
+      messageMap.clear();
+
+      snapshot.forEach(child=>{
+
+        const value=child.val();
+
+        if(!value)return;
+
+        value.id=child.key;
+
+        messageMap.set(
+          child.key,
+          value
+        );
+      });
+
+      renderMessages();
+    },
+    error=>{
+      console.error(error);
+
+      toast("Unable to load messages");
+    }
+  );
+}
+
+/* ---------------------------------------------------------
+   RENDER
+--------------------------------------------------------- */
+function renderMessages(){
+
+  const list=Array.from(
+    messageMap.values()
+  );
+
+  list.sort(
+    (a,b)=>
+      Number(a.createdAt||0)-
+      Number(b.createdAt||0)
+  );
 
   if(!list.length){
 
-    messagesBox.innerHTML = `
-      <div class="empty">
-        No messages yet.<br>
-        Be the first to say hello 👋
+    messages.innerHTML=`
+      <div class="center-state">
+        <i class="fas fa-comments"></i>
+        <strong>No messages yet</strong>
+        <span>Be the first one to start the conversation.</span>
       </div>
     `;
 
     return;
   }
 
+  const wasNearBottom=
+    messages.scrollHeight-
+    messages.scrollTop-
+    messages.clientHeight<100;
 
-  const wasNearBottom =
-    messagesBox.scrollHeight -
-    messagesBox.scrollTop -
-    messagesBox.clientHeight
-    < 120;
+  messages.innerHTML="";
 
+  let previousTime=null;
 
-  messagesBox.innerHTML =
-    list.map(
-      message => {
+  for(const msg of list){
 
-        const mine =
-          message.uid ===
-          currentUser?.uid;
+    if(
+      previousTime!==null &&
+      !sameDay(
+        previousTime,
+        msg.createdAt||Date.now()
+      )
+    ){
 
+      const divider=
+        document.createElement("div");
 
-        const time =
-          message.createdAt
-            ? formatTime(
-                message.createdAt
-              )
-            : "now";
+      divider.className="date-divider";
 
+      divider.textContent=
+        formatDate(msg.createdAt);
 
-        const replyHTML =
-          message.replyTo
-            ? `
-              <div class="reply-box">
+      messages.appendChild(divider);
 
-                <strong>
-                  ${escapeHTML(
-                    message.replyTo.name ||
-                    "Guest"
-                  )}
-                  ${escapeHTML(
-                    message.replyTo.username ||
-                    ""
-                  )}
-                </strong>
+    }else if(previousTime===null){
 
-                <span>
-                  ${escapeHTML(
-                    message.replyTo.text ||
-                    ""
-                  )}
-                </span>
+      const divider=
+        document.createElement("div");
 
-              </div>
-            `
-            : "";
+      divider.className="date-divider";
 
+      divider.textContent=
+        formatDate(msg.createdAt);
 
-        return `
+      messages.appendChild(divider);
+    }
 
-          <div
-            class="message-wrap"
-            data-id="${escapeHTML(message.id)}">
+    previousTime=
+      msg.createdAt||previousTime;
 
-            <div
-              class="reply-action left">
-              ↪
-            </div>
+    const row=
+      document.createElement("div");
 
-            <div
-              class="reply-action right">
-              ↩
-            </div>
+    row.className=
+      "message-row"+
+      (msg.uid===currentUser?.uid?" mine":"");
 
-            <div
-              class="message
-              ${mine ? "me" : "other"}">
+    const bubble=
+      document.createElement("div");
 
-              <div class="user">
+    bubble.className="message";
 
-                ${escapeHTML(
-                  message.name ||
-                  "Guest"
-                )}
+    bubble.dataset.id=msg.id;
 
-                ${escapeHTML(
-                  message.username ||
-                  ""
-                )}
+    /* Sender */
+    const sender=
+      document.createElement("div");
 
-              </div>
+    sender.className="sender";
 
-              ${replyHTML}
+    sender.textContent=
+      msg.uid===currentUser?.uid
+        ? "You"
+        : safeText(msg.name)||"Guest";
 
-              <div
-                class="bubble">
+    bubble.appendChild(sender);
 
-                ${escapeHTML(
-                  message.text ||
-                  ""
-                )}
+    /* Reply */
+    if(msg.replyTo){
 
-                ${
-                  message.edited
-                    ? `<span class="edited">edited</span>`
-                    : ""
-                }
+      const preview=
+        document.createElement("div");
 
-              </div>
+      preview.className="reply-preview";
 
-              <div class="time">
-                ${escapeHTML(time)}
-              </div>
+      const replyN=
+        document.createElement("div");
 
-            </div>
+      replyN.className="reply-name";
 
-          </div>
-        `;
+      replyN.textContent=
+        safeText(msg.replyTo.name)||
+        "Guest";
 
-      }
-    ).join("");
+      const replyT=
+        document.createElement("div");
 
+      replyT.className="reply-text";
 
-  attachMessageEvents();
+      replyT.textContent=
+        safeText(msg.replyTo.text);
 
+      preview.appendChild(replyN);
+      preview.appendChild(replyT);
+
+      bubble.appendChild(preview);
+    }
+
+    /* Text */
+    const text=
+      document.createElement("div");
+
+    text.className="message-text";
+
+    text.textContent=
+      msg.text||"";
+
+    bubble.appendChild(text);
+
+    /* Meta */
+    const meta=
+      document.createElement("div");
+
+    meta.className="message-meta";
+
+    const time=
+      document.createElement("span");
+
+    time.textContent=
+      formatTime(msg.createdAt);
+
+    meta.appendChild(time);
+
+    if(msg.edited===true){
+
+      const edited=
+        document.createElement("span");
+
+      edited.className="edited";
+
+      edited.textContent="• edited";
+
+      meta.appendChild(edited);
+    }
+
+    if(msg.uid===currentUser?.uid){
+
+      const check=
+        document.createElement("i");
+
+      check.className=
+        "fas fa-check";
+
+      meta.appendChild(check);
+    }
+
+    bubble.appendChild(meta);
+
+    row.appendChild(bubble);
+    messages.appendChild(row);
+
+    setupSwipeAndLongPress(
+      bubble,
+      msg
+    );
+  }
 
   if(wasNearBottom){
-
-    messagesBox.scrollTop =
-      messagesBox.scrollHeight;
-
+    requestAnimationFrame(()=>{
+      messages.scrollTop=
+        messages.scrollHeight;
+    });
   }
 }
 
-
-/* =====================================================
-   FORMAT TIME
-===================================================== */
-
-function formatTime(timestamp){
-
-  try{
-
-    return new Date(
-      timestamp
-    ).toLocaleTimeString(
-      [],
-      {
-        hour:"2-digit",
-        minute:"2-digit"
-      }
-    );
-
-  }catch{
-
-    return "now";
-
-  }
-}
-
-
-/* =====================================================
-   MESSAGE EVENTS
-===================================================== */
-
-function attachMessageEvents(){
-
-  const wrappers =
-    messagesBox.querySelectorAll(
-      ".message-wrap"
-    );
-
-
-  wrappers.forEach(
-    wrapper => {
-
-      const id =
-        wrapper.dataset.id;
-
-      const message =
-        messages.find(
-          item =>
-            item.id === id
-        );
-
-      if(!message)
-        return;
-
-
-      setupSwipe(
-        wrapper,
-        message
-      );
-
-
-      if(
-        message.uid ===
-        currentUser?.uid
-      ){
-
-        setupLongPress(
-          wrapper,
-          message
-        );
-
-      }
-
-    }
-  );
-}
-
-
-/* =====================================================
-   SWIPE
-   ANY MESSAGE
-===================================================== */
-
-function setupSwipe(
-  wrapper,
-  message
+/* ---------------------------------------------------------
+   SWIPE + LONG PRESS
+--------------------------------------------------------- */
+function setupSwipeAndLongPress(
+  element,
+  msg
 ){
 
-  let startX =
-    0;
+  let startX=0;
+  let startY=0;
 
-  let startY =
-    0;
+  let currentX=0;
 
-  let currentX =
-    0;
+  let moved=false;
 
-  let dragging =
-    false;
+  let longTimer=null;
 
+  let pressing=false;
 
-  wrapper.addEventListener(
-    "touchstart",
-    event => {
+  const LONG_PRESS=600;
+  const SWIPE=55;
 
-      if(
-        event.touches.length !== 1
-      )
-        return;
+  function clearLong(){
 
-      startX =
-        event.touches[0].clientX;
-
-      startY =
-        event.touches[0].clientY;
-
-      currentX =
-        startX;
-
-      dragging =
-        true;
-
-    },
-    {
-      passive:true
+    if(longTimer){
+      clearTimeout(longTimer);
+      longTimer=null;
     }
-  );
-
-
-  wrapper.addEventListener(
-    "touchmove",
-    event => {
-
-      if(!dragging)
-        return;
-
-      const x =
-        event.touches[0].clientX;
-
-      const y =
-        event.touches[0].clientY;
-
-      const dx =
-        x - startX;
-
-      const dy =
-        y - startY;
-
-
-      if(
-        Math.abs(dy) >
-        Math.abs(dx)
-      ){
-
-        return;
-
-      }
-
-
-      if(
-        Math.abs(dx) > 8
-      ){
-
-        currentX =
-          x;
-
-        const limited =
-          Math.max(
-            -85,
-            Math.min(
-              85,
-              dx
-            )
-          );
-
-
-        const msg =
-          wrapper.querySelector(
-            ".message"
-          );
-
-        msg.style.transform =
-          `translateX(${limited}px)`;
-
-
-        wrapper.classList.toggle(
-          "replying",
-          Math.abs(dx) > 35
-        );
-
-      }
-
-    },
-    {
-      passive:true
-    }
-  );
-
-
-  wrapper.addEventListener(
-    "touchend",
-    () => {
-
-      if(!dragging)
-        return;
-
-      dragging =
-        false;
-
-
-      const dx =
-        currentX - startX;
-
-
-      const msg =
-        wrapper.querySelector(
-          ".message"
-        );
-
-      msg.style.transform =
-        "";
-
-
-      wrapper.classList.remove(
-        "replying"
-      );
-
-
-      if(
-        Math.abs(dx) >= 55
-      ){
-
-        selectReply(
-          message
-        );
-
-      }
-
-    },
-    {
-      passive:true
-    }
-  );
-
-}
-
-
-/* =====================================================
-   LONG PRESS
-   OWN MESSAGE ONLY
-===================================================== */
-
-function setupLongPress(
-  wrapper,
-  message
-){
-
-  let timer =
-    null;
-
-  let startX =
-    0;
-
-  let startY =
-    0;
-
-
-  function start(event){
-
-    const point =
-      event.touches
-        ? event.touches[0]
-        : event;
-
-
-    startX =
-      point.clientX;
-
-    startY =
-      point.clientY;
-
-
-    timer =
-      setTimeout(
-        () => {
-
-          showContextMenu(
-            message,
-            wrapper
-          );
-
-        },
-        600
-      );
-
   }
 
+  function start(x,y){
 
-  function cancel(event){
+    startX=x;
+    startY=y;
+    currentX=x;
 
-    if(timer){
+    moved=false;
+    pressing=true;
 
-      clearTimeout(
-        timer
-      );
+    clearLong();
 
-      timer =
-        null;
+    /* Long press ONLY own message */
+    if(
+      msg.uid===currentUser?.uid
+    ){
 
+      longTimer=setTimeout(()=>{
+
+        if(
+          pressing &&
+          !moved
+        ){
+          element.style.transform="";
+          openContextMenu(
+            element,
+            msg
+          );
+          tap();
+        }
+
+      },LONG_PRESS);
     }
-
   }
 
+  function move(x,y){
 
-  wrapper.addEventListener(
+    if(!pressing)return;
+
+    const dx=x-startX;
+    const dy=y-startY;
+
+    if(
+      Math.abs(dx)>10||
+      Math.abs(dy)>10
+    ){
+      moved=true;
+      clearLong();
+    }
+
+    /* Do not interfere with vertical scrolling */
+    if(Math.abs(dy)>Math.abs(dx)){
+      return;
+    }
+
+    currentX=x;
+
+    if(Math.abs(dx)>4){
+
+      const limited=Math.max(
+        -90,
+        Math.min(90,dx)
+      );
+
+      element.classList.add("swiping");
+
+      element.style.transform=
+        `translateX(${limited}px)`;
+    }
+  }
+
+  function end(x,y){
+
+    if(!pressing)return;
+
+    pressing=false;
+    clearLong();
+
+    const dx=x-startX;
+    const dy=y-startY;
+
+    element.classList.remove(
+      "swiping"
+    );
+
+    element.style.transform="";
+
+    /* Reply to ANY message */
+    if(
+      Math.abs(dx)>=SWIPE &&
+      Math.abs(dx)>Math.abs(dy)*1.2
+    ){
+
+      setReplyTarget(msg);
+      tap();
+    }
+  }
+
+  element.addEventListener(
     "touchstart",
-    start,
-    {
-      passive:true
-    }
-  );
+    e=>{
+      if(!e.touches[0])return;
 
-
-  wrapper.addEventListener(
-    "touchmove",
-    event => {
-
-      const point =
-        event.touches[0];
-
-      if(
-        Math.abs(
-          point.clientX -
-          startX
-        ) > 12 ||
-        Math.abs(
-          point.clientY -
-          startY
-        ) > 12
-      ){
-
-        cancel();
-
-      }
-
+      start(
+        e.touches[0].clientX,
+        e.touches[0].clientY
+      );
     },
-    {
-      passive:true
-    }
+    {passive:true}
   );
 
+  element.addEventListener(
+    "touchmove",
+    e=>{
+      if(!e.touches[0])return;
 
-  wrapper.addEventListener(
+      move(
+        e.touches[0].clientX,
+        e.touches[0].clientY
+      );
+    },
+    {passive:true}
+  );
+
+  element.addEventListener(
     "touchend",
-    cancel,
-    {
-      passive:true
-    }
+    e=>{
+
+      const t=e.changedTouches[0];
+
+      if(t){
+        end(
+          t.clientX,
+          t.clientY
+        );
+      }else{
+        pressing=false;
+        clearLong();
+      }
+    },
+    {passive:true}
   );
 
-
-  wrapper.addEventListener(
+  element.addEventListener(
     "touchcancel",
-    cancel,
-    {
-      passive:true
-    }
+    ()=>{
+      pressing=false;
+      clearLong();
+      element.style.transform="";
+    },
+    {passive:true}
   );
 
+  /* Desktop / WebView pointer support */
+  element.addEventListener(
+    "pointerdown",
+    e=>{
 
-  wrapper.addEventListener(
-    "contextmenu",
-    event => {
+      if(e.pointerType==="touch"){
+        return;
+      }
 
-      event.preventDefault();
-
-      showContextMenu(
-        message,
-        wrapper
+      start(
+        e.clientX,
+        e.clientY
       );
-
     }
   );
 
+  element.addEventListener(
+    "pointermove",
+    e=>{
+
+      if(e.pointerType==="touch"){
+        return;
+      }
+
+      move(
+        e.clientX,
+        e.clientY
+      );
+    }
+  );
+
+  element.addEventListener(
+    "pointerup",
+    e=>{
+
+      if(e.pointerType==="touch"){
+        return;
+      }
+
+      end(
+        e.clientX,
+        e.clientY
+      );
+    }
+  );
+
+  element.addEventListener(
+    "pointercancel",
+    ()=>{
+      pressing=false;
+      clearLong();
+      element.style.transform="";
+    }
+  );
 }
 
-
-/* =====================================================
+/* ---------------------------------------------------------
    REPLY
-===================================================== */
+--------------------------------------------------------- */
+function setReplyTarget(msg){
 
-function selectReply(message){
-
-  replyTo = {
-
-    id:
-      message.id,
-
-    uid:
-      message.uid,
-
-    name:
-      message.name ||
-      "Guest",
-
-    username:
-      message.username ||
-      "",
-
-    text:
-      message.text ||
-      ""
-
+  replyTarget={
+    id:msg.id,
+    uid:msg.uid,
+    name:safeText(msg.name)||"Guest",
+    text:msg.text||""
   };
 
+  replyName.textContent=
+    replyTarget.name;
 
-  replyPreviewName.textContent =
-    (
-      message.name ||
-      "Guest"
-    ) +
-    " " +
-    (
-      message.username ||
-      ""
-    );
+  replyText.textContent=
+    replyTarget.text;
 
-
-  replyPreviewText.textContent =
-    message.text ||
-    "";
-
-
-  replyPreview.classList.remove(
-    "hidden"
-  );
-
+  replyBar.classList.add("show");
 
   messageInput.focus();
-
-
-  showToast(
-    "Replying to " +
-    (
-      message.name ||
-      "Guest"
-    )
-  );
 }
-
 
 function clearReply(){
 
-  replyTo =
-    null;
+  replyTarget=null;
 
-  replyPreview.classList.add(
-    "hidden"
+  replyBar.classList.remove(
+    "show"
   );
 
+  replyName.textContent="Reply";
+  replyText.textContent="";
 }
 
-
-/* =====================================================
-   SEND MESSAGE
-===================================================== */
-
-async function sendMessage(){
-
-  if(sending)
-    return;
-
-
-  const text =
-    messageInput.value.trim();
-
-
-  if(!text)
-    return;
-
-
-  if(
-    !currentUser ||
-    !profile
-  ){
-
-    setStatus(
-      "Join the community first."
-    );
-
-    return;
-
-  }
-
-
-  sending =
-    true;
-
-  sendBtn.disabled =
-    true;
-
-  sendBtn.textContent =
-    "…";
-
-
-  try{
-
-    const messagesRef =
-      ref(
-        db,
-        "community/messages"
-      );
-
-
-    const newMessage =
-      {
-
-        uid:
-          currentUser.uid,
-
-        name:
-          profile.name,
-
-        username:
-          profile.username,
-
-        text:
-          text.slice(
-            0,
-            500
-          ),
-
-        createdAt:
-          serverTimestamp(),
-
-        edited:
-          false
-
-      };
-
-
-    if(replyTo){
-
-      newMessage.replyTo =
-        {
-
-          id:
-            replyTo.id,
-
-          uid:
-            replyTo.uid,
-
-          name:
-            replyTo.name,
-
-          username:
-            replyTo.username,
-
-          text:
-            replyTo.text
-
-        };
-
-    }
-
-
-    await push(
-      messagesRef,
-      newMessage
-    );
-
-
-    messageInput.value =
-      "";
-
-    clearReply();
-
-
-    setStatus(
-      "Message sent • Live chat"
-    );
-
-
-    messageInput.focus();
-
-
-  }catch(error){
-
-    console.error(
-      "Send error:",
-      error
-    );
-
-    setStatus(
-      "Message failed: " +
-      error.message
-    );
-
-
-  }finally{
-
-    sending =
-      false;
-
-    sendBtn.disabled =
-      false;
-
-    sendBtn.textContent =
-      "➤";
-
-  }
-
-}
-
-
-/* =====================================================
+/* ---------------------------------------------------------
    CONTEXT MENU
-===================================================== */
-
-function showContextMenu(
-  message,
-  wrapper
+--------------------------------------------------------- */
+function openContextMenu(
+  element,
+  msg
 ){
 
-  if(
-    message.uid !==
-    currentUser?.uid
-  ){
+  contextMessage=msg;
 
-    return;
+  const rect=
+    element.getBoundingClientRect();
 
-  }
+  let left=rect.left;
+  let top=rect.bottom+6;
 
-
-  selectedMessage =
-    message;
-
-
-  const rect =
-    wrapper.getBoundingClientRect();
-
-
-  let left =
-    rect.left + 10;
-
-  let top =
-    rect.bottom + 5;
-
+  const width=165;
+  const height=100;
 
   if(
-    left + 160 >
-    window.innerWidth
+    left+width>
+    window.innerWidth-8
   ){
-
-    left =
-      window.innerWidth -
-      170;
-
+    left=
+      window.innerWidth-width-8;
   }
-
 
   if(
-    top + 100 >
-    window.innerHeight
+    top+height>
+    window.innerHeight-8
   ){
-
-    top =
-      rect.top -
-      105;
-
+    top=rect.top-height-6;
   }
 
+  contextMenu.style.left=
+    Math.max(8,left)+"px";
 
-  contextMenu.style.left =
-    Math.max(
-      8,
-      left
-    ) + "px";
+  contextMenu.style.top=
+    Math.max(8,top)+"px";
 
-
-  contextMenu.style.top =
-    Math.max(
-      8,
-      top
-    ) + "px";
-
-
-  contextMenu.classList.remove(
-    "hidden"
-  );
-
+  contextMenu.classList.add("show");
 }
-
-
-/* =====================================================
-   CLOSE CONTEXT MENU
-===================================================== */
 
 function closeContextMenu(){
 
-  contextMenu.classList.add(
-    "hidden"
+  contextMenu.classList.remove(
+    "show"
   );
 
+  contextMessage=null;
 }
 
-
-/* =====================================================
+/* ---------------------------------------------------------
    EDIT
-===================================================== */
-
-function openEdit(){
-
-  if(!selectedMessage)
-    return;
-
+--------------------------------------------------------- */
+function openEdit(msg){
 
   if(
-    selectedMessage.uid !==
-    currentUser?.uid
-  )
-    return;
-
-
-  closeContextMenu();
-
-
-  editTextarea.value =
-    selectedMessage.text ||
-    "";
-
-
-  editModal.classList.remove(
-    "hidden"
-  );
-
-
-  setTimeout(
-    () => {
-
-      editTextarea.focus();
-
-      editTextarea.setSelectionRange(
-        editTextarea.value.length,
-        editTextarea.value.length
-      );
-
-    },
-    100
-  );
-
-}
-
-
-async function saveEdit(){
-
-  if(!selectedMessage)
-    return;
-
-
-  const text =
-    editTextarea.value.trim();
-
-
-  if(!text){
-
-    showToast(
-      "Message cannot be empty"
-    );
-
-    return;
-
-  }
-
-
-  if(
-    selectedMessage.uid !==
-    currentUser?.uid
+    !msg||
+    msg.uid!==currentUser?.uid
   ){
-
-    closeEdit();
-
     return;
-
   }
 
+  editingMessage=msg;
 
-  editDone.disabled =
-    true;
+  editArea.value=msg.text||"";
 
-  editDone.textContent =
-    "Saving…";
+  editModal.classList.add("show");
 
-
-  try{
-
-    const messageRef =
-      ref(
-        db,
-        "community/messages/" +
-        selectedMessage.id
-      );
-
-
-    await update(
-      messageRef,
-      {
-
-        text:
-          text.slice(
-            0,
-            500
-          ),
-
-        edited:
-          true,
-
-        editedAt:
-          serverTimestamp()
-
-      }
+  setTimeout(()=>{
+    editArea.focus();
+    editArea.setSelectionRange(
+      editArea.value.length,
+      editArea.value.length
     );
-
-
-    closeEdit();
-
-    showToast(
-      "Message edited"
-    );
-
-
-  }catch(error){
-
-    console.error(
-      error
-    );
-
-    showToast(
-      "Edit failed"
-    );
-
-  }finally{
-
-    editDone.disabled =
-      false;
-
-    editDone.textContent =
-      "Done";
-
-  }
-
+  },50);
 }
-
 
 function closeEdit(){
 
-  editModal.classList.add(
-    "hidden"
+  editModal.classList.remove(
+    "show"
   );
 
+  editingMessage=null;
 }
 
+async function saveEdit(){
 
-/* =====================================================
-   DELETE
-===================================================== */
+  if(!editingMessage)return;
 
-function openDelete(){
+  const text=
+    editArea.value.trim();
 
-  if(!selectedMessage)
+  if(!text){
+    toast("Message cannot be empty");
     return;
-
-
-  if(
-    selectedMessage.uid !==
-    currentUser?.uid
-  )
-    return;
-
-
-  closeContextMenu();
-
-
-  deleteModal.classList.remove(
-    "hidden"
-  );
-
-}
-
-
-async function confirmDelete(){
-
-  if(!selectedMessage)
-    return;
-
-
-  if(
-    selectedMessage.uid !==
-    currentUser?.uid
-  ){
-
-    closeDelete();
-
-    return;
-
   }
 
-
-  deleteConfirm.disabled =
-    true;
-
-  deleteConfirm.textContent =
-    "Deleting…";
-
+  if(
+    editingMessage.uid!==
+    currentUser?.uid
+  ){
+    closeEdit();
+    return;
+  }
 
   try{
 
-    const messageRef =
-      ref(
-        db,
-        "community/messages/" +
-        selectedMessage.id
-      );
-
-
-    await remove(
-      messageRef
+    const msgRef=f.ref(
+      db,
+      "community/messages/"+
+      editingMessage.id
     );
 
-
-    closeDelete();
-
-    showToast(
-      "Message deleted"
+    await f.update(
+      msgRef,
+      {
+        text:text,
+        edited:true,
+        editedAt:f.serverTimestamp()
+      }
     );
 
+    closeEdit();
+    toast("Message edited");
+    tap();
 
-  }catch(error){
+  }catch(err){
 
-    console.error(
-      error
-    );
+    console.error(err);
 
-    showToast(
-      "Delete failed"
-    );
-
-  }finally{
-
-    deleteConfirm.disabled =
-      false;
-
-    deleteConfirm.textContent =
-      "Delete";
-
+    toast("Edit failed");
   }
-
 }
 
+/* ---------------------------------------------------------
+   DELETE
+--------------------------------------------------------- */
+function openDelete(msg){
+
+  if(
+    !msg||
+    msg.uid!==currentUser?.uid
+  ){
+    return;
+  }
+
+  deletingMessage=msg;
+
+  deleteModal.classList.add("show");
+}
 
 function closeDelete(){
 
-  deleteModal.classList.add(
-    "hidden"
+  deleteModal.classList.remove(
+    "show"
   );
 
+  deletingMessage=null;
 }
 
+async function confirmDelete(){
 
-/* =====================================================
-   LEAVE
-===================================================== */
+  if(!deletingMessage)return;
 
-async function leaveCommunity(){
+  if(
+    deletingMessage.uid!==
+    currentUser?.uid
+  ){
+    closeDelete();
+    return;
+  }
 
   try{
 
-    if(currentUser){
+    const msgRef=f.ref(
+      db,
+      "community/messages/"+
+      deletingMessage.id
+    );
 
-      const presenceRef =
-        ref(
-          db,
-          "community/presence/" +
-          currentUser.uid
-        );
+    await f.remove(msgRef);
 
+    closeDelete();
 
-      await set(
-        presenceRef,
-        {
+    toast("Message deleted");
 
-          uid:
-            currentUser.uid,
+    tap();
 
-          name:
-            profile?.name ||
-            "Guest",
+  }catch(err){
 
-          username:
-            profile?.username ||
-            "",
+    console.error(err);
 
-          online:
-            false,
-
-          lastSeen:
-            serverTimestamp()
-
-        }
-      );
-
-    }
-
-  }catch(error){
-
-    console.warn(error);
-
+    toast("Delete failed");
   }
-
-
-  if(messagesUnsubscribe){
-
-    messagesUnsubscribe();
-
-    messagesUnsubscribe =
-      null;
-
-  }
-
-
-  if(presenceUnsubscribe){
-
-    presenceUnsubscribe();
-
-    presenceUnsubscribe =
-      null;
-
-  }
-
-
-  clearProfile();
-
-  profile =
-    null;
-
-  messages =
-    [];
-
-  clearReply();
-
-  joinBox.classList.remove(
-    "hidden"
-  );
-
-  chatBox.classList.add(
-    "hidden"
-  );
-
-  messageInput.value =
-    "";
-
-  setStatus(
-    "Disconnected"
-  );
-
 }
 
+/* ---------------------------------------------------------
+   SEND MESSAGE
+--------------------------------------------------------- */
+async function sendMessage(){
 
-/* =====================================================
-   BACK BUTTON
-===================================================== */
+  if(
+    !currentUser||
+    !guest
+  ){
+    return;
+  }
 
+  const text=
+    messageInput.value.trim();
+
+  if(!text)return;
+
+  sendBtn.disabled=true;
+
+  try{
+
+    const messagesRef=f.ref(
+      db,
+      "community/messages"
+    );
+
+    const newMessage=
+      f.push(messagesRef);
+
+    const payload={
+      uid:currentUser.uid,
+      name:guest.name,
+      text:text,
+      createdAt:f.serverTimestamp()
+    };
+
+    if(replyTarget){
+
+      payload.replyTo={
+        id:replyTarget.id,
+        uid:replyTarget.uid,
+        name:replyTarget.name,
+        text:replyTarget.text
+      };
+    }
+
+    await f.set(
+      newMessage,
+      payload
+    );
+
+    messageInput.value="";
+
+    clearReply();
+
+    tap();
+
+    messageInput.focus();
+
+  }catch(err){
+
+    console.error(err);
+
+    toast("Message could not be sent");
+
+  }finally{
+
+    updateSendState();
+  }
+}
+
+function updateSendState(){
+
+  sendBtn.disabled=
+    !currentUser||
+    !messageInput.value.trim();
+}
+
+/* ---------------------------------------------------------
+   JOIN
+--------------------------------------------------------- */
+async function joinCommunity(){
+
+  const name=
+    guestName.value.trim();
+
+  if(!name){
+
+    toast("Enter your name");
+
+    guestName.focus();
+
+    return;
+  }
+
+  if(name.length<2){
+
+    toast("Name is too short");
+
+    guestName.focus();
+
+    return;
+  }
+
+  if(name.length>30){
+
+    toast("Name is too long");
+
+    return;
+  }
+
+  guest=saveGuest(name);
+
+  joinBtn.disabled=true;
+
+  joinBtn.innerHTML=
+    '<i class="fas fa-spinner fa-spin"></i> Connecting...';
+
+  try{
+
+    showChat();
+
+    await login();
+
+    toast("Welcome "+guest.name);
+
+  }catch(err){
+
+    console.error(err);
+
+    guestScreen.hidden=false;
+    chatShell.hidden=true;
+
+    toast("Unable to connect");
+
+  }finally{
+
+    joinBtn.disabled=false;
+
+    joinBtn.innerHTML=
+      '<i class="fas fa-right-to-bracket"></i> &nbsp; Join Chat';
+  }
+}
+
+/* ---------------------------------------------------------
+   EVENTS
+--------------------------------------------------------- */
 backBtn.addEventListener(
   "click",
-  () => {
-
-    if(
-      !chatBox.classList.contains(
-        "hidden"
-      )
-    ){
-
-      leaveCommunity();
-
-      return;
-
-    }
-
-
-    if(
-      window.history.length > 1
-    ){
-
-      window.history.back();
-
-    }
-
+  ()=>{
+    tap();
+    window.location.href="index.html";
   }
 );
-
-
-/* =====================================================
-   EVENTS
-===================================================== */
 
 joinBtn.addEventListener(
   "click",
   joinCommunity
 );
 
+guestName.addEventListener(
+  "keydown",
+  e=>{
+    if(e.key==="Enter"){
+      joinCommunity();
+    }
+  }
+);
+
+messageInput.addEventListener(
+  "input",
+  updateSendState
+);
+
+messageInput.addEventListener(
+  "keydown",
+  e=>{
+
+    if(e.key==="Enter"){
+
+      e.preventDefault();
+
+      sendMessage();
+    }
+  }
+);
 
 sendBtn.addEventListener(
   "click",
   sendMessage
 );
 
-
 cancelReply.addEventListener(
   "click",
-  clearReply
+  ()=>{
+    clearReply();
+    tap();
+  }
 );
 
-
-leaveBtn.addEventListener(
+/* Context */
+editMessageBtn.addEventListener(
   "click",
-  leaveCommunity
+  ()=>{
+
+    const msg=contextMessage;
+
+    closeContextMenu();
+
+    if(msg){
+      openEdit(msg);
+    }
+  }
 );
 
-
-editMenuBtn.addEventListener(
+deleteMessageBtn.addEventListener(
   "click",
-  openEdit
+  ()=>{
+
+    const msg=contextMessage;
+
+    closeContextMenu();
+
+    if(msg){
+      openDelete(msg);
+    }
+  }
 );
 
-
-deleteMenuBtn.addEventListener(
+/* Edit */
+editClose.addEventListener(
   "click",
-  openDelete
+  closeEdit
 );
-
 
 editCancel.addEventListener(
   "click",
   closeEdit
 );
 
-
 editDone.addEventListener(
   "click",
   saveEdit
 );
 
+/* Delete */
+deleteClose.addEventListener(
+  "click",
+  closeDelete
+);
 
 deleteCancel.addEventListener(
   "click",
   closeDelete
 );
 
-
 deleteConfirm.addEventListener(
   "click",
   confirmDelete
 );
 
-
-/* =========================
-   ENTER SEND
-========================= */
-
-messageInput.addEventListener(
-  "keydown",
-  event => {
-
-    if(
-      event.key === "Enter"
-    ){
-
-      event.preventDefault();
-
-      sendMessage();
-
-    }
-
-  }
-);
-
-
-/* =========================
-   CLOSE MENUS
-========================= */
-
+/* Outside context */
 document.addEventListener(
-  "touchstart",
-  event => {
-
+  "pointerdown",
+  e=>{
     if(
-      !contextMenu.contains(
-        event.target
-      )
+      !contextMenu.contains(e.target)
     ){
-
       closeContextMenu();
-
     }
-
-  },
-  {
-    passive:true
   }
 );
 
-
-/* =========================
-   MODAL OUTSIDE CLICK
-========================= */
-
+/* Outside modals */
 editModal.addEventListener(
   "click",
-  event => {
-
-    if(
-      event.target ===
-      editModal
-    ){
-
+  e=>{
+    if(e.target===editModal){
       closeEdit();
-
     }
-
   }
 );
-
 
 deleteModal.addEventListener(
   "click",
-  event => {
-
-    if(
-      event.target ===
-      deleteModal
-    ){
-
+  e=>{
+    if(e.target===deleteModal){
       closeDelete();
+    }
+  }
+);
 
+/* ---------------------------------------------------------
+   STARTUP
+--------------------------------------------------------- */
+async function boot(){
+
+  applyIndexSettings();
+
+  const saved=readGuest();
+
+  if(saved && saved.name){
+
+    guest=saved;
+
+    guestScreen.hidden=true;
+    chatShell.hidden=false;
+
+    try{
+
+      await login();
+
+    }catch(err){
+
+      console.error(err);
+
+      showGuest();
+
+      toast("Please join again");
     }
 
+  }else{
+
+    showGuest();
   }
-);
-
-
-/* =====================================================
-   AUTH STATE
-===================================================== */
-
-onAuthStateChanged(
-  auth,
-  user => {
-
-    currentUser =
-      user;
-
-  }
-);
-
-
-/* =====================================================
-   AUTO JOIN
-===================================================== */
-
-async function autoJoin(){
-
-  const stored =
-    getStoredProfile();
-
-
-  if(
-    !stored?.name ||
-    !stored?.username
-  ){
-
-    return;
-
-  }
-
-
-  nameInput.value =
-    stored.name;
-
-  usernameInput.value =
-    stored.username;
-
-
-  try{
-
-    const user =
-      await authenticate();
-
-
-    profile = {
-
-      name:
-        stored.name,
-
-      username:
-        stored.username,
-
-      uid:
-        user.uid
-
-    };
-
-
-    saveProfile(
-      profile
-    );
-
-
-    joinBox.classList.add(
-      "hidden"
-    );
-
-    chatBox.classList.remove(
-      "hidden"
-    );
-
-
-    await startPresence();
-
-    startMessages();
-
-
-  }catch(error){
-
-    console.warn(
-      "Auto join failed:",
-      error
-    );
-
-    clearProfile();
-
-  }
-
 }
 
+boot();
 
-/* =====================================================
-   PAGE HIDE
-===================================================== */
-
+/* ---------------------------------------------------------
+   PAGE LIFECYCLE
+--------------------------------------------------------- */
 window.addEventListener(
   "pagehide",
-  () => {
-
+  ()=>{
     if(
+      presenceRef &&
       currentUser
     ){
 
-      const presenceRef =
-        ref(
-          db,
-          "community/presence/" +
-          currentUser.uid
+      try{
+        f.update(
+          presenceRef,
+          {
+            online:false,
+            lastSeen:f.serverTimestamp()
+          }
         );
-
-
-      set(
-        presenceRef,
-        {
-
-          uid:
-            currentUser.uid,
-
-          name:
-            profile?.name ||
-            "Guest",
-
-          username:
-            profile?.username ||
-            "",
-
-          online:
-            false,
-
-          lastSeen:
-            serverTimestamp()
-
-        }
-      ).catch(
-        () => {}
-      );
-
+      }catch{}
     }
-
   }
 );
 
+/* Keyboard viewport handling */
+if(window.visualViewport){
 
-/* =====================================================
-   START
-===================================================== */
-
-autoJoin();
-
+  window.visualViewport.addEventListener(
+    "resize",
+    ()=>{
+      requestAnimationFrame(()=>{
+        messages.scrollTop=
+          messages.scrollHeight;
+      });
+    }
+  );
+}
 </script>
 
 </body>
