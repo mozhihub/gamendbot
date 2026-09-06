@@ -2404,6 +2404,7 @@ let replyTarget=null;
 let toastTimer=null;
 
 const messageMap=new Map();
+const replyCounts=new Map();
 
 
 /* =====================================================
@@ -3328,16 +3329,9 @@ function renderMessages(){
   }
 
 
-  const sorted=
-    [...messageMap.values()]
-    .sort(
-
-      (a,b)=>
-        Number(a.createdAt || 0) -
-        Number(b.createdAt || 0)
-
-    );
-
+  const sorted=[...messageMap.values()].sort((a,b)=>Number(a.createdAt || 0)-Number(b.createdAt || 0));
+  replyCounts.clear();
+  sorted.forEach(m=>{ if(m.replyTo?.id) replyCounts.set(m.replyTo.id,(replyCounts.get(m.replyTo.id)||0)+1); });
 
   for(
     const msg of sorted
@@ -3349,8 +3343,8 @@ function renderMessages(){
       );
 
 
-    row.className=
-      "message-row";
+    row.className="message-row";
+    row.dataset.messageId=msg.id;
 
 
     if(
@@ -3385,8 +3379,9 @@ function renderMessages(){
         );
 
 
-      preview.className=
-        "reply-preview";
+      preview.className="reply-preview";
+      preview.title="Open original message";
+      preview.addEventListener("click", e=>{ e.stopPropagation(); scrollToMessage(msg.replyTo.id); });
 
 
       const pName=
@@ -3562,10 +3557,17 @@ function renderMessages(){
     );
 
 
-    bubble.appendChild(
-      meta
-    );
+    bubble.appendChild(meta);
 
+    const replyCount=replyCounts.get(msg.id)||0;
+    if(replyCount>0){
+      const rc=document.createElement("button");
+      rc.className="reply-count-badge";
+      rc.type="button";
+      rc.innerHTML='<i class="fa-solid fa-reply"></i> '+replyCount+' '+(replyCount===1?'reply':'replies');
+      rc.addEventListener("click",e=>{e.stopPropagation(); scrollToFirstReply(msg.id);});
+      bubble.appendChild(rc);
+    }
 
     row.appendChild(
       bubble
@@ -3585,6 +3587,8 @@ function renderMessages(){
   }
 
 
+  handleMessageHash();
+
   if(wasNearBottom){
 
     requestAnimationFrame(
@@ -3600,6 +3604,31 @@ function renderMessages(){
 
 }
 
+
+/* =====================================================
+   TELEGRAM-STYLE MESSAGE NAVIGATION
+===================================================== */
+function scrollToMessage(id){
+  if(!id)return;
+  const row=document.querySelector('[data-message-id="'+CSS.escape(String(id))+'"]');
+  if(!row)return toast("Original message is no longer available");
+  row.scrollIntoView({behavior:"smooth",block:"center"});
+  row.classList.remove("jump-highlight");
+  requestAnimationFrame(()=>row.classList.add("jump-highlight"));
+  setTimeout(()=>row.classList.remove("jump-highlight"),1200);
+  tap();
+}
+function scrollToFirstReply(originalId){
+  const reply=[...messageMap.values()].filter(m=>m.replyTo?.id===originalId).sort((a,b)=>Number(a.createdAt||0)-Number(b.createdAt||0))[0];
+  if(reply)scrollToMessage(reply.id); else toast("No replies found");
+}
+function handleMessageHash(){
+  const hash=decodeURIComponent(location.hash||"");
+  if(hash.startsWith("#msg-")){
+    const id=hash.slice(5);
+    setTimeout(()=>scrollToMessage(id),250);
+  }
+}
 
 /* =====================================================
    SWIPE + LONG PRESS

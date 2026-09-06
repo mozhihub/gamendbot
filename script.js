@@ -68,6 +68,15 @@ const GAMES = [
     },
 
     {
+        id: "tic-tac-toe",
+        title: "Tic-Tac-Toe",
+        category: "Board Games",
+        url: "https://mozhihub.github.io/Tic-tac-toe/",
+        image: "etc/tictac.jpg",
+        howToPlay: "Take turns placing X and O. Get three matching marks in a row, column or diagonal to win."
+    },
+
+    {
         id: "earth",
         title: "Earth",
         category: "Creative",
@@ -140,6 +149,24 @@ const GAMES = [
     },
 
     {
+        id: "snakes-and-ladders",
+        title: "Snakes & Ladders",
+        category: "Board Games",
+        url: "https://mozhihub.github.io/Snakesandladders/",
+        image: "etc/snake.jpg",
+        howToPlay: "Roll the dice and move your token. Climb ladders to move ahead and slide down snakes. Reach the final square first."
+    },
+
+    {
+        id: "chess",
+        title: "Chess",
+        category: "Board Games",
+        url: "https://mozhihub.github.io/Chess/",
+        image: "etc/chess.jpg",
+        howToPlay: "Move each piece according to chess rules and checkmate the opponent's king. Use strategy, tactics and piece development to win."
+    },
+
+    {
         id: "centipede",
         title: "Centipede",
         category: "Creative",
@@ -176,6 +203,10 @@ let presStop = null;
 let visitUnsub = null;
 
 let currentGame = null;
+let gameStats = {};
+let gameStatsUnsub = null;
+let notificationUnsub = null;
+let replyNotifications = [];
 
 let state = {
     category:"All",
@@ -770,69 +801,40 @@ function renderGames(){
     grid.innerHTML =
         list.map(game => {
 
-            const favorite =
-                state.favorites.includes(game.id);
-
+            const favorite = state.favorites.includes(game.id);
+            const stats = gameStats[game.id] || {};
+            const likes = Number(stats.likes || 0);
+            const dislikes = Number(stats.dislikes || 0);
+            const myReaction = localStorage.getItem("gx_reaction_" + game.id) || "";
 
             return `
-
-                <article class="game-card">
-
+                <article class="game-card" data-game-id="${escapeAttr(game.id)}">
                     <div class="game-image">
-
-                        <img
-                            src="${escapeAttr(game.image)}"
-                            alt="${escapeAttr(game.title)}"
-                            loading="lazy"
-                            onerror="this.src='https://dummyimage.com/800x500/15171c/ffffff&text=${encodeURIComponent(game.title)}'"
-                        >
-
+                        <img src="${escapeAttr(game.image)}" alt="${escapeAttr(game.title)}" loading="lazy"
+                             onerror="this.src='https://dummyimage.com/800x500/15171c/ffffff&text=${encodeURIComponent(game.title)}'">
+                        <button class="game-more-btn" aria-label="More options" onclick="openGameMenu('${escapeAttr(game.id)}',event)">
+                            <i class="fas fa-ellipsis-vertical"></i>
+                        </button>
                     </div>
-
-
                     <div class="game-info">
-
-                        <h3>
-                            ${escapeHtml(game.title)}
-                        </h3>
-
-                        <div class="game-category">
-                            ${escapeHtml(game.category)}
+                        <h3>${escapeHtml(game.title)}</h3>
+                        <div class="game-category">${escapeHtml(game.category)}</div>
+                        <div class="game-reactions">
+                            <button class="reaction-btn ${myReaction === "like" ? "active" : ""}" onclick="reactGame('${escapeAttr(game.id)}','like')">
+                                <i class="${myReaction === "like" ? "fas" : "far"} fa-thumbs-up"></i><span>${likes}</span>
+                            </button>
+                            <button class="reaction-btn ${myReaction === "dislike" ? "active" : ""}" onclick="reactGame('${escapeAttr(game.id)}','dislike')">
+                                <i class="${myReaction === "dislike" ? "fas" : "far"} fa-thumbs-down"></i><span>${dislikes}</span>
+                            </button>
                         </div>
-
-
                         <div class="game-actions">
-
-                            <button
-                                class="play-btn"
-                                onclick="playGame('${escapeAttr(game.id)}')">
-
-                                <i class="fas fa-play"></i>
-                                Play
-
+                            <button class="play-btn" onclick="playGame('${escapeAttr(game.id)}')"><i class="fas fa-play"></i> Play</button>
+                            <button class="fav-btn ${favorite ? "active" : ""}" onclick="toggleFav('${escapeAttr(game.id)}')">
+                                <i class="${favorite ? "fas" : "far"} fa-heart"></i>
                             </button>
-
-
-                            <button
-                                class="fav-btn ${
-                                    favorite ? "active" : ""
-                                }"
-                                onclick="toggleFav('${escapeAttr(game.id)}')">
-
-                                <i class="${
-                                    favorite
-                                        ? "fas"
-                                        : "far"
-                                } fa-heart"></i>
-
-                            </button>
-
                         </div>
-
                     </div>
-
                 </article>
-
             `;
 
         }).join("");
@@ -842,6 +844,116 @@ function renderGames(){
 
 }
 
+
+/* =========================================================
+   GAME DETAILS / MENU / REACTIONS
+========================================================= */
+
+function getGame(id){ return GAMES.find(g => g.id === id); }
+
+function openGameMenu(id, event){
+    event?.stopPropagation?.();
+    const game = getGame(id);
+    if(!game) return;
+    document.querySelectorAll(".game-action-pop").forEach(x => x.remove());
+    const pop = document.createElement("div");
+    pop.className = "game-action-pop";
+    pop.innerHTML = `
+      <button onclick="openGameInfo('${escapeAttr(id)}')"><i class="fas fa-circle-info"></i> Info</button>
+      <button onclick="reportGame('${escapeAttr(id)}')"><i class="fas fa-flag"></i> Report</button>`;
+    document.body.appendChild(pop);
+    const r = event?.currentTarget?.getBoundingClientRect?.();
+    pop.style.top = Math.min(window.innerHeight - 110, (r?.bottom || 100) + 5) + "px";
+    pop.style.left = Math.max(8, Math.min(window.innerWidth - 190, (r?.left || 10) - 145)) + "px";
+    setTimeout(() => document.addEventListener("pointerdown", function close(e){
+        if(!pop.contains(e.target)){ pop.remove(); document.removeEventListener("pointerdown", close); }
+    }, {once:true}), 0);
+}
+
+function openGameInfo(id){
+    document.querySelectorAll(".game-action-pop").forEach(x=>x.remove());
+    const game=getGame(id); if(!game) return;
+    let modal=document.getElementById("gameInfoModal");
+    if(!modal){
+      modal=document.createElement("div"); modal.id="gameInfoModal"; modal.className="modal";
+      document.body.appendChild(modal);
+    }
+    modal.innerHTML=`<div class="modal-box game-info-modal-box">
+      <div class="modal-head"><div><span class="section-kicker">GAME DETAILS</span><h2>${escapeHtml(game.title)}</h2></div>
+      <button class="icon-btn" onclick="closeGameInfo()"><i class="fas fa-xmark"></i></button></div>
+      <img class="game-info-cover" src="${escapeAttr(game.image)}" alt="${escapeAttr(game.title)}">
+      <div class="game-detail-row"><strong>Category</strong><span>${escapeHtml(game.category)}</span></div>
+      <div class="game-detail-row"><strong>Creator / Developer</strong><span>@kaviyarasan</span></div>
+      <div class="game-howto"><strong>How to play</strong><p>${escapeHtml(game.howToPlay || "Open the game and follow the on-screen instructions.")}</p></div>
+      <button class="primary-btn" onclick="closeGameInfo();playGame('${escapeAttr(id)}')"><i class="fas fa-play"></i> Play Now</button>
+    </div>`;
+    modal.classList.add("show"); document.body.classList.add("modal-lock");
+}
+function closeGameInfo(){ const m=document.getElementById("gameInfoModal"); if(m)m.classList.remove("show"); if(!document.querySelector(".modal.show"))document.body.classList.remove("modal-lock"); }
+function reportGame(id){
+    const game=getGame(id); document.querySelectorAll(".game-action-pop").forEach(x=>x.remove());
+    openReport(); const input=document.querySelector('#reportForm input[name="game"]'); if(input && game) input.value=game.title;
+}
+
+async function reactGame(id, type){
+    const f=await firebaseLoad(); if(!f){toast("Reaction unavailable",false);return;}
+    const user=await ensureAuth(); if(!user){toast("Please try again",false);return;}
+    const db=f.getDatabase(f.app);
+    const statsRef=f.ref(db,"games/"+id+"/"+type+"s");
+    const old=localStorage.getItem("gx_reaction_"+id)||"";
+    try{
+      if(old===type){ await f.runTransaction(statsRef,v=>Math.max(0,(Number(v)||0)-1)); localStorage.removeItem("gx_reaction_"+id); }
+      else{
+        if(old) await f.runTransaction(f.ref(db,"games/"+id+"/"+old+"s"),v=>Math.max(0,(Number(v)||0)-1));
+        await f.runTransaction(statsRef,v=>(Number(v)||0)+1); localStorage.setItem("gx_reaction_"+id,type);
+      }
+    }catch(e){ console.error(e); toast("Unable to update reaction",false); }
+    renderGames();
+}
+
+async function listenGameStats(){
+    const f=await firebaseLoad(); if(!f)return;
+    const db=f.getDatabase(f.app);
+    if(gameStatsUnsub)gameStatsUnsub();
+    gameStatsUnsub=f.onValue(f.ref(db,"games"),snap=>{
+      gameStats=snap.val()||{}; renderGames();
+    });
+}
+
+/* =========================================================
+   REPLY NOTIFICATIONS
+========================================================= */
+function notificationKey(id){ return "gx_read_reply_"+id; }
+function getReadReplies(){
+  try{return JSON.parse(localStorage.getItem("gx_read_replies")||"[]");}catch{return [];}
+}
+function markReplyRead(id){
+  const a=getReadReplies(); if(!a.includes(id))a.push(id); localStorage.setItem("gx_read_replies",JSON.stringify(a)); updateNotificationUI();
+}
+function updateNotificationUI(){
+  const badge=document.getElementById("notificationBadge");
+  const unread=replyNotifications.filter(n=>!getReadReplies().includes(n.id)).length;
+  if(badge){badge.textContent=unread>99?"99+":unread; badge.hidden=unread===0;}
+  const list=document.getElementById("notificationList"); if(!list)return;
+  if(!replyNotifications.length){list.innerHTML='<div class="notification-empty"><i class="far fa-bell-slash"></i><strong>No replies yet</strong><span>Replies to your messages will appear here.</span></div>';return;}
+  list.innerHTML=replyNotifications.map(n=>`<button class="notification-item ${getReadReplies().includes(n.id)?"read":"unread"}" onclick="openReplyNotification('${escapeAttr(n.id)}')">
+    <div class="notification-icon"><i class="fas fa-reply"></i></div><div class="notification-copy"><strong>${escapeHtml(n.name||"User")} replied to you</strong><span>${escapeHtml(n.text||"")}</span><small>${escapeHtml(n.originalText||"")}</small></div>
+    <span class="notification-clear" role="button" aria-label="Clear" onclick="clearReplyNotification(event,'${escapeAttr(n.id)}')"><i class="fas fa-xmark"></i></span></button>`).join("");
+}
+function openNotifications(){ updateNotificationUI(); const m=document.getElementById("notificationsModal"); if(m){m.classList.add("show");document.body.classList.add("modal-lock");} }
+function closeNotifications(){ const m=document.getElementById("notificationsModal"); if(m)m.classList.remove("show"); if(!document.querySelector(".modal.show"))document.body.classList.remove("modal-lock"); }
+function openReplyNotification(id){ markReplyRead(id); window.location.href="community.html#msg-"+encodeURIComponent(id); }
+function clearReplyNotification(event,id){ event?.stopPropagation?.(); const a=getReadReplies(); if(!a.includes(id))a.push(id); localStorage.setItem("gx_read_replies",JSON.stringify(a)); replyNotifications=replyNotifications.filter(n=>n.id!==id); updateNotificationUI(); }
+async function listenReplyNotifications(){
+  const f=await firebaseLoad(); if(!f)return; const user=await ensureAuth(); if(!user)return; const db=f.getDatabase(f.app);
+  if(notificationUnsub)notificationUnsub();
+  notificationUnsub=f.onValue(f.ref(db,"community/messages"),snap=>{
+    const all=[]; snap.forEach(c=>{const m=c.val(); if(m)all.push({id:c.key,...m});});
+    const byId=new Map(all.map(m=>[m.id,m]));
+    replyNotifications=all.filter(m=>m.replyTo && m.replyTo.uid===user.uid).sort((a,b)=>Number(b.createdAt||0)-Number(a.createdAt||0)).map(m=>({...m,originalText:byId.get(m.replyTo.id)?.text || m.replyTo.text || ""}));
+    updateNotificationUI();
+  });
+}
 
 /* =========================================================
    HISTORY
@@ -2149,6 +2261,8 @@ async function init(){
     renderHistory();
 
     stats();
+    listenGameStats();
+    listenReplyNotifications();
 
 
     /* ================= SEARCH ================= */
@@ -2390,6 +2504,14 @@ Object.assign(
         reloadGame,
         fullscreenGame,
         openGameExternal,
+        openGameMenu,
+        openGameInfo,
+        closeGameInfo,
+        reportGame,
+        reactGame,
+        openNotifications,
+        closeNotifications,
+        openReplyNotification,
 
         openSettings,
         closeSettings,
