@@ -71,7 +71,7 @@ const GAMES = [
         id: "tic-tac-toe",
         title: "Tic-Tac-Toe",
         category: "Board Games",
-        url: "https://mozhihub.github.io/Tic-tac-toe/",
+        url: "https://mozhihub.github.io/Tic-tac-toe-/",
         image: "etc/tictac.jpg",
         howToPlay: "Take turns placing X and O. Get three matching marks in a row, column or diagonal to win."
     },
